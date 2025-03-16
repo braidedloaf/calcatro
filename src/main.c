@@ -76,7 +76,6 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 }
 
 
-
 int main(void) {
 	srand(time(NULL))
 
