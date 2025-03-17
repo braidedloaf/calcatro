@@ -12,4 +12,5 @@ obj/src/main.c.bc: src\main.c C:\CEdev\CEdev\include\tice.h \
   C:\CEdev\CEdev\include\ti\tokens.h C:\CEdev\CEdev\include\ti\vars.h \
   C:\CEdev\CEdev\include\graphx.h C:\CEdev\CEdev\include\stdlib.h \
   C:\CEdev\CEdev\include\keypadc.h C:\CEdev\CEdev\include\stdio.h \
-  C:\CEdev\CEdev\include\stdarg.h
+  C:\CEdev\CEdev\include\stdarg.h C:\CEdev\CEdev\include\time.h \
+  C:\CEdev\CEdev\include\string.h

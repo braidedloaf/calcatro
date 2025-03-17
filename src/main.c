@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 
 typedef struct {
@@ -59,12 +60,12 @@ void print_card(Card c) {
 void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {	
 
 	for (int i = 0; i < amt;) {
-		if (*next_card > 52) {
+		if (*next_card >= 52) {
 			*next_card = 0;
 			shuffle_deck(p_deck);
 		}
 		for (int j = 0; j < p_hand->hand_size; j++) {
-			if (p_hand->hand[j] == NULL) {
+			if (p_hand->hand[j].value == -1) {
 				p_hand->hand[j] = p_deck->cards[(*next_card)++];
 				i++;
 				break;
@@ -77,7 +78,7 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 
 
 int main(void) {
-	srand(time(NULL))
+	srand(time(NULL));
 
 	kb_key_t key, prev_key = 0;
 	bool running = true;
@@ -91,6 +92,11 @@ int main(void) {
 	Hand hand;
 	hand.hand_size = 8;
 	hand.current_cards_cnt = 0;
+	memset(&hand, 0, sizeof(Hand));
+	for (int i = 0; i < hand.hand_size; i++) {
+		hand.hand[i].value = -1;
+	}
+
 	int next_card = 0;
 
 
