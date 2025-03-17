@@ -29,7 +29,7 @@ int randomIntRange(int min, int max) {
 }
 
 void shuffle_deck(Deck *deck) {
-	for (int i = deck->size; i > 0; i--) {
+	for (int i = deck->size - 1; i > 0; i--) {
 		int j = rand() % (i+1);
 		Card temp = deck->cards[i];
 		deck->cards[i] = deck->cards[j];
@@ -72,6 +72,7 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 			}
 		}
 	}
+	p_hand->current_cards_cnt += amt;
 
 	return;
 }
@@ -89,10 +90,11 @@ int main(void) {
 
 	Deck deck = create_deck();
 	shuffle_deck(&deck);
+	
 	Hand hand;
+	memset(&hand, 0, sizeof(Hand)); // set all values to 0 bit
 	hand.hand_size = 8;
 	hand.current_cards_cnt = 0;
-	memset(&hand, 0, sizeof(Hand));
 	for (int i = 0; i < hand.hand_size; i++) {
 		hand.hand[i].value = -1;
 	}
@@ -106,24 +108,24 @@ int main(void) {
 		kb_Scan();
 		
 		key = kb_Data[7];
-
+		
+		if (hand.current_cards_cnt < hand.hand_size) {
+			draw_cards_to_hand(&hand, hand.hand_size - hand.current_cards_cnt, &deck, &next_card);
+		}
 
 		if (key & kb_Left && !(prev_key & kb_Left)) {
 			if (card_idx > 0)
 				--card_idx;
 		}
 		if (key & kb_Right && !(prev_key & kb_Right)) {
-			if (card_idx < deck.size-1) // 52 is deck size
+			if (card_idx < hand.hand_size-1) // 52 -> deck size | 8 -> hand_size
 				++card_idx;
 		}
 
 		prev_key = key;
 
-		//print_card(deck.cards[card_idx]);
-		
-		if (hand.current_cards_cnt < hand.hand_size) {
-			draw_cards_to_hand(&hand, hand.hand_size - hand.current_cards_cnt, &deck, &next_card);
-		}
+		print_card(hand.hand[card_idx]);
+
 
 		if (kb_Data[6] & kb_Clear) { 
             running = false;
