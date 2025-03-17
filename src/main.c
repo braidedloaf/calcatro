@@ -12,7 +12,7 @@ typedef struct {
 	char suit;
 	int value;
 } Card;
- 
+
 typedef struct {
 	Card cards[52];
 	int size;
