@@ -6,11 +6,14 @@
 #include <time.h>
 #include <string.h>
 
+//screen is 320, 240
+
 
 typedef struct {
 	char rank;
 	char suit;
 	int value;
+	bool is_selected;
 } Card;
 
 typedef struct {
@@ -43,6 +46,7 @@ Deck create_deck() {
 		deck.cards[i].rank = (i % 13) < 8 ? '2' + (i % 13) : (i % 13) == 8 ? 'T' : (i % 13) == 9 ? 'J' : (i % 13) == 10 ? 'Q' : (i % 13) == 11 ? 'K' : 'A'; // J == 74 Q == 81 K == 75
 		deck.cards[i].suit = (i / 13 == 0) ? 'S' : (i / 13 == 1) ? 'H' : (i / 13 == 2) ? 'C' : 'D';
 		deck.cards[i].value = (i % 13) + 2 < 10 ? (i % 13) + 2 : (i % 13) + 2 == 14 ? 11: 10;
+		deck.cards[i].is_selected = false;
 	}
 	deck.size = 52;
 	return deck;
@@ -55,6 +59,12 @@ void print_card(Card c) {
 	char s[3];
 	sprintf(s, "%d", c.value);
 	gfx_PrintString(s);
+}
+
+void display_hand(Hand *p_hand) {
+	
+	
+	
 }
 
 void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {	
@@ -95,7 +105,7 @@ int main(void) {
 	memset(&hand, 0, sizeof(Hand)); // set all values to 0 bit
 	hand.hand_size = 8;
 	hand.current_cards_cnt = 0;
-	for (int i = 0; i < hand.hand_size; i++) {
+	for (int i = 0; i < hand.hand_size; i++) { //set cards value to be -1, to signify empty slot
 		hand.hand[i].value = -1;
 	}
 
@@ -125,7 +135,6 @@ int main(void) {
 		prev_key = key;
 
 		print_card(hand.hand[card_idx]);
-
 
 		if (kb_Data[6] & kb_Clear) { 
             running = false;
