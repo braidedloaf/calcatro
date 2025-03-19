@@ -7,9 +7,9 @@ Section          Base   Top    High   Length
 .init.reruncheck D1A91F D1A91F             0h
 .init            D1A91F D1A93F            20h
 .fini            D1A93F D1A973            34h
-.text            D1A973 D1D04B          26D8h
-.data            D1D04B D1D05B            10h
-.rodata          D1D05B D1D183           128h
+.text            D1A973 D1D048          26D5h
+.data            D1D048 D1D058            10h
+.rodata          D1D058 D1D180           128h
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
@@ -80,18 +80,18 @@ _os_DisableHomeTextBuffer = D1AE0B
 _os_EnableHomeTextBuffer  = D1AE1D
 _random                   = D1AE2F
 __setstate                = D1AE8D
-__state                   = D1D04B
+__state                   = D1D048
 _boot_GetDate             = 0005A8
 _boot_GetTime             = 0005B0
 _mktime                   = D1AE9D
-_mktime.yday              = D1D05B
+_mktime.yday              = D1D058
 _npf_vpprintf             = D1AFA1
-JTI0_0                    = D1D07F
-JTI0_1                    = D1D09D
-JTI0_2                    = D1D0E2
-JTI0_3                    = D1D103
-JTI0_4                    = D1D11B
-JTI0_5                    = D1D133
+JTI0_0                    = D1D07C
+JTI0_1                    = D1D09A
+JTI0_2                    = D1D0DF
+JTI0_3                    = D1D100
+JTI0_4                    = D1D118
+JTI0_5                    = D1D130
 _npf_utoa_rev             = D1C70B
 __printf_c                = D1C7D3
 __vsnprintf_c             = D1C7F2
@@ -102,9 +102,9 @@ __vsprintf_c              = D1C8CC
 __vprintf_c               = D1C8EB
 _npf_putc_std             = D1C90B
 __sprintf_c               = D1C91B
-_.str                     = D1D14B
-_.str.1                   = D1D14F
-_.str.2                   = D1D153
+_.str                     = D1D148
+_.str.1                   = D1D14C
+_.str.2                   = D1D150
 _time                     = D1C944
 _outchar                  = D1C9C2
 _sprintf                  = D1C91B
@@ -112,10 +112,10 @@ _vprintf                  = D1C8EB
 _vsnprintf                = D1C7F2
 _rand                     = D1C9D8
 _srand                    = D1C9E5
-.missingappvar            = D1D157
-.libloadname              = D1D15C
+.missingappvar            = D1D154
+.libloadname              = D1D159
 .libloadnamelen           = 000007
-.webaddress               = D1D164
+.webaddress               = D1D161
 __start                   = D1A91F
 ___exithl                 = D1A93F
 skip._exit                = D1A93F
@@ -125,11 +125,11 @@ _exit.sp                  = D1A940
 _exit.flash_wait_states   = D1A94A
 _shuffle_deck             = D1C9ED
 _create_deck              = D1CA96
-_print_card               = D1CC25
-_draw_cards_to_hand       = D1CC79
-_main                     = D1CD65
-_.str                     = D1D179
-_.str.1                   = D1D180
+_print_card               = D1CC22
+_draw_cards_to_hand       = D1CC76
+_main                     = D1CD62
+_.str                     = D1D176
+_.str.1                   = D1D17D
 lib.LibLoad               = D1A8DA
 _#gfx_Begin               = D1A8ED
 _#gfx_End                 = D1A8F1
