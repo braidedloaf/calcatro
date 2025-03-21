@@ -275,17 +275,12 @@ BB2_18:
 	section	.text,"ax",@progbits
 	public	_print_card
 _print_card:
-	ld	hl, -6
-	call	__frameset
-	ld	hl, _.str
-	ld	de, 10
-	lea	bc, ix - 3
-	ld	(ix - 6), bc
-	push	de
+	call	__frameset0
+	ld	hl, (ix + 12)
+	ld	de, (ix + 15)
 	push	de
 	push	hl
-	call	_gfx_PrintStringXY
-	pop	hl
+	call	_gfx_SetTextXY
 	pop	hl
 	pop	hl
 	ld	a, (ix + 6)
@@ -297,20 +292,6 @@ _print_card:
 	push	hl
 	call	_gfx_PrintChar
 	pop	hl
-	ld	hl, (ix + 8)
-	push	hl
-	ld	hl, _.str.1
-	push	hl
-	ld	hl, (ix - 6)
-	push	hl
-	call	_sprintf
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	hl, (ix - 6)
-	push	hl
-	call	_gfx_PrintString
-	ld	sp, ix
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
@@ -318,7 +299,55 @@ _print_card:
 	section	.text,"ax",@progbits
 	public	_display_hand
 _display_hand:
-	call	__frameset0
+	ld	hl, -9
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, 10
+	ld	(ix - 3), hl
+	ld	bc, 0
+	lea	hl, iy + 6
+	ld	(ix - 6), hl
+BB4_1:
+	ld	iy, (ix + 6)
+	ld	de, (iy + 3)
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB4_3
+	push	hl
+	push	hl
+	push	hl
+	push	hl
+	ld	iy, 0
+	add	iy, sp
+	lea	de, iy
+	ld	hl, (ix - 6)
+	ld	(ix - 9), bc
+	ld	bc, 6
+	ldir
+	ld	hl, (ix - 3)
+	ld	(iy + 6), hl
+	ld	hl, 200
+	ld	(iy + 9), hl
+	call	_print_card
+	ld	bc, (ix - 9)
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	inc	bc
+	ld	iy, (ix - 6)
+	lea	iy, iy + 6
+	ld	(ix - 6), iy
+	ld	de, 40
+	ld	hl, (ix - 3)
+	add	hl, de
+	ld	(ix - 3), hl
+	jr	BB4_1
+BB4_3:
+	ld	sp, ix
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
@@ -445,7 +474,7 @@ _main:
 	ld	bc, -378
 	lea	iy, ix
 	add	iy, bc
-	ld	bc, -381
+	ld	bc, -384
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), iy
@@ -457,7 +486,7 @@ _main:
 	ld	(ix), de
 	pop	ix
 	lea	de, iy + 3
-	ld	bc, -384
+	ld	bc, -381
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
@@ -493,12 +522,12 @@ _main:
 	push	hl
 	call	_shuffle_deck
 	pop	hl
-	ld	bc, -384
+	ld	bc, -381
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
 	lea	hl, iy + 6
-	ld	bc, -381
+	ld	bc, -384
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
@@ -523,7 +552,7 @@ BB6_1:
 	lea	bc, iy
 	lea	de, iy
 	ld	(ix - 3), de
-	ld	de, -384
+	ld	de, -381
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
@@ -541,7 +570,7 @@ BB6_1:
 BB6_3:
 	or	a, a
 	sbc	hl, hl
-	ld	bc, -381
+	ld	bc, -384
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
@@ -585,7 +614,7 @@ BB6_4:
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), hl
-	ld	bc, -381
+	ld	bc, -384
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -601,7 +630,7 @@ BB6_4:
 	pop	hl
 	or	a, a
 	sbc	hl, de
-	ld	bc, -381
+	ld	bc, -384
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
@@ -613,7 +642,7 @@ BB6_4:
 	pop	ix
 	push	de
 	push	hl
-	ld	bc, -384
+	ld	bc, -381
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -693,7 +722,7 @@ BB6_14:
 	jr	z, BB6_19
 	bit	2, b
 	jr	nz, BB6_19
-	ld	bc, -381
+	ld	bc, -384
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
@@ -722,7 +751,7 @@ BB6_19:
 	pop	de
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -384
+	ld	bc, -381
 	add	ix, bc
 	ld	iy, (ix)
 	pop	ix
@@ -730,14 +759,27 @@ BB6_19:
 	lea	hl, iy + 6
 	push	de
 	push	de
-	ex	de, hl
-	ld	hl, 0
-	add	hl, sp
-	ex	de, hl
+	push	de
+	push	de
+	ld	iy, 0
+	add	iy, sp
+	lea	de, iy
 	ld	bc, (ix - 3)
 	ldir
+	ld	hl, 10
+	ld	(iy + 6), hl
+	ld	(iy + 9), hl
 	call	_print_card
 	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	bc, -381
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	call	_display_hand
 	pop	hl
 	ld	hl, -720868
 	push	de
@@ -776,26 +818,14 @@ BB6_22:
 	ret
 	section	.text,"ax",@progbits
 
-	section	.rodata,"a",@progbits
-	private	_.str
-_.str:
-	db	"Card: ", 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.1
-_.str.1:
-	db	"%d", 0
-
 	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
 	extern	__Unwind_SjLj_Register
 	extern	_gfx_PrintChar
 	extern	__frameset
 	extern	_srand
-	extern	_sprintf
 	extern	_gfx_Begin
 	extern	_kb_Scan
 	extern	_rand
-	extern	_gfx_PrintString
 	extern	__ishru
 	extern	__idivu
 	extern	_gfx_SwapDraw
@@ -806,9 +836,9 @@ _.str.1:
 	extern	__irems
 	extern	__imulu
 	extern	_gfx_SetColor
-	extern	_gfx_PrintStringXY
 	extern	_gfx_End
 	extern	__frameset0
+	extern	_gfx_SetTextXY
 	extern	_time
 	extern	__bdivu
 	extern	_gfx_SetTextScale

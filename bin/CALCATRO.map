@@ -2,14 +2,14 @@ Section          Base   Top    High   Length
 ---------------- ------ ------ ------ -------
 .icon            D1A882 D1A882             0h
 .init.libs       D1A882 D1A8DA            58h
-.libs            D1A8DA D1A91F            45h
-.init.clock      D1A91F D1A91F             0h
-.init.reruncheck D1A91F D1A91F             0h
-.init            D1A91F D1A93F            20h
-.fini            D1A93F D1A973            34h
-.text            D1A973 D1D048          26D5h
-.data            D1D048 D1D058            10h
-.rodata          D1D058 D1D180           128h
+.libs            D1A8DA D1A91B            41h
+.init.clock      D1A91B D1A91B             0h
+.init.reruncheck D1A91B D1A91B             0h
+.init            D1A91B D1A93B            20h
+.fini            D1A93B D1A96F            34h
+.text            D1A96F D1B400           A91h
+.data            D1B400 D1B410            10h
+.rodata          D1B410 D1B456            46h
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
@@ -29,107 +29,56 @@ ___ctors_count            = 000000
 ___dtors_count            = 000000
 ___fini_array_count       = 000000
 __stack                   = D1A87E
-__land                    = D1A973
-__iand                    = D1A977
-__bdivu                   = D1A98E
-__bdvrmu                  = D1A998
-__frameset                = D1A9A7
-__frameset0               = D1A9B5
-__idivs                   = D1A9C0
-__idivu                   = D1A9C7
-__idvrms                  = D1A9CF
-__idvrmu                  = D1A9FD
-__imulu                   = D1AA15
-__indcallhl               = D1AA45
-__ineg                    = D1AA46
-__irems                   = D1AA4F
-__ishl                    = D1AA57
-__ishru                   = D1AA7D
-__ladd                    = D1AABE
-__lcmpu                   = D1AAC4
-__lcmpzero                = D1AACC
-__lladd                   = D1AAD7
-__lland                   = D1AAFB
-__llcmpu                  = D1AB38
-__llcmpzero               = D1AB62
-__llctlz                  = D1AB77
-__lldivs                  = D1AB8F
-__lldivu                  = D1ABDF
-__lldvrmu                 = D1ABF3
-__lldvrmu.hijack          = D1ABFA
-__llmulu                  = D1AC51
-__llneg                   = D1ACA6
-__llshl                   = D1ACBF
-__llshrs.hijack_llshru    = D1ACED
-__llshrs.finish           = D1AD0C
-__llshru                  = D1AD10
-__llsub                   = D1AD2A
-__lmulu                   = D1AD4C
-__lshrs.hijack_lshru      = D1ADB4
-__lshru                   = D1ADC3
-__lsub                    = D1ADD3
-__ior                     = D1ADDD
-__fcmp                    = 000274
+__bdivu                   = D1A96F
+__bdvrmu                  = D1A979
+__frameset                = D1A988
+__frameset0               = D1A996
+__idivs                   = D1A9A1
+__idivu                   = D1A9A8
+__idvrms                  = D1A9B0
+__idvrmu                  = D1A9DE
+__imulu                   = D1A9F6
+__ineg                    = D1AA26
+__irems                   = D1AA2F
+__ishl                    = D1AA37
+__ishru                   = D1AA5D
+__ladd                    = D1AA9E
+__lmulu                   = D1AAA4
+__lsub                    = D1AB00
 __ftol                    = 00027C
 __ftoul                   = 00027C
 __ltof                    = 000284
 __setflag                 = 000218
 __ultof                   = 000280
-__ixor                    = D1ADF4
-_os_DisableHomeTextBuffer = D1AE0B
-_os_EnableHomeTextBuffer  = D1AE1D
-_random                   = D1AE2F
-__setstate                = D1AE8D
-__state                   = D1D048
+_os_DisableHomeTextBuffer = D1AB0A
+_os_EnableHomeTextBuffer  = D1AB1C
+_random                   = D1AB2E
+__setstate                = D1AB8C
+__state                   = D1B400
 _boot_GetDate             = 0005A8
 _boot_GetTime             = 0005B0
-_mktime                   = D1AE9D
-_mktime.yday              = D1D058
-_npf_vpprintf             = D1AFA1
-JTI0_0                    = D1D07C
-JTI0_1                    = D1D09A
-JTI0_2                    = D1D0DF
-JTI0_3                    = D1D100
-JTI0_4                    = D1D118
-JTI0_5                    = D1D130
-_npf_utoa_rev             = D1C70B
-__printf_c                = D1C7D3
-__vsnprintf_c             = D1C7F2
-_npf_bufputc              = D1C878
-_npf_bufputc_nop          = D1C89D
-__snprintf_c              = D1C8A4
-__vsprintf_c              = D1C8CC
-__vprintf_c               = D1C8EB
-_npf_putc_std             = D1C90B
-__sprintf_c               = D1C91B
-_.str                     = D1D148
-_.str.1                   = D1D14C
-_.str.2                   = D1D150
-_time                     = D1C944
-_outchar                  = D1C9C2
-_sprintf                  = D1C91B
-_vprintf                  = D1C8EB
-_vsnprintf                = D1C7F2
-_rand                     = D1C9D8
-_srand                    = D1C9E5
-.missingappvar            = D1D154
-.libloadname              = D1D159
+_mktime                   = D1AB9C
+_mktime.yday              = D1B410
+_time                     = D1ACA0
+_rand                     = D1AD1E
+_srand                    = D1AD2B
+.missingappvar            = D1B434
+.libloadname              = D1B439
 .libloadnamelen           = 000007
-.webaddress               = D1D161
-__start                   = D1A91F
-___exithl                 = D1A93F
-skip._exit                = D1A93F
-skip.__Exit               = D1A93F
-skip._abort               = D1A93F
-_exit.sp                  = D1A940
-_exit.flash_wait_states   = D1A94A
-_shuffle_deck             = D1C9ED
-_create_deck              = D1CA96
-_print_card               = D1CC22
-_draw_cards_to_hand       = D1CC76
-_main                     = D1CD62
-_.str                     = D1D176
-_.str.1                   = D1D17D
+.webaddress               = D1B441
+__start                   = D1A91B
+___exithl                 = D1A93B
+skip._exit                = D1A93B
+skip.__Exit               = D1A93B
+skip._abort               = D1A93B
+_exit.sp                  = D1A93C
+_exit.flash_wait_states   = D1A946
+_shuffle_deck             = D1AD33
+_create_deck              = D1ADDC
+_print_card               = D1AF68
+_display_hand             = D1AF90
+_draw_cards_to_hand       = D1B00D
+_main                     = D1B0F9
 lib.LibLoad               = D1A8DA
 _#gfx_Begin               = D1A8ED
 _#gfx_End                 = D1A8F1
@@ -137,7 +86,6 @@ _#gfx_SetColor            = D1A8F5
 _#gfx_FillScreen          = D1A8F9
 _#gfx_SwapDraw            = D1A8FD
 _#gfx_PrintChar           = D1A901
-_#gfx_PrintString         = D1A905
-_#gfx_PrintStringXY       = D1A909
-_#gfx_SetTextScale        = D1A90D
-_#kb_Scan                 = D1A91B
+_#gfx_SetTextXY           = D1A905
+_#gfx_SetTextScale        = D1A909
+_#kb_Scan                 = D1A917

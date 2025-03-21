@@ -52,18 +52,24 @@ Deck create_deck() {
 	return deck;
 }
 
-void print_card(Card c) {
-	gfx_PrintStringXY("Card: ", 10, 10);
+void print_card(Card c , int x, int y) {
+	gfx_SetTextXY(x, y);
+	//gfx_PrintStringXY("Card: ", 10, 10);
     gfx_PrintChar(c.rank);
     gfx_PrintChar(c.suit);
+	/*
 	char s[3];
 	sprintf(s, "%d", c.value);
 	gfx_PrintString(s);
+	*/
 }
 
 void display_hand(Hand *p_hand) {
 	
 	
+	for (int i = 0; i < p_hand->current_cards_cnt; i++) {
+		print_card(p_hand->hand[i], 10 + (40 * i), 200);
+	}
 	
 }
 
@@ -134,7 +140,8 @@ int main(void) {
 
 		prev_key = key;
 
-		print_card(hand.hand[card_idx]);
+		//print_card(hand.hand[card_idx], 10, 10);
+		display_hand(&hand);
 
 		if (kb_Data[6] & kb_Clear) { 
             running = false;
