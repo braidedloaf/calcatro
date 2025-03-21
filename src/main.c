@@ -14,6 +14,7 @@ typedef struct {
 	char suit;
 	int value;
 	bool is_selected;
+	bool to_play;
 } Card;
 
 typedef struct {
@@ -47,6 +48,7 @@ Deck create_deck() {
 		deck.cards[i].suit = (i / 13 == 0) ? 'S' : (i / 13 == 1) ? 'H' : (i / 13 == 2) ? 'C' : 'D';
 		deck.cards[i].value = (i % 13) + 2 < 10 ? (i % 13) + 2 : (i % 13) + 2 == 14 ? 11: 10;
 		deck.cards[i].is_selected = false;
+		deck.cards[i].to_play = false;
 	}
 	deck.size = 52;
 	return deck;
@@ -68,7 +70,10 @@ void display_hand(Hand *p_hand) {
 	
 	
 	for (int i = 0; i < p_hand->current_cards_cnt; i++) {
-		print_card(p_hand->hand[i], 10 + (40 * i), 200);
+		int offset_y = 0;
+		if (p_hand->hand[i].is_selected || p_hand->hand[i].to_play)
+			offset_y -= 20;
+		print_card(p_hand->hand[i], 80 + (30 * i), offset_y + 200);
 	}
 	
 }
@@ -101,7 +106,7 @@ int main(void) {
 	bool running = true;
 
 	gfx_Begin();
-	gfx_SetTextScale(2,2);
+	gfx_SetTextScale(1,2);
 	gfx_SetColor(0);
 
 	Deck deck = create_deck();
@@ -116,26 +121,32 @@ int main(void) {
 	}
 
 	int next_card = 0;
-
-
 	int card_idx = 0;
+	
 	while (running) {
 		gfx_FillScreen(255);
 		kb_Scan();
 		
-		key = kb_Data[7];
 		
 		if (hand.current_cards_cnt < hand.hand_size) {
 			draw_cards_to_hand(&hand, hand.hand_size - hand.current_cards_cnt, &deck, &next_card);
 		}
+		
+		hand.hand[card_idx].is_selected = true;
+		key = kb_Data[1];
+		if (key & kb_2nd) hand.hand[card_idx].to_play = !hand.hand[card_idx].to_play;
 
+			
+		//use arrow keys to change card to select
+		key = kb_Data[7];
 		if (key & kb_Left && !(prev_key & kb_Left)) {
-			if (card_idx > 0)
-				--card_idx;
+			if (card_idx > 0) {
+				hand.hand[card_idx--].is_selected = false;
+			}
 		}
 		if (key & kb_Right && !(prev_key & kb_Right)) {
 			if (card_idx < hand.hand_size-1) // 52 -> deck size | 8 -> hand_size
-				++card_idx;
+				hand.hand[card_idx++].is_selected = false;
 		}
 
 		prev_key = key;

@@ -7,9 +7,9 @@ Section          Base   Top    High   Length
 .init.reruncheck D1A91B D1A91B             0h
 .init            D1A91B D1A93B            20h
 .fini            D1A93B D1A96F            34h
-.text            D1A96F D1B400           A91h
-.data            D1B400 D1B410            10h
-.rodata          D1B410 D1B456            46h
+.text            D1A96F D1B486           B17h
+.data            D1B486 D1B496            10h
+.rodata          D1B496 D1B4DC            46h
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
@@ -40,32 +40,31 @@ __idvrmu                  = D1A9DE
 __imulu                   = D1A9F6
 __ineg                    = D1AA26
 __irems                   = D1AA2F
-__ishl                    = D1AA37
-__ishru                   = D1AA5D
-__ladd                    = D1AA9E
-__lmulu                   = D1AAA4
-__lsub                    = D1AB00
+__ishru                   = D1AA37
+__ladd                    = D1AA78
+__lmulu                   = D1AA7E
+__lsub                    = D1AADA
 __ftol                    = 00027C
 __ftoul                   = 00027C
 __ltof                    = 000284
 __setflag                 = 000218
 __ultof                   = 000280
-_os_DisableHomeTextBuffer = D1AB0A
-_os_EnableHomeTextBuffer  = D1AB1C
-_random                   = D1AB2E
-__setstate                = D1AB8C
-__state                   = D1B400
+_os_DisableHomeTextBuffer = D1AAE4
+_os_EnableHomeTextBuffer  = D1AAF6
+_random                   = D1AB08
+__setstate                = D1AB66
+__state                   = D1B486
 _boot_GetDate             = 0005A8
 _boot_GetTime             = 0005B0
-_mktime                   = D1AB9C
-_mktime.yday              = D1B410
-_time                     = D1ACA0
-_rand                     = D1AD1E
-_srand                    = D1AD2B
-.missingappvar            = D1B434
-.libloadname              = D1B439
+_mktime                   = D1AB76
+_mktime.yday              = D1B496
+_time                     = D1AC7A
+_rand                     = D1ACF8
+_srand                    = D1AD05
+.missingappvar            = D1B4BA
+.libloadname              = D1B4BF
 .libloadnamelen           = 000007
-.webaddress               = D1B441
+.webaddress               = D1B4C7
 __start                   = D1A91B
 ___exithl                 = D1A93B
 skip._exit                = D1A93B
@@ -73,12 +72,12 @@ skip.__Exit               = D1A93B
 skip._abort               = D1A93B
 _exit.sp                  = D1A93C
 _exit.flash_wait_states   = D1A946
-_shuffle_deck             = D1AD33
-_create_deck              = D1ADDC
-_print_card               = D1AF68
-_display_hand             = D1AF90
-_draw_cards_to_hand       = D1B00D
-_main                     = D1B0F9
+_shuffle_deck             = D1AD0D
+_create_deck              = D1ADB6
+_print_card               = D1AF45
+_display_hand             = D1AF6D
+_draw_cards_to_hand       = D1B008
+_main                     = D1B0F4
 lib.LibLoad               = D1A8DA
 _#gfx_Begin               = D1A8ED
 _#gfx_End                 = D1A8F1
