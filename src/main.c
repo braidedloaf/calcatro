@@ -25,6 +25,7 @@ typedef struct {
 typedef struct {
 	int hand_size;
 	int current_cards_cnt;
+	int amt_selected;
 	Card hand[8];
 } Hand;
 
@@ -56,9 +57,17 @@ Deck create_deck() {
 
 void print_card(Card c , int x, int y) {
 	gfx_SetTextXY(x, y);
+	char f_char = '<', l_char = '>';
+
+	if (c.is_selected) {
+		f_char = '>';
+		l_char = '<';
+	}
 	//gfx_PrintStringXY("Card: ", 10, 10);
-    gfx_PrintChar(c.rank);
+    if (c.is_selected || c.to_play) gfx_PrintChar(f_char);
+	gfx_PrintChar(c.rank);
     gfx_PrintChar(c.suit);
+    if (c.is_selected || c.to_play) gfx_PrintChar(l_char);
 	/*
 	char s[3];
 	sprintf(s, "%d", c.value);
@@ -71,9 +80,13 @@ void display_hand(Hand *p_hand) {
 	
 	for (int i = 0; i < p_hand->current_cards_cnt; i++) {
 		int offset_y = 0;
-		if (p_hand->hand[i].is_selected || p_hand->hand[i].to_play)
-			offset_y -= 20;
-		print_card(p_hand->hand[i], 80 + (30 * i), offset_y + 200);
+		int offset_x = 80;
+		if (p_hand->hand[i].is_selected || p_hand->hand[i].to_play) {
+			offset_y -= 16;
+			offset_x -= 8;
+		}
+			
+		print_card(p_hand->hand[i], offset_x + (32 * i), offset_y + 200);
 	}
 	
 }
@@ -101,7 +114,7 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 int main(void) {
 	srand(time(NULL));
 
-	kb_key_t key, prev_key = 0;
+	kb_key_t arrow_key, arrow_prev_key, select_key, select_prev_key = 0;
 	bool running = true;
 
 	gfx_Begin();
@@ -114,7 +127,7 @@ int main(void) {
 	Hand hand;
 	memset(&hand, 0, sizeof(Hand)); // set all values to 0 bit
 	hand.hand_size = 8;
-	hand.current_cards_cnt = 0;
+	hand.amt_selected = 0;
 	for (int i = 0; i < hand.hand_size; i++) { //set cards value to be -1, to signify empty slot
 		hand.hand[i].value = -1;
 	}
@@ -131,23 +144,36 @@ int main(void) {
 			draw_cards_to_hand(&hand, hand.hand_size - hand.current_cards_cnt, &deck, &next_card);
 		}
 		
+		select_key = kb_Data[1];
 		hand.hand[card_idx].is_selected = true;
-		if (kb_Data[1] & kb_2nd) hand.hand[card_idx].to_play = !hand.hand[card_idx].to_play;
+		if ((select_key & kb_2nd) && !(select_prev_key & kb_2nd)) {
+			if (!hand.hand[card_idx].to_play && hand.amt_selected < 5) {
+				// If not selected yet, and we have room, allow selection
+				hand.hand[card_idx].to_play = true;
+				hand.amt_selected++;
+			} else if (hand.hand[card_idx].to_play) {
+				// Always allow deselection
+				hand.hand[card_idx].to_play = false;
+				if (hand.amt_selected > 0)
+					hand.amt_selected--;
+			}
+		}
+		select_prev_key = select_key;
 
 			
 		//use arrow keys to change card to select
-		key = kb_Data[7];
-		if (key & kb_Left && !(prev_key & kb_Left)) {
+		arrow_key = kb_Data[7];
+		if (arrow_key & kb_Left && !(arrow_prev_key & kb_Left)) {
 			if (card_idx > 0) {
 				hand.hand[card_idx--].is_selected = false;
 			}
 		}
-		if (key & kb_Right && !(prev_key & kb_Right)) {
+		if (arrow_key & kb_Right && !(arrow_prev_key & kb_Right)) {
 			if (card_idx < hand.hand_size-1) // 52 -> deck size | 8 -> hand_size
 				hand.hand[card_idx++].is_selected = false;
 		}
 
-		prev_key = key;
+		arrow_prev_key = arrow_key;
 
 		//print_card(hand.hand[card_idx], 10, 10);
 		display_hand(&hand);
