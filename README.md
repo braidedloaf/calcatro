@@ -17,7 +17,7 @@ This repository contains the source code and compiled binary for a Ti 84+ CE ado
 
 If you do not already have it, download the TI Connect CE software from the official TI website:
 
-- https://education.ti.com/en/products/computer-software/ti-connect-ce-software
+- [TI Connect CE](https://education.ti.com/en/products/computer-software/ti-connect-ce-sw)
 
 Install it according to the instructions for your operating system (Windows/macOS).
 
