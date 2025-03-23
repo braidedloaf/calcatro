@@ -178,7 +178,7 @@ int main(void) {
 		select_prev_key = select_key;
 
 		discard_key = kb_Data[3];
-		if (discard_key & kb_GraphVar && !(discard_prev_key & kb_GraphVar)) {
+		if (discard_key & kb_GraphVar && !(discard_prev_key & kb_GraphVar) && discards_left > 0 && hand.amt_selected > 0) {
 
 			for (int i = 0; i < hand.hand_size; i++) {
 				if (hand.hand[i].to_play) {
@@ -189,6 +189,7 @@ int main(void) {
 				}
 			}
 			hand.amt_selected = 0;
+			discards_left--;
 		}
 		discard_prev_key = discard_key;
 		//use arrow keys to change card to select

@@ -620,16 +620,28 @@ BB6_14:
 	section	.text,"ax",@progbits
 	public	_main
 _main:
-	ld	hl, -473
+	ld	hl, -476
 	call	__frameset
 	ld	bc, -441
 	lea	iy, ix
 	add	iy, bc
-	ld	bc, -450
+	ld	bc, -447
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), iy
 	ld	hl, 0
+	ld	de, 11
+	push	ix
+	ld	bc, -450
+	add	ix, bc
+	ld	(ix), de
+	pop	ix
+	ld	de, 3
+	push	ix
+	ld	bc, -460
+	add	ix, bc
+	ld	(ix), de
+	pop	ix
 	lea	de, iy + 68
 	push	ix
 	ld	bc, -453
@@ -679,7 +691,7 @@ _main:
 	add	hl, bc
 	ld	iy, (hl)
 	lea	hl, iy + 3
-	ld	bc, -450
+	ld	bc, -447
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
@@ -690,34 +702,47 @@ _main:
 	ld	bc, 61
 	ldir
 	ld	hl, 8
+	ld	bc, -447
+	lea	iy, ix
+	add	iy, bc
+	ld	iy, (iy)
 	ld	(iy + 3), hl
-	ld	iy, 11
 	ld	de, 67
 BB7_1:
-	lea	hl, iy
+	ld	bc, -450
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
 	or	a, a
 	sbc	hl, de
 	jr	z, BB7_3
-	lea	bc, iy
-	lea	de, iy
+	ld	bc, -450
+	lea	hl, ix
+	add	hl, bc
+	ld	de, (hl)
+	push	de
+	pop	bc
 	ld	(ix - 3), de
 	ld	de, -444
-	lea	hl, ix
-	add	hl, de
-	ld	iy, (hl)
+	lea	iy, ix
+	add	iy, de
+	ld	iy, (iy)
 	add	iy, bc
 	scf
 	sbc	hl, hl
 	ld	(iy), hl
 	ld	de, (ix - 3)
-	push	de
-	pop	iy
+	ex	de, hl
 	ld	de, 67
 	ld	bc, 7
+	add	hl, bc
+	ld	bc, -450
+	lea	iy, ix
 	add	iy, bc
+	ld	(iy), hl
 	jr	BB7_1
 BB7_3:
-	ld	bc, -450
+	ld	bc, -447
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -729,7 +754,7 @@ BB7_3:
 	add	iy, bc
 	ld	iy, (iy)
 	lea	de, iy + 15
-	ld	bc, -470
+	ld	bc, -476
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
@@ -749,20 +774,20 @@ BB7_4:
 	ld	a, l
 	and	a, 1
 	bit	0, a
-	jp	z, BB7_37
+	jp	z, BB7_39
 	ld	(ix - 3), de
 	push	ix
-	ld	de, -467
+	ld	de, -469
 	add	ix, de
 	ld	(ix), iy
 	pop	ix
-	ld	de, -461
+	dec	de
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), c
 	ld	de, (ix - 3)
 	push	ix
-	ld	bc, -447
+	ld	bc, -450
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
@@ -777,7 +802,7 @@ BB7_4:
 	call	_gfx_FillScreen
 	pop	hl
 	call	_kb_Scan
-	ld	bc, -450
+	ld	bc, -447
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -793,7 +818,7 @@ BB7_4:
 	pop	hl
 	or	a, a
 	sbc	hl, de
-	ld	bc, -450
+	ld	bc, -447
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
@@ -820,7 +845,7 @@ BB7_7:
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
-	ld	bc, -447
+	ld	bc, -450
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -841,7 +866,7 @@ BB7_7:
 	pop	ix
 	ld	(iy + 14), 1
 	ld	de, (ix - 3)
-	ld	bc, -460
+	ld	bc, -463
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
@@ -855,7 +880,7 @@ BB7_7:
 	ld	a, l
 	bit	5, a
 	jp	nz, BB7_15
-	ld	de, -447
+	ld	de, -450
 	lea	hl, ix
 	add	hl, de
 	ld	hl, (hl)
@@ -875,7 +900,7 @@ BB7_7:
 	ld	(ix), iy
 	pop	ix
 	ld	a, (iy + 15)
-	ld	bc, -450
+	ld	bc, -447
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
@@ -915,7 +940,7 @@ BB7_12:
 	jp	m, BB7_15
 BB7_14:
 	add	hl, de
-	ld	bc, -450
+	ld	bc, -447
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
@@ -929,69 +954,83 @@ BB7_15:
 	ld	l, e
 	ld	h, d
 	pop	de
-	ld	bc, -464
-	lea	iy, ix
-	add	iy, bc
-	ld	(iy), hl
 	ld	a, l
 	bit	7, a
+	ld	bc, -466
+	lea	iy, ix
+	push	af
+	add	iy, bc
+	pop	af
+	ld	(iy), hl
+	jp	z, BB7_27
+	ld	bc, -469
+	lea	hl, ix
+	add	hl, bc
+	ld	de, (hl)
+	ld	a, e
+	bit	7, a
+	jp	nz, BB7_27
 	ld	bc, -447
 	lea	hl, ix
-	push	af
 	add	hl, bc
-	pop	af
-	ld	de, (hl)
-	jp	z, BB7_25
-	ld	bc, -467
+	ld	iy, (hl)
+	ld	de, (iy + 9)
+	ld	bc, -460
+	lea	iy, ix
+	add	iy, bc
+	ld	hl, (iy)
+	ld	bc, 1
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB7_27
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB7_27
+	ld	de, -447
 	lea	hl, ix
-	add	hl, bc
-	ld	hl, (hl)
-	ld	a, l
-	bit	7, a
-	jr	nz, BB7_25
-	ld	bc, -450
-	lea	hl, ix
-	add	hl, bc
+	add	hl, de
 	ld	iy, (hl)
 	ld	de, (iy + 3)
 	ld	iy, (iy + 6)
 	push	de
 	pop	hl
-	ld	bc, 1
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	p, BB7_19
+	jp	p, BB7_21
 	ld	de, 0
-BB7_19:
-	ld	bc, -470
+BB7_21:
+	ld	bc, -476
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	lea	bc, iy
 	push	hl
 	pop	iy
-BB7_20:
+BB7_22:
 	push	de
 	pop	hl
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB7_24
+	jr	z, BB7_26
 	bit	0, (iy)
-	jr	z, BB7_23
+	jr	z, BB7_25
 	scf
 	sbc	hl, hl
 	ld	(iy - 4), hl
 	ld	(iy), 0
 	ld	(iy - 1), 0
 	dec	bc
-BB7_23:
+BB7_25:
 	lea	iy, iy + 7
 	dec	de
-	jr	BB7_20
-BB7_24:
-	ld	de, -450
+	jr	BB7_22
+BB7_26:
+	ld	de, -447
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
@@ -999,29 +1038,33 @@ BB7_24:
 	or	a, a
 	sbc	hl, hl
 	ld	(iy + 9), hl
-	ld	bc, -447
+	ld	bc, -460
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	dec	hl
+	lea	iy, ix
+	add	iy, bc
+	ld	(iy), hl
+BB7_27:
+	ld	bc, -450
 	lea	hl, ix
 	add	hl, bc
 	ld	de, (hl)
-BB7_25:
 	ld	hl, -720866
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
 	ld	a, c
 	bit	1, a
+	jr	z, BB7_32
 	ld	(ix - 3), bc
-	ld	bc, -461
+	ld	bc, -470
 	lea	hl, ix
-	push	af
 	add	hl, bc
-	pop	af
-	ld	l, (hl)
+	bit	1, (hl)
 	ld	bc, (ix - 3)
-	jr	z, BB7_30
-	bit	1, l
-	jr	nz, BB7_30
-	ld	a, l
+	jr	nz, BB7_32
 	push	de
 	pop	hl
 	push	de
@@ -1030,7 +1073,7 @@ BB7_25:
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	m, BB7_29
+	jp	m, BB7_31
 	dec	iy
 	lea	de, iy
 	ld	(ix - 3), bc
@@ -1039,40 +1082,40 @@ BB7_25:
 	add	hl, bc
 	ld	iy, (hl)
 	ld	(iy + 14), 0
-	ld	l, a
 	ld	bc, (ix - 3)
-	jr	BB7_30
-BB7_29:
+	jr	BB7_32
+BB7_31:
 	lea	de, iy
-	ld	l, a
-BB7_30:
+BB7_32:
 	ld	a, c
 	bit	2, a
 	ld	(ix - 3), bc
-	ld	bc, -447
+	ld	bc, -450
+	lea	hl, ix
+	push	af
+	add	hl, bc
+	pop	af
+	ld	(hl), de
+	ld	bc, (ix - 3)
+	ld	de, -469
 	lea	iy, ix
 	push	af
-	add	iy, bc
+	add	iy, de
 	pop	af
-	ld	(iy), de
-	ld	bc, (ix - 3)
-	push	ix
-	ld	de, -467
-	push	af
-	add	ix, de
-	pop	af
-	ld	(ix), bc
-	pop	ix
-	jr	z, BB7_34
-	bit	2, l
-	jr	nz, BB7_34
-	ld	bc, -450
+	ld	(iy), bc
+	jr	z, BB7_36
+	ld	bc, -470
+	lea	hl, ix
+	add	hl, bc
+	bit	2, (hl)
+	jr	nz, BB7_36
+	ld	bc, -447
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
 	ld	de, (iy + 3)
 	ld	(ix - 3), de
-	ld	de, -447
+	ld	de, -450
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
@@ -1083,7 +1126,7 @@ BB7_30:
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	p, BB7_34
+	jp	p, BB7_36
 	push	bc
 	pop	de
 	inc	de
@@ -1101,11 +1144,11 @@ BB7_30:
 	add	iy, bc
 	ld	(iy + 14), 0
 	ld	de, (ix - 3)
-	ld	bc, -447
+	ld	bc, -450
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
-BB7_34:
+BB7_36:
 	ld	bc, -444
 	lea	hl, ix
 	add	hl, bc
@@ -1113,9 +1156,12 @@ BB7_34:
 	push	hl
 	call	_display_hand
 	pop	hl
-	ld	hl, 3
+	ld	bc, -460
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
 	push	hl
-	inc	hl
+	ld	hl, 4
 	push	hl
 	or	a, a
 	sbc	hl, hl
@@ -1136,13 +1182,13 @@ BB7_34:
 	pop	de
 	ld	a, l
 	bit	6, a
-	jr	z, BB7_36
+	jr	z, BB7_38
 	xor	a, a
 	ld	bc, -454
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), a
-BB7_36:
+BB7_38:
 	or	a, a
 	sbc	hl, hl
 	push	hl
@@ -1150,7 +1196,7 @@ BB7_36:
 	push	bc
 	pop	de
 	ld	(ix - 3), bc
-	ld	bc, -460
+	ld	bc, -463
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -1160,24 +1206,24 @@ BB7_36:
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), de
-	ld	de, -464
+	ld	de, -466
 	lea	iy, ix
 	add	iy, de
 	ld	hl, (iy)
 	ld	bc, (ix - 3)
 	ld	c, l
 	ld	b, h
-	ld	de, -460
+	ld	de, -463
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
 	call	_gfx_SwapDraw
-	ld	de, -460
+	ld	de, -463
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 	push	ix
-	ld	de, -467
+	ld	de, -469
 	add	ix, de
 	ld	hl, (ix)
 	pop	ix
@@ -1188,13 +1234,13 @@ BB7_36:
 	ld	l, (hl)
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -447
+	ld	bc, -450
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
 	ld	bc, (ix - 3)
 	jp	BB7_4
-BB7_37:
+BB7_39:
 	call	_gfx_End
 	or	a, a
 	sbc	hl, hl
@@ -1226,9 +1272,9 @@ _.str.1:
 	extern	_gfx_PrintInt
 	extern	__idivu
 	extern	__setflag
-	extern	_gfx_SwapDraw
 	extern	_gfx_FillScreen
 	extern	__Unwind_SjLj_Unregister
+	extern	_gfx_SwapDraw
 	extern	__irems
 	extern	__imulu
 	extern	_gfx_SetColor
