@@ -1,5 +1,4 @@
-# TI-84 Plus CE Game
-
+# Calcatro
 This repository contains the source code and compiled binary for a game developed for the TI-84 Plus CE graphing calculator using the [CEdev](https://ce-programming.github.io/toolchain/) toolchain. The game is written in C and compiled to run natively on the calculator.
 
 ---
