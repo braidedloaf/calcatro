@@ -1,5 +1,5 @@
 # Calcatro
-This repository contains the source code and compiled binary for a game developed for the TI-84 Plus CE graphing calculator using the [CEdev](https://ce-programming.github.io/toolchain/) toolchain. The game is written in C and compiled to run natively on the calculator.
+This repository contains the source code and compiled binary for a Ti 84+ CE adopted version of [Balatro](https://play.balatro.com/) game developed for the TI-84 Plus CE graphing calculator using the [CEdev](https://ce-programming.github.io/toolchain/) toolchain. The game is written in C and compiled to run natively on the calculator.
 
 ---
 
@@ -33,22 +33,18 @@ Install it according to the instructions for your operating system (Windows/macO
 
 ### Step 3: Transfer the Game
 
-1. Download or compile the `.8xp` (or `.8xk`, if applicable) program file from this repository. The compiled game is typically located in the `bin/` or `build/` directory.
+1. Download or compile the `.8xp` program file from this repository. The compiled game is  located in the `bin/` directory.
 2. In TI Connect CE, click on the **Calculator Explorer** tab (the icon looks like a calculator).
 3. Drag the `.8xp` file into the Explorer window, or use the **Actions > Send to Calculators** option.
-4. Choose the archive location (`RAM` or `Archive`). Unless you know otherwise, use **RAM**.
+4. Choose the archive location (`RAM` or `Archive`). Use `Archive` to prevent loss of program when `RAM` is cleared.
 5. Click **Send**. Wait until the file transfer completes.
 
 ---
 
-## Running the Game on the Calculator
+## Running the Game on the Calculator Using [Cesium](https://github.com/mateoconlechuga/cesium/)
 
-1. On the calculator, press the `PRGM` button.
-2. Select the game program from the list.
-3. Press `ENTER` to paste it to the home screen.
-4. Press `ENTER` again to execute the program.
-
-If the game was archived, you must first unarchive it using `2nd` + `+` → `Mem` → `2:Mem Mgmt/Del...` → `2:Prgm` → select the game → press `ENTER` to unarchive.
+1. Use Cesium to run the game.
+2. Do not forget to archive the game
 
 ---
 
@@ -56,7 +52,7 @@ If the game was archived, you must first unarchive it using `2nd` + `+` → `Mem
 
 If you wish to build the game from source:
 
-1. Set up [CEdev](https://ce-programming.github.io/toolchain/download.html) on a Linux/macOS system.
+1. Set up [CEdev](https://ce-programming.github.io/toolchain/).
 2. Clone this repository.
 3. Run `make` in the project root to build the binary.
 4. The output `.8xp` file will be located in the `bin/` directory.
