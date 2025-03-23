@@ -62,9 +62,3 @@ If you wish to build the game from source:
 ## License
 
 [MIT](LICENSE)
-
----
-
-## Disclaimer
-
-This software is not affiliated with or endorsed by Texas Instruments. Use at your own risk. Ensure you understand how to reset your calculator in the event of crashes or instability.
