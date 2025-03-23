@@ -98,7 +98,6 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 	return;
 }
 
-
 int main(void) {
 	srand(time(NULL));
 
@@ -133,8 +132,7 @@ int main(void) {
 		}
 		
 		hand.hand[card_idx].is_selected = true;
-		key = kb_Data[1];
-		if (key & kb_2nd) hand.hand[card_idx].to_play = !hand.hand[card_idx].to_play;
+		if (kb_Data[1] & kb_2nd) hand.hand[card_idx].to_play = !hand.hand[card_idx].to_play;
 
 			
 		//use arrow keys to change card to select
