@@ -77,7 +77,6 @@ void print_card(Card c , int x, int y) {
 
 void display_hand(Hand *p_hand) {
 	
-	
 	for (int i = 0; i < p_hand->current_cards_cnt; i++) {
 		int offset_y = 0;
 		int offset_x = 80;
@@ -114,7 +113,7 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 int main(void) {
 	srand(time(NULL));
 
-	kb_key_t arrow_key, arrow_prev_key, select_key, select_prev_key = 0;
+	kb_key_t arrow_key, arrow_prev_key, select_key, select_prev_key, discard_key, discard_prev_key = 0;
 	bool running = true;
 
 	gfx_Begin();
@@ -160,7 +159,20 @@ int main(void) {
 		}
 		select_prev_key = select_key;
 
-			
+		discard_key = kb_Data[3];
+		if (discard_key & kb_GraphVar && !(discard_prev_key & kb_GraphVar)) {
+
+			for (int i = 0; i < hand.hand_size; i++) {
+				if (hand.hand[i].to_play) {
+					hand.hand[i].value = -1;
+					hand.hand[i].to_play = false;
+					hand.hand[i].is_selected = false;
+					hand.current_cards_cnt--;
+				}
+			}
+			hand.amt_selected = 0;
+		}
+		discard_prev_key = discard_key;
 		//use arrow keys to change card to select
 		arrow_key = kb_Data[7];
 		if (arrow_key & kb_Left && !(arrow_prev_key & kb_Left)) {

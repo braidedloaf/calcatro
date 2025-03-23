@@ -7,9 +7,9 @@ Section          Base   Top    High   Length
 .init.reruncheck D1A91B D1A91B             0h
 .init            D1A91B D1A93B            20h
 .fini            D1A93B D1A96F            34h
-.text            D1A96F D1B568           BF9h
-.data            D1B568 D1B578            10h
-.rodata          D1B578 D1B5BE            46h
+.text            D1A96F D1B660           CF1h
+.data            D1B660 D1B670            10h
+.rodata          D1B670 D1B6B6            46h
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
@@ -52,18 +52,18 @@ _os_DisableHomeTextBuffer = D1AAD9
 _os_EnableHomeTextBuffer  = D1AAEB
 _random                   = D1AAFD
 __setstate                = D1AB5B
-__state                   = D1B568
+__state                   = D1B660
 _boot_GetDate             = 0005A8
 _boot_GetTime             = 0005B0
 _mktime                   = D1AB6B
-_mktime.yday              = D1B578
+_mktime.yday              = D1B670
 _time                     = D1AC6F
 _rand                     = D1ACED
 _srand                    = D1ACFA
-.missingappvar            = D1B59C
-.libloadname              = D1B5A1
+.missingappvar            = D1B694
+.libloadname              = D1B699
 .libloadnamelen           = 000007
-.webaddress               = D1B5A9
+.webaddress               = D1B6A1
 __start                   = D1A91B
 ___exithl                 = D1A93B
 skip._exit                = D1A93B
