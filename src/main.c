@@ -1,4 +1,4 @@
-	#include <tice.h>
+#include <tice.h>
 #include <graphx.h>
 #include <keypadc.h>
 #include <stdio.h>
@@ -7,7 +7,6 @@
 #include <string.h>
 
 //screen is 320, 240
-
 
 typedef struct {
 	char rank;
@@ -28,6 +27,39 @@ typedef struct {
 	int amt_selected;
 	Card hand[8];
 } Hand;
+
+typedef enum {
+    HAND_HIGH_CARD = 0,
+    HAND_ONE_PAIR,
+    HAND_TWO_PAIR,
+    HAND_THREE_KIND,
+    HAND_STRAIGHT,
+    HAND_FLUSH,
+    HAND_FULL_HOUSE,
+    HAND_FOUR_KIND,
+    HAND_STRAIGHT_FLUSH,
+    HAND_ROYAL_FLUSH,
+    HAND_COUNT
+} HandType;
+
+typedef struct {
+    HandType type;
+    int chips;
+    int mult;
+} HandValue;
+
+HandValue hand_table[HAND_COUNT] = {
+    { HAND_HIGH_CARD,      5,   1 },
+    { HAND_ONE_PAIR,       10,  2 },
+    { HAND_TWO_PAIR,       20,  2 },
+    { HAND_THREE_KIND,     30,  3 },
+    { HAND_STRAIGHT,       30,  4 },
+    { HAND_FLUSH,          35,  4 },
+    { HAND_FULL_HOUSE,     40,  4 },
+    { HAND_FOUR_KIND,      60,  7 },
+    { HAND_STRAIGHT_FLUSH, 100, 8 },
+    { HAND_ROYAL_FLUSH,    100, 8 }
+};
 
 int randomIntRange(int min, int max) {
 	return min + (rand() % (max-min+1));
@@ -126,10 +158,14 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 	return;
 }
 
+HandValue get_hand_type(Hand *p_hand) {
+
+}
+
 int main(void) {
 	srand(time(NULL));
 
-	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0;
+	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
 	bool running = true;
 
 	int score = 0, target_score = 0, hands_left = 4, discards_left = 3;
@@ -161,6 +197,11 @@ int main(void) {
 			draw_cards_to_hand(&hand, hand.hand_size - hand.current_cards_cnt, &deck, &next_card);
 		}
 		
+		
+		Card playing_hand[hand.amt_selected]; 
+		int playing_hand_idx = 0;
+
+
 		select_key = kb_Data[1];
 		hand.hand[card_idx].is_selected = true;
 		if ((select_key & kb_2nd) && !(select_prev_key & kb_2nd)) {
@@ -168,14 +209,21 @@ int main(void) {
 				// If not selected yet, and we have room, allow selection
 				hand.hand[card_idx].to_play = true;
 				hand.amt_selected++;
+				playing_hand[playing_hand_idx++] = hand.hand[card_idx];
 			} else if (hand.hand[card_idx].to_play) {
 				// Always allow deselection
 				hand.hand[card_idx].to_play = false;
 				if (hand.amt_selected > 0)
 					hand.amt_selected--;
+				if (playing_hand_idx > 0)
+					playing_hand[playing_hand_idx--] = hand.hand[card_idx];
+
+
 			}
 		}
 		select_prev_key = select_key;
+
+		HandValue hand_type = get_hand_type(&playing_hand);
 
 		discard_key = kb_Data[3];
 		if (discard_key & kb_GraphVar && !(discard_prev_key & kb_GraphVar) && discards_left > 0 && hand.amt_selected > 0) {
@@ -192,6 +240,23 @@ int main(void) {
 			discards_left--;
 		}
 		discard_prev_key = discard_key;
+
+		play_key = kb_Data[2];
+		if (play_key & kb_Alpha && !(play_prev_key & kb_Alpha) && hands_left > 0 && hand.amt_selected > 0) {
+			for (int i = 0; i < hand.hand_size; i++) {
+				if (hand.hand[i].to_play) {
+					hand.hand[i].value = -1;
+					hand.hand[i].to_play = false;
+					hand.hand[i].is_selected = false;
+					hand.current_cards_cnt--;
+				}
+			}
+			hand.amt_selected = 0;
+			hands_left--;
+
+		}
+		play_prev_key = play_key;
+
 		//use arrow keys to change card to select
 		arrow_key = kb_Data[7];
 		if (arrow_key & kb_Left && !(arrow_prev_key & kb_Left)) {
