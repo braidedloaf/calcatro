@@ -618,6 +618,15 @@ BB6_14:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
+	public	_get_hand_type
+_get_hand_type:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
 	public	_main
 _main:
 	ld	hl, -490
@@ -705,11 +714,11 @@ _main:
 	ld	(iy + 3), hl
 	ld	iy, 11
 	ld	de, 67
-BB7_1:
+BB8_1:
 	lea	hl, iy
 	or	a, a
 	sbc	hl, de
-	jr	z, BB7_3
+	jr	z, BB8_3
 	lea	bc, iy
 	lea	de, iy
 	ld	(ix - 3), de
@@ -727,8 +736,8 @@ BB7_1:
 	ld	de, 67
 	ld	bc, 7
 	add	iy, bc
-	jr	BB7_1
-BB7_3:
+	jr	BB8_1
+BB8_3:
 	ld	bc, -447
 	lea	hl, ix
 	add	hl, bc
@@ -762,11 +771,11 @@ BB7_3:
 	xor	a, a
 	ld	c, a
 	inc	l
-BB7_4:
+BB8_4:
 	ld	a, l
 	and	a, 1
 	bit	0, a
-	jp	z, BB7_53
+	jp	z, BB8_53
 	ld	(ix - 3), de
 	push	ix
 	ld	de, -481
@@ -805,7 +814,7 @@ BB7_4:
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	p, BB7_7
+	jp	p, BB8_7
 	push	bc
 	pop	hl
 	or	a, a
@@ -832,7 +841,7 @@ BB7_4:
 	pop	hl
 	pop	hl
 	pop	hl
-BB7_7:
+BB8_7:
 	ld	hl, 0
 	add	hl, sp
 	ld	bc, -472
@@ -871,14 +880,14 @@ BB7_7:
 	ld	(iy), de
 	ld	a, e
 	bit	5, a
-	jp	z, BB7_15
+	jp	z, BB8_15
 	ld	bc, -460
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	a, l
 	bit	5, a
-	jp	nz, BB7_15
+	jp	nz, BB8_15
 	ld	de, -450
 	lea	hl, ix
 	add	hl, de
@@ -906,24 +915,24 @@ BB7_7:
 	ld	de, (iy + 9)
 	bit	0, a
 	ld	bc, (ix - 3)
-	jr	nz, BB7_12
+	jr	nz, BB8_12
 	push	de
 	pop	hl
 	ld	bc, 5
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	p, BB7_12
+	jp	p, BB8_12
 	ld	bc, -460
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
 	ld	(iy + 15), 1
 	ld	hl, 1
-	jr	BB7_14
-BB7_12:
+	jr	BB8_14
+BB8_12:
 	bit	0, a
-	jr	z, BB7_15
+	jr	z, BB8_15
 	ld	bc, -460
 	lea	hl, ix
 	add	hl, bc
@@ -936,15 +945,15 @@ BB7_12:
 	sbc	hl, bc
 	call	pe, __setflag
 	ld	hl, -1
-	jp	m, BB7_15
-BB7_14:
+	jp	m, BB8_15
+BB8_14:
 	add	hl, de
 	ld	bc, -447
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
 	ld	(iy + 9), hl
-BB7_15:
+BB8_15:
 	ld	hl, -720874
 	push	de
 	ld	e, (hl)
@@ -961,14 +970,14 @@ BB7_15:
 	add	iy, bc
 	pop	af
 	ld	(iy), hl
-	jp	z, BB7_27
+	jp	z, BB8_27
 	ld	bc, -457
 	lea	hl, ix
 	add	hl, bc
 	ld	de, (hl)
 	ld	a, e
 	bit	7, a
-	jp	nz, BB7_27
+	jp	nz, BB8_27
 	ld	bc, -447
 	lea	hl, ix
 	add	hl, bc
@@ -982,12 +991,12 @@ BB7_15:
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	m, BB7_27
+	jp	m, BB8_27
 	ex	de, hl
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	m, BB7_27
+	jp	m, BB8_27
 	ld	de, -447
 	lea	hl, ix
 	add	hl, de
@@ -999,9 +1008,9 @@ BB7_15:
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	p, BB7_21
+	jp	p, BB8_21
 	ld	de, 0
-BB7_21:
+BB8_21:
 	ld	bc, -487
 	lea	hl, ix
 	add	hl, bc
@@ -1009,26 +1018,26 @@ BB7_21:
 	lea	bc, iy
 	push	hl
 	pop	iy
-BB7_22:
+BB8_22:
 	push	de
 	pop	hl
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB7_26
+	jr	z, BB8_26
 	bit	0, (iy)
-	jr	z, BB7_25
+	jr	z, BB8_25
 	scf
 	sbc	hl, hl
 	ld	(iy - 4), hl
 	ld	(iy), 0
 	ld	(iy - 1), 0
 	dec	bc
-BB7_25:
+BB8_25:
 	lea	iy, iy + 7
 	dec	de
-	jr	BB7_22
-BB7_26:
+	jr	BB8_22
+BB8_26:
 	ld	de, -447
 	lea	hl, ix
 	add	hl, de
@@ -1045,7 +1054,7 @@ BB7_26:
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), hl
-BB7_27:
+BB8_27:
 	ld	bc, -481
 	lea	hl, ix
 	add	hl, bc
@@ -1065,10 +1074,10 @@ BB7_27:
 	add	iy, bc
 	pop	af
 	ld	(iy), hl
-	jp	z, BB7_39
+	jp	z, BB8_39
 	ld	a, e
 	bit	7, a
-	jp	nz, BB7_39
+	jp	nz, BB8_39
 	ld	bc, -447
 	lea	hl, ix
 	add	hl, bc
@@ -1082,12 +1091,12 @@ BB7_27:
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	m, BB7_39
+	jp	m, BB8_39
 	ex	de, hl
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	m, BB7_39
+	jp	m, BB8_39
 	ld	de, -447
 	lea	hl, ix
 	add	hl, de
@@ -1099,9 +1108,9 @@ BB7_27:
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	p, BB7_33
+	jp	p, BB8_33
 	ld	de, 0
-BB7_33:
+BB8_33:
 	ld	bc, -487
 	lea	hl, ix
 	add	hl, bc
@@ -1109,26 +1118,26 @@ BB7_33:
 	lea	bc, iy
 	push	hl
 	pop	iy
-BB7_34:
+BB8_34:
 	push	de
 	pop	hl
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB7_38
+	jr	z, BB8_38
 	bit	0, (iy)
-	jr	z, BB7_37
+	jr	z, BB8_37
 	scf
 	sbc	hl, hl
 	ld	(iy - 4), hl
 	ld	(iy), 0
 	ld	(iy - 1), 0
 	dec	bc
-BB7_37:
+BB8_37:
 	lea	iy, iy + 7
 	dec	de
-	jr	BB7_34
-BB7_38:
+	jr	BB8_34
+BB8_38:
 	ld	de, -447
 	lea	hl, ix
 	add	hl, de
@@ -1145,7 +1154,7 @@ BB7_38:
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), hl
-BB7_39:
+BB8_39:
 	ld	bc, -450
 	lea	hl, ix
 	add	hl, bc
@@ -1156,14 +1165,14 @@ BB7_39:
 	ld	b, (hl)
 	ld	a, c
 	bit	1, a
-	jr	nz, BB7_41
+	jr	nz, BB8_41
 	ld	(ix - 3), bc
 	ld	bc, -469
 	lea	hl, ix
 	add	hl, bc
 	ld	l, (hl)
-	jr	BB7_44
-BB7_41:
+	jr	BB8_44
+BB8_41:
 	ld	(ix - 3), bc
 	ld	bc, -469
 	lea	hl, ix
@@ -1171,7 +1180,7 @@ BB7_41:
 	ld	l, (hl)
 	bit	1, l
 	ld	bc, (ix - 3)
-	jr	nz, BB7_45
+	jr	nz, BB8_45
 	push	de
 	pop	hl
 	push	de
@@ -1180,7 +1189,7 @@ BB7_41:
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	m, BB7_52
+	jp	m, BB8_52
 	dec	iy
 	lea	de, iy
 	ld	(ix - 3), bc
@@ -1193,9 +1202,9 @@ BB7_41:
 	lea	iy, ix
 	add	iy, bc
 	ld	l, (iy)
-BB7_44:
+BB8_44:
 	ld	bc, (ix - 3)
-BB7_45:
+BB8_45:
 	ld	a, c
 	bit	2, a
 	ld	(ix - 3), bc
@@ -1213,9 +1222,9 @@ BB7_45:
 	pop	af
 	ld	(ix), bc
 	pop	ix
-	jr	z, BB7_49
+	jr	z, BB8_49
 	bit	2, l
-	jr	nz, BB7_49
+	jr	nz, BB8_49
 	ld	bc, -447
 	lea	hl, ix
 	add	hl, bc
@@ -1233,7 +1242,7 @@ BB7_45:
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	p, BB7_49
+	jp	p, BB8_49
 	push	bc
 	pop	de
 	inc	de
@@ -1255,7 +1264,7 @@ BB7_45:
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
-BB7_49:
+BB8_49:
 	ld	bc, -444
 	lea	hl, ix
 	add	hl, bc
@@ -1292,13 +1301,13 @@ BB7_49:
 	pop	de
 	ld	a, l
 	bit	6, a
-	jr	z, BB7_51
+	jr	z, BB8_51
 	xor	a, a
 	ld	bc, -454
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), a
-BB7_51:
+BB8_51:
 	or	a, a
 	sbc	hl, hl
 	push	hl
@@ -1369,15 +1378,15 @@ BB7_51:
 	ld	de, (ix)
 	pop	ix
 	ld	bc, (ix - 3)
-	jp	BB7_4
-BB7_52:
+	jp	BB8_4
+BB8_52:
 	ld	de, -469
 	lea	hl, ix
 	add	hl, de
 	ld	l, (hl)
 	lea	de, iy
-	jp	BB7_45
-BB7_53:
+	jp	BB8_45
+BB8_53:
 	call	_gfx_End
 	or	a, a
 	sbc	hl, hl
@@ -1385,16 +1394,6 @@ BB7_53:
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
-
-	section	.rodata,"a",@progbits
-	private	_.str
-_.str:
-	db	"H: ", 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.1
-_.str.1:
-	db	" D: ", 0
 
 	section	.data,"aw",@progbits
 	public	_hand_table
@@ -1430,6 +1429,16 @@ _hand_table:
 	dl	100
 	dl	8
 
+	section	.rodata,"a",@progbits
+	private	_.str
+_.str:
+	db	"H: ", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.1
+_.str.1:
+	db	" D: ", 0
+
 	ident	"clang version 15.0.0 (https://github.com/CE-Programming/llvm-project 23b78267b5d376b232475d0805a937e54b61e0d0)"
 	extern	__Unwind_SjLj_Register
 	extern	_gfx_PrintChar
@@ -1442,10 +1451,10 @@ _hand_table:
 	extern	__ishru
 	extern	_gfx_PrintInt
 	extern	__idivu
+	extern	_gfx_SwapDraw
 	extern	__setflag
 	extern	_gfx_FillScreen
 	extern	__Unwind_SjLj_Unregister
-	extern	_gfx_SwapDraw
 	extern	__irems
 	extern	__imulu
 	extern	_gfx_SetColor
