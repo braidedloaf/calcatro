@@ -7,9 +7,9 @@ Section          Base   Top    High   Length
 .init.reruncheck D1A923 D1A923             0h
 .init            D1A923 D1A943            20h
 .fini            D1A943 D1A977            34h
-.text            D1A977 D1C28E          1917h
-.data            D1C28E D1C2F8            6Ah
-.rodata          D1C2F8 D1C3ED            F5h
+.text            D1A977 D1C31A          19A3h
+.data            D1C31A D1C384            6Ah
+.rodata          D1C384 D1C486           102h
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
@@ -53,18 +53,18 @@ _os_DisableHomeTextBuffer             = D1AAEC
 _os_EnableHomeTextBuffer              = D1AAFE
 _random                               = D1AB10
 __setstate                            = D1AB6E
-__state                               = D1C28E
+__state                               = D1C31A
 _boot_GetDate                         = 0005A8
 _boot_GetTime                         = 0005B0
 _mktime                               = D1AB7E
-_mktime.yday                          = D1C2F8
+_mktime.yday                          = D1C384
 _time                                 = D1AC82
 _rand                                 = D1AD00
 _srand                                = D1AD0D
-.missingappvar                        = D1C31C
-.libloadname                          = D1C321
+.missingappvar                        = D1C3A8
+.libloadname                          = D1C3AD
 .libloadnamelen                       = 000007
-.webaddress                           = D1C329
+.webaddress                           = D1C3B5
 __start                               = D1A923
 ___exithl                             = D1A943
 skip._exit                            = D1A943
@@ -75,29 +75,32 @@ _exit.flash_wait_states               = D1A94E
 _shuffle_deck                         = D1AD15
 _create_deck                          = D1ADBE
 _print_card                           = D1AF4D
-_print_hand_type                      = D1AFF8
-_display_game_stats                   = D1B03C
-_display_hand                         = D1B0F9
-_draw_cards_to_hand                   = D1B194
-_get_hand_type                        = D1B280
-_main                                 = D1BA42
-_hand_table                           = D1C29E
-_.str                                 = D1C33E
-_.str.1                               = D1C348
-_.str.2                               = D1C34D
-_.str.3                               = D1C356
-_.str.4                               = D1C366
-_.str.5                               = D1C36F
-_.str.6                               = D1C375
-_.str.7                               = D1C380
-_.str.8                               = D1C38F
-_.str.9                               = D1C39E
-_.str.10                              = D1C3AA
-_.str.11                              = D1C3AB
-_.str.12                              = D1C3AF
-___const.get_hand_type.straight_ranks = D1C3B4
-_.str.13                              = D1C3C1
-_switch.table.print_hand_type         = D1C3CF
+_print_hand_stats                     = D1AFF8
+_print_hand_type                      = D1B03A
+_display_game_stats                   = D1B0B2
+_display_hand                         = D1B16F
+_draw_cards_to_hand                   = D1B20A
+_get_hand_type                        = D1B2F6
+_main                                 = D1BACE
+_hand_table                           = D1C32A
+_.str                                 = D1C3CA
+_.str.1                               = D1C3CE
+_.str.2                               = D1C3D8
+_.str.3                               = D1C3DD
+_.str.4                               = D1C3E6
+_.str.5                               = D1C3F6
+_.str.6                               = D1C3FF
+_.str.7                               = D1C405
+_.str.8                               = D1C410
+_.str.9                               = D1C41F
+_.str.10                              = D1C42E
+_.str.11                              = D1C43A
+_.str.12                              = D1C43B
+_.str.13                              = D1C43F
+___const.get_hand_type.empty_hand     = D1C444
+___const.get_hand_type.straight_ranks = D1C44D
+_.str.14                              = D1C45A
+_switch.table.print_hand_type         = D1C468
 lib.LibLoad                           = D1A8DA
 _#gfx_Begin                           = D1A8ED
 _#gfx_End                             = D1A8F1

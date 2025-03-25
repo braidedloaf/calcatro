@@ -112,21 +112,33 @@ void print_card(Card c , int x, int y) {
 
 }
 
+void print_hand_stats(HandValue hv, int x, int y) {
+		gfx_SetTextXY(x, y+16); 
+		gfx_PrintInt(hv.chips, 0); 
+		gfx_PrintString(" x "); 
+		gfx_PrintInt(hv.mult, 0);
+}
+
 void print_hand_type(HandValue hv, int x, int y) {
-    gfx_SetTextXY(x, y);
-    switch (hv.type) {
-        case HAND_HIGH_CARD:      gfx_PrintString("High Card"); break;
-        case HAND_ONE_PAIR:       gfx_PrintString("Pair"); break;
-        case HAND_TWO_PAIR:       gfx_PrintString("Two Pair"); break;
-        case HAND_THREE_KIND:     gfx_PrintString("Three of a Kind"); break;
-        case HAND_STRAIGHT:       gfx_PrintString("Straight"); break;
-        case HAND_FLUSH:          gfx_PrintString("Flush"); break;
-        case HAND_FULL_HOUSE:     gfx_PrintString("Full House"); break;
-        case HAND_FOUR_KIND:      gfx_PrintString("Four of a Kind"); break;
-        case HAND_STRAIGHT_FLUSH: gfx_PrintString("Straight Flush"); break;
-        case HAND_ROYAL_FLUSH:    gfx_PrintString("Royal Flush"); break;
-        default:                  gfx_PrintString(""); break;
-    }
+	
+	
+	if (hv.type >= 0) {
+		gfx_SetTextXY(x, y);
+		switch (hv.type) {
+			case HAND_HIGH_CARD:      gfx_PrintString("High Card"); print_hand_stats(hv, x, y); break;
+			case HAND_ONE_PAIR:       gfx_PrintString("Pair"); print_hand_stats(hv, x, y);  break;
+			case HAND_TWO_PAIR:       gfx_PrintString("Two Pair"); print_hand_stats(hv, x, y); break;
+			case HAND_THREE_KIND:     gfx_PrintString("Three of a Kind");print_hand_stats(hv, x, y);  break;
+			case HAND_STRAIGHT:       gfx_PrintString("Straight"); print_hand_stats(hv, x, y); break;
+			case HAND_FLUSH:          gfx_PrintString("Flush"); print_hand_stats(hv, x, y); break;
+			case HAND_FULL_HOUSE:     gfx_PrintString("Full House"); print_hand_stats(hv, x, y); break;
+			case HAND_FOUR_KIND:      gfx_PrintString("Four of a Kind"); print_hand_stats(hv, x, y); break;
+			case HAND_STRAIGHT_FLUSH: gfx_PrintString("Straight Flush"); print_hand_stats(hv, x, y); break;
+			case HAND_ROYAL_FLUSH:    gfx_PrintString("Royal Flush"); print_hand_stats(hv, x, y); break;
+			default:                  gfx_PrintString(""); print_hand_stats(hv, x, y); break;
+		}
+	}
+    
 }
 
 void display_game_stats(int score, int target_score, int hands_left, int discards_left, HandValue hv) {
@@ -177,6 +189,11 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 }
 
 HandValue get_hand_type(Card *cards, int count) {
+	if (count == 0) {
+		HandValue empty_hand = { -1, 0, 0 };
+		return empty_hand;
+	}
+	
     if (count < 2 || count > 5)
         return hand_table[HAND_HIGH_CARD];
 
