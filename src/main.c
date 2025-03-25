@@ -177,99 +177,103 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 }
 
 HandValue get_hand_type(Card *cards, int count) {
-	if (count < 2 || count > 5)
-		return hand_table[HAND_HIGH_CARD];
+    if (count < 2 || count > 5)
+        return hand_table[HAND_HIGH_CARD];
 
-	// Sort by value
-	for (int i = 0; i < count - 1; i++) {
-		for (int j = i + 1; j < count; j++) {
-			if (cards[i].value > cards[j].value) {
-				Card tmp = cards[i];
-				cards[i] = cards[j];
-				cards[j] = tmp;
-			}
-		}
-	}
+    // Sort by rank
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
+            if (cards[i].rank > cards[j].rank) {
+                Card tmp = cards[i];
+                cards[i] = cards[j];
+                cards[j] = tmp;
+            }
+        }
+    }
 
-	int rank_count[15] = {0}; // ranks 2–14
-	int suit_count[4] = {0};  // S, H, C, D
+    int rank_count[128] = {0}; // Use char range to count by actual rank
+    int suit_count[4] = {0};  // S, H, C, D
 
-	for (int i = 0; i < count; i++) {
-		rank_count[cards[i].value]++;
-		switch (cards[i].suit) {
-			case 'S': suit_count[0]++; break;
-			case 'H': suit_count[1]++; break;
-			case 'C': suit_count[2]++; break;
-			case 'D': suit_count[3]++; break;
-		}
-	}
+    for (int i = 0; i < count; i++) {
+        rank_count[(int)cards[i].rank]++; // Count by actual rank character
+        switch (cards[i].suit) {
+            case 'S': suit_count[0]++; break;
+            case 'H': suit_count[1]++; break;
+            case 'C': suit_count[2]++; break;
+            case 'D': suit_count[3]++; break;
+        }
+    }
 
-	// Detect flush
-	bool is_flush = false;
-	for (int i = 0; i < 4; i++) {
-		if (suit_count[i] == count) {
-			is_flush = true;
-			break;
-		}
-	}
+    // Detect flush
+    bool is_flush = false;
+    for (int i = 0; i < 4; i++) {
+        if (suit_count[i] == count) {
+            is_flush = true;
+            break;
+        }
+    }
 
-	// Detect straight
-	bool is_straight = false;
-	int high_card = 0;
-	for (int i = 2; i <= 14 - (count - 1); i++) {
-		bool all_in_a_row = true;
-		for (int j = 0; j < count; j++) {
-			if (rank_count[i + j] == 0) {
-				all_in_a_row = false;
-				break;
-			}
-		}
-		if (all_in_a_row) {
-			is_straight = true;
-			high_card = i + count - 1;
-			break;
-		}
-	}
-	// Special case: A-2-3-4-5
-	if (!is_straight && count == 5 &&
-	    rank_count[14] && rank_count[2] && rank_count[3] && rank_count[4] && rank_count[5]) {
-		is_straight = true;
-		high_card = 5;
-	}
+    // Detect straight using ranks as separate entities
+    bool is_straight = false;
+    int straight_high_rank = 0;
+    char straight_ranks[] = {'2','3','4','5','6','7','8','9','T','J','Q','K','A'};
+    for (int i = 0; i <= 8; i++) { // 8 gives room for 5-card straights
+        bool all_in_a_row = true;
+        for (int j = 0; j < 5; j++) {
+            if (rank_count[(int)straight_ranks[i+j]] == 0) {
+                all_in_a_row = false;
+                break;
+            }
+        }
+        if (all_in_a_row) {
+            is_straight = true;
+            straight_high_rank = (int)straight_ranks[i+4];
+            break;
+        }
+    }
 
-	// Count multiples
-	int pairs = 0, trips = 0, quads = 0;
-	for (int i = 2; i <= 14; i++) {
-		if (rank_count[i] == 4) quads++;
-		else if (rank_count[i] == 3) trips++;
-		else if (rank_count[i] == 2) pairs++;
-	}
+    // Special Ace-low straight case (A-2-3-4-5)
+    if (!is_straight && count == 5 &&
+        rank_count[(int)'A'] && rank_count[(int)'2'] && 
+        rank_count[(int)'3'] && rank_count[(int)'4'] && 
+        rank_count[(int)'5']) {
+        is_straight = true;
+        straight_high_rank = '5';
+    }
 
-	// Detect hands by count
-	if (count == 5) {
-		if (is_straight && is_flush && high_card == 14)
-			return hand_table[HAND_ROYAL_FLUSH];
-		if (is_straight && is_flush)
-			return hand_table[HAND_STRAIGHT_FLUSH];
-		if (quads)
-			return hand_table[HAND_FOUR_KIND];
-		if (trips && pairs)
-			return hand_table[HAND_FULL_HOUSE];
-		if (is_flush)
-			return hand_table[HAND_FLUSH];
-		if (is_straight)
-			return hand_table[HAND_STRAIGHT];
-	}
+    // Count multiples
+    int pairs = 0, trips = 0, quads = 0;
+    for (char *r = "23456789TJQKA"; *r; r++) {
+        if (rank_count[(int)*r] == 4) quads++;
+        else if (rank_count[(int)*r] == 3) trips++;
+        else if (rank_count[(int)*r] == 2) pairs++;
+    }
 
-	// Apply to all hand sizes 2–5
-	if (trips)
-		return hand_table[HAND_THREE_KIND];
-	if (pairs == 2)
-		return hand_table[HAND_TWO_PAIR];
-	if (pairs == 1)
-		return hand_table[HAND_ONE_PAIR];
+    // Detect hand types for 5-card hands
+    if (count == 5) {
+        if (is_straight && is_flush && straight_high_rank == 'A')
+            return hand_table[HAND_ROYAL_FLUSH];
+        if (is_straight && is_flush)
+            return hand_table[HAND_STRAIGHT_FLUSH];
+        if (quads)
+            return hand_table[HAND_FOUR_KIND];
+        if (trips && pairs)
+            return hand_table[HAND_FULL_HOUSE];
+        if (is_flush)
+            return hand_table[HAND_FLUSH];
+        if (is_straight)
+            return hand_table[HAND_STRAIGHT];
+    }
 
-	return hand_table[HAND_HIGH_CARD];
+    // Remaining hand types
+    if (trips)
+        return hand_table[HAND_THREE_KIND];
+    if (pairs == 2)
+        return hand_table[HAND_TWO_PAIR];
+    if (pairs == 1)
+        return hand_table[HAND_ONE_PAIR];
+
+    return hand_table[HAND_HIGH_CARD];
 }
 
 int handle_scoring(Card *cards, HandValue hand_type, int count) {

@@ -7,9 +7,9 @@ Section          Base   Top    High   Length
 .init.reruncheck D1A923 D1A923             0h
 .init            D1A923 D1A943            20h
 .fini            D1A943 D1A977            34h
-.text            D1A977 D1BF7B          1604h
-.data            D1BF7B D1BFE5            6Ah
-.rodata          D1BFE5 D1C0CA            E5h
+.text            D1A977 D1C28E          1917h
+.data            D1C28E D1C2F8            6Ah
+.rodata          D1C2F8 D1C3ED            F5h
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
@@ -17,94 +17,96 @@ Section          Base   Top    High   Length
 .bss             D052C6 D052C6 D13FD8      0h
 .header          D1A87F D1A882             3h
 
-Label                           Value
------------------------------   ------
-___low_bss                    = D052C6
-___len_bss                    = 000000
-___heaptop                    = D13FD8
-___heapbot                    = D052C6
-___libs                       = D1A8DA
-___init_array_count           = 000000
-___ctors_count                = 000000
-___dtors_count                = 000000
-___fini_array_count           = 000000
-__stack                       = D1A87E
-__bdivu                       = D1A977
-__bdvrmu                      = D1A981
-__frameset                    = D1A990
-__frameset0                   = D1A99E
-__idivs                       = D1A9A9
-__idivu                       = D1A9B0
-__idvrms                      = D1A9B8
-__idvrmu                      = D1A9E6
-__imulu                       = D1A9FE
-__ineg                        = D1AA2E
-__irems                       = D1AA37
-__ishru                       = D1AA3F
-__ladd                        = D1AA80
-__lmulu                       = D1AA86
-__lsub                        = D1AAE2
-__ftol                        = 00027C
-__ftoul                       = 00027C
-__ltof                        = 000284
-__setflag                     = 000218
-__ultof                       = 000280
-_os_DisableHomeTextBuffer     = D1AAEC
-_os_EnableHomeTextBuffer      = D1AAFE
-_random                       = D1AB10
-__setstate                    = D1AB6E
-__state                       = D1BF7B
-_boot_GetDate                 = 0005A8
-_boot_GetTime                 = 0005B0
-_mktime                       = D1AB7E
-_mktime.yday                  = D1BFE5
-_time                         = D1AC82
-_rand                         = D1AD00
-_srand                        = D1AD0D
-.missingappvar                = D1C009
-.libloadname                  = D1C00E
-.libloadnamelen               = 000007
-.webaddress                   = D1C016
-__start                       = D1A923
-___exithl                     = D1A943
-skip._exit                    = D1A943
-skip.__Exit                   = D1A943
-skip._abort                   = D1A943
-_exit.sp                      = D1A944
-_exit.flash_wait_states       = D1A94E
-_shuffle_deck                 = D1AD15
-_create_deck                  = D1ADBE
-_print_card                   = D1AF4D
-_print_hand_type              = D1AFF8
-_display_game_stats           = D1B03C
-_display_hand                 = D1B0F9
-_draw_cards_to_hand           = D1B194
-_get_hand_type                = D1B280
-_main                         = D1B72F
-_hand_table                   = D1BF8B
-_.str                         = D1C02B
-_.str.1                       = D1C035
-_.str.2                       = D1C03E
-_.str.3                       = D1C047
-_.str.4                       = D1C057
-_.str.5                       = D1C060
-_.str.6                       = D1C066
-_.str.7                       = D1C071
-_.str.8                       = D1C080
-_.str.9                       = D1C08F
-_.str.10                      = D1C09B
-_.str.11                      = D1C0A3
-_.str.12                      = D1C0A7
-_switch.table.print_hand_type = D1C0AC
-lib.LibLoad                   = D1A8DA
-_#gfx_Begin                   = D1A8ED
-_#gfx_End                     = D1A8F1
-_#gfx_SetColor                = D1A8F5
-_#gfx_FillScreen              = D1A8F9
-_#gfx_SwapDraw                = D1A8FD
-_#gfx_PrintChar               = D1A901
-_#gfx_PrintInt                = D1A905
-_#gfx_PrintString             = D1A909
-_#gfx_SetTextXY               = D1A90D
-_#gfx_SetTextScale            = D1A911
-_#kb_Scan                     = D1A91F
+Label                                   Value
+-------------------------------------   ------
+___low_bss                            = D052C6
+___len_bss                            = 000000
+___heaptop                            = D13FD8
+___heapbot                            = D052C6
+___libs                               = D1A8DA
+___init_array_count                   = 000000
+___ctors_count                        = 000000
+___dtors_count                        = 000000
+___fini_array_count                   = 000000
+__stack                               = D1A87E
+__bdivu                               = D1A977
+__bdvrmu                              = D1A981
+__frameset                            = D1A990
+__frameset0                           = D1A99E
+__idivs                               = D1A9A9
+__idivu                               = D1A9B0
+__idvrms                              = D1A9B8
+__idvrmu                              = D1A9E6
+__imulu                               = D1A9FE
+__ineg                                = D1AA2E
+__irems                               = D1AA37
+__ishru                               = D1AA3F
+__ladd                                = D1AA80
+__lmulu                               = D1AA86
+__lsub                                = D1AAE2
+__ftol                                = 00027C
+__ftoul                               = 00027C
+__ltof                                = 000284
+__setflag                             = 000218
+__ultof                               = 000280
+_os_DisableHomeTextBuffer             = D1AAEC
+_os_EnableHomeTextBuffer              = D1AAFE
+_random                               = D1AB10
+__setstate                            = D1AB6E
+__state                               = D1C28E
+_boot_GetDate                         = 0005A8
+_boot_GetTime                         = 0005B0
+_mktime                               = D1AB7E
+_mktime.yday                          = D1C2F8
+_time                                 = D1AC82
+_rand                                 = D1AD00
+_srand                                = D1AD0D
+.missingappvar                        = D1C31C
+.libloadname                          = D1C321
+.libloadnamelen                       = 000007
+.webaddress                           = D1C329
+__start                               = D1A923
+___exithl                             = D1A943
+skip._exit                            = D1A943
+skip.__Exit                           = D1A943
+skip._abort                           = D1A943
+_exit.sp                              = D1A944
+_exit.flash_wait_states               = D1A94E
+_shuffle_deck                         = D1AD15
+_create_deck                          = D1ADBE
+_print_card                           = D1AF4D
+_print_hand_type                      = D1AFF8
+_display_game_stats                   = D1B03C
+_display_hand                         = D1B0F9
+_draw_cards_to_hand                   = D1B194
+_get_hand_type                        = D1B280
+_main                                 = D1BA42
+_hand_table                           = D1C29E
+_.str                                 = D1C33E
+_.str.1                               = D1C348
+_.str.2                               = D1C34D
+_.str.3                               = D1C356
+_.str.4                               = D1C366
+_.str.5                               = D1C36F
+_.str.6                               = D1C375
+_.str.7                               = D1C380
+_.str.8                               = D1C38F
+_.str.9                               = D1C39E
+_.str.10                              = D1C3AA
+_.str.11                              = D1C3AB
+_.str.12                              = D1C3AF
+___const.get_hand_type.straight_ranks = D1C3B4
+_.str.13                              = D1C3C1
+_switch.table.print_hand_type         = D1C3CF
+lib.LibLoad                           = D1A8DA
+_#gfx_Begin                           = D1A8ED
+_#gfx_End                             = D1A8F1
+_#gfx_SetColor                        = D1A8F5
+_#gfx_FillScreen                      = D1A8F9
+_#gfx_SwapDraw                        = D1A8FD
+_#gfx_PrintChar                       = D1A901
+_#gfx_PrintInt                        = D1A905
+_#gfx_PrintString                     = D1A909
+_#gfx_SetTextXY                       = D1A90D
+_#gfx_SetTextScale                    = D1A911
+_#kb_Scan                             = D1A91F
