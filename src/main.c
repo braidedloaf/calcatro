@@ -7,6 +7,8 @@
 #include <string.h>
 
 //screen is 320, 240
+unsigned int frame_timer = 0;
+
 
 typedef struct {
 	char rank;
@@ -61,6 +63,13 @@ HandValue hand_table[HAND_COUNT] = {
     { HAND_ROYAL_FLUSH,    100, 8 }
 };
 
+void wait_frames(unsigned int frames) {
+    for (unsigned int i = 0; i < frames; i++) {
+        kb_Scan(); // optional
+        gfx_Wait(); // this waits for the next screen refresh (~60Hz)
+    }
+}
+
 int randomIntRange(int min, int max) {
 	return min + (rand() % (max-min+1));
 }
@@ -88,12 +97,12 @@ Deck create_deck() {
 }
 
 void print_card(Card c , int x, int y) {
-	char left = '>';
-    char right = '<';
+	char left = '<';
+    char right = '>';
 
     if (c.is_selected) {
-        left = '<';
-        right = '>';
+        left = '>';
+        right = '<';
     }
 
     if (c.is_selected || c.to_play) {
@@ -114,9 +123,9 @@ void print_card(Card c , int x, int y) {
 
 void print_hand_stats(HandValue hv, int x, int y) {
 		gfx_SetTextXY(x, y+16); 
-		gfx_PrintInt(hv.chips, 0); 
+		gfx_PrintInt(hv.chips, 1); 
 		gfx_PrintString(" x "); 
-		gfx_PrintInt(hv.mult, 0);
+		gfx_PrintInt(hv.mult, 1);
 }
 
 void print_hand_type(HandValue hv, int x, int y) {
@@ -124,7 +133,7 @@ void print_hand_type(HandValue hv, int x, int y) {
 	
 	if (hv.type >= 0) {
 		gfx_SetTextXY(x, y);
-		switch (hv.type) {
+		switch(hv.type) {
 			case HAND_HIGH_CARD:      gfx_PrintString("High Card"); print_hand_stats(hv, x, y); break;
 			case HAND_ONE_PAIR:       gfx_PrintString("Pair"); print_hand_stats(hv, x, y);  break;
 			case HAND_TWO_PAIR:       gfx_PrintString("Two Pair"); print_hand_stats(hv, x, y); break;
@@ -293,11 +302,45 @@ HandValue get_hand_type(Card *cards, int count) {
     return hand_table[HAND_HIGH_CARD];
 }
 
-int handle_scoring(Card *cards, HandValue hand_type, int count) {
-	return 0;
+int handle_draw_scoring(Card *cards, int count, const HandValue *hand_type,
+                        Hand *p_hand, int score, int target_score,
+                        int hands_left, int discards_left) {
+    int base = hand_type->chips;
+    int running_total = base;
+
+    // Show each card being added to base chip total
+    for (int i = 0; i < count; i++) {
+        running_total += cards[i].value;
+
+        gfx_FillScreen(255);
+        display_hand(p_hand);
+
+        HandValue display = *hand_type;
+        display.chips = running_total;
+        display_game_stats(score, target_score, hands_left, discards_left, display);
+        gfx_SwapDraw();
+
+        wait_frames(250);
+    }
+
+    int final_score = running_total * hand_type->mult;
+
+    // Final display showing multiplied total
+    gfx_FillScreen(255);
+    display_hand(p_hand);
+
+    HandValue final_display = *hand_type;
+    final_display.chips = final_score;
+    display_game_stats(score, target_score, hands_left, discards_left, final_display);
+    gfx_SwapDraw();
+    wait_frames(500);
+
+    return final_score;
 }
 
 int main(void) {
+	//timer_Enable(1, TIMER_32K, TIMER_NOINT);
+
 	srand(time(NULL));
 
 	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
@@ -325,6 +368,7 @@ int main(void) {
 	
 	while (running) {
 		gfx_FillScreen(255);
+		frame_timer++;
 		kb_Scan();
 		
 		
@@ -345,8 +389,6 @@ int main(void) {
 				hand.hand[card_idx].to_play = false;
 				if (hand.amt_selected > 0)
 					hand.amt_selected--;
-
-
 			}
 		}
 		select_prev_key = select_key;
@@ -389,7 +431,9 @@ int main(void) {
 			}
 			hand.amt_selected = 0;
 			hands_left--;
-			//handle_scoring(playing_hand, hand_type, playing_hand_idx);
+			int gained = handle_draw_scoring(playing_hand, playing_hand_idx, &hand_type,
+                    &hand, score, target_score, hands_left, discards_left);
+			score += gained;
 		}
 		play_prev_key = play_key;
 
