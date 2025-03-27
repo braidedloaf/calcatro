@@ -124,7 +124,12 @@ void print_card(Card c , int x, int y) {
         gfx_SetTextXY(x + 16, y);
         gfx_PrintChar(right);
     }
+}
 
+void print_playing_card(Card c, int x, int y) {
+	gfx_SetTextXY(x, y);
+    gfx_PrintChar(c.rank);
+    gfx_PrintChar(c.suit);
 }
 
 void print_hand_stats(HandValue hv, int x, int y) {
@@ -141,9 +146,9 @@ void print_hand_type(HandValue hv, int x, int y) {
 		gfx_SetTextXY(x, y);
 		switch(hv.type) {
 			case HAND_HIGH_CARD:      gfx_PrintString("High Card"); print_hand_stats(hv, x, y); break;
-			case HAND_ONE_PAIR:       gfx_PrintString("Pair"); print_hand_stats(hv, x, y);  break;
+			case HAND_ONE_PAIR:       gfx_PrintString("Pair"); print_hand_stats(hv, x, y); break;
 			case HAND_TWO_PAIR:       gfx_PrintString("Two Pair"); print_hand_stats(hv, x, y); break;
-			case HAND_THREE_KIND:     gfx_PrintString("Three of a Kind");print_hand_stats(hv, x, y);  break;
+			case HAND_THREE_KIND:     gfx_PrintString("Three of a Kind"); print_hand_stats(hv, x, y); break;
 			case HAND_STRAIGHT:       gfx_PrintString("Straight"); print_hand_stats(hv, x, y); break;
 			case HAND_FLUSH:          gfx_PrintString("Flush"); print_hand_stats(hv, x, y); break;
 			case HAND_FULL_HOUSE:     gfx_PrintString("Full House"); print_hand_stats(hv, x, y); break;
@@ -246,7 +251,7 @@ EvaluatedHand get_hand_type(Card *cards, int count) {
     bool is_flush = false;
     char flush_suit = 0;
     for (int i = 0; i < 4; i++) {
-        if (suit_count[i] == count) {
+        if (suit_count[i] == 5) {
             is_flush = true;
             flush_suit = "SHCD"[i];
             break;
@@ -373,7 +378,13 @@ EvaluatedHand get_hand_type(Card *cards, int count) {
     return result;
 }
 
-int handle_draw_scoring(Card *cards, int count, const HandValue *hand_type,
+void display_playing_hand(Card *cards, int count) {
+	for (int i = 0; i < count; i++) { 
+		print_playing_card(cards[i], 120 + (i*32), 100);
+	}
+}
+
+int handle_draw_scoring(Card *all_cards, Card *cards, int count, const HandValue *hand_type,
                         Hand *p_hand, int score, int target_score,
                         int hands_left, int discards_left) {
     int base = hand_type->chips;
@@ -388,6 +399,7 @@ int handle_draw_scoring(Card *cards, int count, const HandValue *hand_type,
 
         HandValue display = *hand_type;
         display.chips = running_total;
+		display_playing_hand(cards, count);
         display_game_stats(score, target_score, hands_left, discards_left, display);
         gfx_SwapDraw();
 
@@ -395,7 +407,6 @@ int handle_draw_scoring(Card *cards, int count, const HandValue *hand_type,
         wait_frames(i == count - 1 ? 500 : 250);
     }
 
-    int final_score = running_total * hand_type->mult;
 
 	/*
     // Final display showing multiplied total
@@ -409,12 +420,10 @@ int handle_draw_scoring(Card *cards, int count, const HandValue *hand_type,
     wait_frames(500);
 	*/
 
-    return final_score;
+    return running_total * hand_type->mult;
 }
 
 int main(void) {
-	//timer_Enable(1, TIMER_32K, TIMER_NOINT);
-
 	srand(time(NULL));
 
 	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
@@ -495,19 +504,23 @@ int main(void) {
 
 		play_key = kb_Data[2];
 		if (play_key & kb_Alpha && !(play_prev_key & kb_Alpha) && hands_left > 0 && hand.amt_selected > 0) {
+			int tc = 0;
 			for (int i = 0; i < hand.hand_size; i++) {
 				if (hand.hand[i].to_play) {
 					hand.hand[i].value = -1;
 					hand.hand[i].to_play = false;
 					hand.hand[i].is_selected = false;
-					hand.current_cards_cnt--;
+					tc++;
+					//hand.current_cards_cnt--;
 				}
 			}
 			hand.amt_selected = 0;
 			hands_left--;
-			int gained = handle_draw_scoring(result.scoring_cards, result.scoring_count, &result.value,
+			int gained = handle_draw_scoring(playing_hand, result.scoring_cards, result.scoring_count, &result.value,
                 &hand, score, target_score, hands_left, discards_left);
             score += gained;
+			
+			hand.current_cards_cnt -= tc;
 		}
 		play_prev_key = play_key;
 
@@ -525,7 +538,6 @@ int main(void) {
 
 		arrow_prev_key = arrow_key;
 
-		//print_card(hand.hand[card_idx], 10, 10);
 		display_hand(&hand);
 		display_game_stats(score, target_score, hands_left, discards_left, result.value);
 
