@@ -384,7 +384,7 @@ void display_playing_hand(Card *cards, int count) {
 	}
 }
 
-int handle_draw_scoring(Card *all_cards, Card *cards, int count, const HandValue *hand_type,
+int handle_draw_scoring(Card *all_cards, int all_cards_count, Card *cards, int count, const HandValue *hand_type,
                         Hand *p_hand, int score, int target_score,
                         int hands_left, int discards_left) {
     int base = hand_type->chips;
@@ -399,7 +399,7 @@ int handle_draw_scoring(Card *all_cards, Card *cards, int count, const HandValue
 
         HandValue display = *hand_type;
         display.chips = running_total;
-		display_playing_hand(cards, count);
+		display_playing_hand(all_cards, all_cards_count); // also pass scoring cards to see where to display the scoring animation
         display_game_stats(score, target_score, hands_left, discards_left, display);
         gfx_SwapDraw();
 
@@ -516,7 +516,7 @@ int main(void) {
 			}
 			hand.amt_selected = 0;
 			hands_left--;
-			int gained = handle_draw_scoring(playing_hand, result.scoring_cards, result.scoring_count, &result.value,
+			int gained = handle_draw_scoring(playing_hand, playing_hand_idx, result.scoring_cards, result.scoring_count, &result.value,
                 &hand, score, target_score, hands_left, discards_left);
             score += gained;
 			

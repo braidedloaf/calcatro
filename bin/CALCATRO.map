@@ -7,9 +7,9 @@ Section          Base   Top    High   Length
 .init.reruncheck D1A927 D1A927             0h
 .init            D1A927 D1A94E            27h
 .fini            D1A94E D1A982            34h
-.text            D1A982 D1CC0C          228Ah
-.data            D1CC0C D1CC76            6Ah
-.rodata          D1CC76 D1CD74            FEh
+.text            D1A982 D1CC13          2291h
+.data            D1CC13 D1CC7D            6Ah
+.rodata          D1CC7D D1CD7B            FEh
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
@@ -53,19 +53,19 @@ _os_DisableHomeTextBuffer             = D1AAF7
 _os_EnableHomeTextBuffer              = D1AB09
 _random                               = D1AB1B
 __setstate                            = D1AB79
-__state                               = D1CC0C
+__state                               = D1CC13
 _boot_GetDate                         = 0005A8
 _boot_GetTime                         = 0005B0
 _mktime                               = D1AB89
-_mktime.yday                          = D1CC76
+_mktime.yday                          = D1CC7D
 _time                                 = D1AC8D
 _memcpy                               = 0000A4
 _rand                                 = D1AD0B
 _srand                                = D1AD18
-.missingappvar                        = D1CC9A
-.libloadname                          = D1CC9F
+.missingappvar                        = D1CCA1
+.libloadname                          = D1CCA6
 .libloadnamelen                       = 000007
-.webaddress                           = D1CCA7
+.webaddress                           = D1CCAE
 __start                               = D1A927
 ___exithl                             = D1A94E
 skip._exit                            = D1A94E
@@ -86,27 +86,27 @@ _draw_cards_to_hand                   = D1B263
 _get_hand_type                        = D1B34F
 _display_playing_hand                 = D1C175
 _handle_draw_scoring                  = D1C1FD
-_main                                 = D1C303
+_main                                 = D1C2F8
 _frame_timer                          = D052C6
-_hand_table                           = D1CC1C
-_.str                                 = D1CCBC
-_.str.1                               = D1CCC0
-_.str.2                               = D1CCCA
-_.str.3                               = D1CCCF
-_.str.4                               = D1CCD8
-_.str.5                               = D1CCE8
-_.str.6                               = D1CCF1
-_.str.7                               = D1CCF7
-_.str.8                               = D1CD02
-_.str.9                               = D1CD11
-_.str.10                              = D1CD20
-_.str.11                              = D1CD2C
-_.str.12                              = D1CD2D
-_.str.13                              = D1CD31
-_.str.14                              = D1CD36
-___const.get_hand_type.straight_ranks = D1CD3B
-_.str.15                              = D1CD48
-_switch.table.print_hand_type         = D1CD56
+_hand_table                           = D1CC23
+_.str                                 = D1CCC3
+_.str.1                               = D1CCC7
+_.str.2                               = D1CCD1
+_.str.3                               = D1CCD6
+_.str.4                               = D1CCDF
+_.str.5                               = D1CCEF
+_.str.6                               = D1CCF8
+_.str.7                               = D1CCFE
+_.str.8                               = D1CD09
+_.str.9                               = D1CD18
+_.str.10                              = D1CD27
+_.str.11                              = D1CD33
+_.str.12                              = D1CD34
+_.str.13                              = D1CD38
+_.str.14                              = D1CD3D
+___const.get_hand_type.straight_ranks = D1CD42
+_.str.15                              = D1CD4F
+_switch.table.print_hand_type         = D1CD5D
 lib.LibLoad                           = D1A8DA
 _#gfx_Begin                           = D1A8ED
 _#gfx_End                             = D1A8F1
