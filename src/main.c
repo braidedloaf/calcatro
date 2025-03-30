@@ -9,6 +9,10 @@
 //screen is 320, 240
 unsigned int frame_timer = 0;
 
+typedef enum {
+    STATE_MENU,
+    STATE_GAME
+} GameState;
 
 typedef struct {
 	char rank;
@@ -104,6 +108,17 @@ Deck create_deck() {
 	}
 	deck.size = 52;
 	return deck;
+}
+
+void draw_main_menu(void) {
+    gfx_FillScreen(255); // white
+    gfx_SetTextScale(2, 2);
+    gfx_SetTextFGColor(0);
+    gfx_PrintStringXY("CALCATRO", 80, 40);
+    gfx_SetTextScale(1, 2);
+    gfx_PrintStringXY("Press [2nd] to Start", 80, 100);
+    gfx_PrintStringXY("Press [Alpha] for rules", 80, 132);
+    gfx_PrintStringXY("Press [Clear] to Quit", 80, 164);
 }
 
 void print_card(Card c , int x, int y) {
@@ -445,11 +460,28 @@ int main(void) {
 	srand(time(NULL));
 
 	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
-	bool running = true;
+
+    GameState state = STATE_MENU;
+	int running = 1;
 
 	int score = 0, target_score = 0, hands_left = 4, discards_left = 3;
 
 	gfx_Begin();
+    while (state == STATE_MENU) {
+        kb_Scan();
+        draw_main_menu();
+        gfx_SwapDraw();
+
+        if (kb_Data[1] & kb_2nd) {
+            while (kb_Data[1] & kb_2nd) kb_Scan(); // wait for release
+            state = STATE_GAME;
+        } else if (kb_Data[6] & kb_Clear) {
+            gfx_End();
+            return 0;
+    }
+
+    gfx_Wait();
+    }
 	gfx_SetTextScale(1,2);
 	gfx_SetColor(0);
 
