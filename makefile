@@ -1,5 +1,6 @@
 NAME = CALCATRO
 SOURCES = main.c
+ICON = icon.png
 
 COMPRESSED = NO
 

@@ -11,7 +11,8 @@ unsigned int frame_timer = 0;
 
 typedef enum {
     STATE_MENU,
-    STATE_GAME
+    STATE_GAME,
+    STATE_RULES
 } GameState;
 
 typedef struct {
@@ -121,6 +122,10 @@ void draw_main_menu(void) {
     gfx_PrintStringXY("Press [Clear] to Quit", 80, 164);
 }
 
+void draw_rules_menu(void) {
+    gfx_FillScreen(255);
+} 
+
 void print_card(Card c , int x, int y) {
 	char left = '<';
     char right = '>';
@@ -152,7 +157,7 @@ void print_playing_card(Card c, int x, int y) {
 }
 
 void print_playing_value(int value, int x, int y) {
-    gfx_SetTextXY(x, y);
+    gfx_SetTextXY(x-8, y);
     gfx_PrintChar('+');
     gfx_PrintInt(value, 1);
 }
@@ -233,8 +238,6 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
     Card cards[count];
     memcpy(cards, p_cards, count * sizeof(Card));
 
-    //TODO: have result.scoring_cards not be sorted, be same order as the played cards for scoring
-
     EvaluatedHand result;
     result.scoring_count = 0;
 
@@ -246,11 +249,11 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
     if (count < 2 || count > 5) {
         result.value = hand_table[HAND_HIGH_CARD];
         result.scoring_count = count;
-        memcpy(result.scoring_cards, cards, sizeof(Card) * count);
+        memcpy(result.scoring_cards, p_cards, sizeof(Card) * count);
         return result;
     }
 
-    // Sort by rank
+    // Sort a copy of the cards by rank (char order)
     for (int i = 0; i < count - 1; i++) {
         for (int j = i + 1; j < count; j++) {
             if (cards[i].rank > cards[j].rank) {
@@ -274,6 +277,7 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
         }
     }
 
+    // Detect flush
     bool is_flush = false;
     char flush_suit = 0;
     for (int i = 0; i < 4; i++) {
@@ -284,6 +288,7 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
         }
     }
 
+    // Detect straight
     bool is_straight = false;
     int straight_high_rank = 0;
     char straight_ranks[] = {'2','3','4','5','6','7','8','9','T','J','Q','K','A'};
@@ -302,6 +307,7 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
         }
     }
 
+    // A-2-3-4-5 special straight
     if (!is_straight && count == 5 &&
         rank_count['A'] && rank_count['2'] &&
         rank_count['3'] && rank_count['4'] &&
@@ -329,96 +335,106 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
         }
     }
 
+    // Match cards in original order
+    #define MATCH_RANKS(ranklist, num) \
+        for (int i = 0; i < count; i++) { \
+            for (int r = 0; r < (num); r++) { \
+                if (p_cards[i].rank == (ranklist)[r]) { \
+                    result.scoring_cards[result.scoring_count++] = p_cards[i]; \
+                    break; \
+                } \
+            } \
+        }
+
+    #define MATCH_ALL() \
+        for (int i = 0; i < count; i++) { \
+            result.scoring_cards[result.scoring_count++] = p_cards[i]; \
+        }
+
+    #define MATCH_FLUSH(f_suit) \
+        for (int i = 0; i < count; i++) { \
+            if (p_cards[i].suit == (f_suit)) { \
+                result.scoring_cards[result.scoring_count++] = p_cards[i]; \
+            } \
+        }
+
     if (count == 5 && is_straight && is_flush && straight_high_rank == 'A') {
         result.value = hand_table[HAND_ROYAL_FLUSH];
-        for (int i = 0; i < count; i++)
-            result.scoring_cards[result.scoring_count++] = cards[i];
+        MATCH_ALL();
         return result;
     }
 
     if (count == 5 && is_straight && is_flush) {
         result.value = hand_table[HAND_STRAIGHT_FLUSH];
-        for (int i = 0; i < count; i++)
-            result.scoring_cards[result.scoring_count++] = cards[i];
+        MATCH_ALL();
         return result;
     }
 
     if (quads) {
         result.value = hand_table[HAND_FOUR_KIND];
-        for (int i = 0; i < count; i++)
-            if (cards[i].rank == quad_rank)
-                result.scoring_cards[result.scoring_count++] = cards[i];
+        MATCH_RANKS(&quad_rank, 1);
         return result;
     }
 
     if (trips && pairs) {
         result.value = hand_table[HAND_FULL_HOUSE];
-        for (int i = 0; i < count; i++)
-            if (cards[i].rank == trip_rank || cards[i].rank == pair_ranks[0])
-                result.scoring_cards[result.scoring_count++] = cards[i];
+        char ranks[2] = { trip_rank, pair_ranks[0] };
+        MATCH_RANKS(ranks, 2);
         return result;
     }
 
     if (is_flush) {
         result.value = hand_table[HAND_FLUSH];
-        for (int i = 0; i < count; i++)
-            if (cards[i].suit == flush_suit)
-                result.scoring_cards[result.scoring_count++] = cards[i];
+        MATCH_FLUSH(flush_suit);
         return result;
     }
 
     if (is_straight) {
         result.value = hand_table[HAND_STRAIGHT];
-        for (int i = 0; i < count; i++)
-            result.scoring_cards[result.scoring_count++] = cards[i];
+        MATCH_ALL();
         return result;
     }
 
     if (trips) {
         result.value = hand_table[HAND_THREE_KIND];
-        for (int i = 0; i < count; i++)
-            if (cards[i].rank == trip_rank)
-                result.scoring_cards[result.scoring_count++] = cards[i];
+        MATCH_RANKS(&trip_rank, 1);
         return result;
     }
 
     if (pairs >= 2) {
         result.value = hand_table[HAND_TWO_PAIR];
-        for (int i = 0; i < count; i++)
-            if (cards[i].rank == pair_ranks[0] || cards[i].rank == pair_ranks[1])
-                result.scoring_cards[result.scoring_count++] = cards[i];
+        MATCH_RANKS(pair_ranks, 2);
         return result;
     }
 
     if (pairs == 1) {
         result.value = hand_table[HAND_ONE_PAIR];
-        for (int i = 0; i < count; i++)
-            if (cards[i].rank == pair_ranks[0])
-                result.scoring_cards[result.scoring_count++] = cards[i];
+        MATCH_RANKS(&pair_ranks[0], 1);
         return result;
     }
 
     result.value = hand_table[HAND_HIGH_CARD];
-    result.scoring_cards[0] = cards[count - 1]; // highest card
+    result.scoring_cards[0] = p_cards[count - 1]; // last card in original order
     result.scoring_count = 1;
     return result;
+
+    #undef MATCH_RANKS
+    #undef MATCH_ALL
+    #undef MATCH_FLUSH
 }
 
-void display_playing_hand(Card *cards, int count, Card *scoring_cards, int score_count, int pos) {
+void display_playing_hand(Card *cards, int count, Card *scoring_cards, int pos) {
     int offset_x = 120;
     int offset_y = 100;
 	for (int i = 0; i < count; i++) {
         print_playing_card(cards[i], offset_x + (i*32), offset_y);
-        if (pos >= 0)
-            if (card_equal(&cards[i], &scoring_cards[pos])) { //cards[i] && scoring[j] equal each other
-                print_playing_value(scoring_cards[pos].value, offset_x + (i*32), offset_y - 24);
-            }
+        if (card_equal(&cards[i], &scoring_cards[pos])) { //cards[i] && scoring[j] equal each other
+            print_playing_value(scoring_cards[pos].value, offset_x + (i*32), offset_y - 24);
+        }
 	}
 }
 
-int handle_draw_scoring(Card *all_cards, int all_cards_count, Card *cards, int count, const HandValue *hand_type,
-                        Hand *p_hand, int score, int target_score,
-                        int hands_left, int discards_left) {
+int handle_draw_scoring(Card *all_cards, int all_cards_count, Card *cards, int count, const HandValue *hand_type, Hand *p_hand, int score, int target_score, int hands_left, int discards_left) {
     int base = hand_type->chips;
     int running_total = base;
 
@@ -432,7 +448,7 @@ int handle_draw_scoring(Card *all_cards, int all_cards_count, Card *cards, int c
 
         HandValue display = *hand_type;
         display.chips = running_total;
-		display_playing_hand(all_cards, all_cards_count, cards, count, i);
+		display_playing_hand(all_cards, all_cards_count, cards, i);
         display_game_stats(score, target_score, hands_left, discards_left, display);
         gfx_SwapDraw();
 
@@ -459,14 +475,10 @@ int handle_draw_scoring(Card *all_cards, int all_cards_count, Card *cards, int c
 int main(void) {
 	srand(time(NULL));
 
-	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
-
     GameState state = STATE_MENU;
 	int running = 1;
 
-	int score = 0, target_score = 0, hands_left = 4, discards_left = 3;
-
-	gfx_Begin();
+    gfx_Begin();
     while (state == STATE_MENU) {
         kb_Scan();
         draw_main_menu();
@@ -475,13 +487,35 @@ int main(void) {
         if (kb_Data[1] & kb_2nd) {
             while (kb_Data[1] & kb_2nd) kb_Scan(); // wait for release
             state = STATE_GAME;
+        } else if (kb_Data[2] & kb_Alpha) {
+            while (kb_Data[2] & kb_Alpha) kb_Scan();
+            state = STATE_RULES;
         } else if (kb_Data[6] & kb_Clear) {
             gfx_End();
             return 0;
+        }
+
+        gfx_Wait();
     }
 
-    gfx_Wait();
+    while (state == STATE_RULES) {
+        kb_Scan();
+        draw_rules_menu();
+        gfx_SwapDraw();
+
+        if (kb_Data[6] & kb_Clear) {
+            gfx_End();
+            return 0;
+        }
+
+        gfx_Wait();
     }
+
+
+	int score = 0, target_score = 0, hands_left = 4, discards_left = 3;
+	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
+
+	
 	gfx_SetTextScale(1,2);
 	gfx_SetColor(0);
 
@@ -499,7 +533,7 @@ int main(void) {
 	int next_card = 0;
 	int card_idx = 0;
 	
-	while (running) {
+	while (running && state == STATE_GAME) {
 		gfx_FillScreen(255);
 		frame_timer++;
 		kb_Scan();
