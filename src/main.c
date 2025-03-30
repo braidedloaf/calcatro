@@ -69,10 +69,14 @@ HandValue hand_table[HAND_COUNT] = {
     { HAND_ROYAL_FLUSH,    100, 8 }
 };
 
+int card_equal(const Card *card, const Card *drac) {
+    return (card->rank == drac->rank) && (card->value == drac->value) && (card->suit == drac->suit);
+}
+
 void wait_frames(unsigned int frames) {
     for (unsigned int i = 0; i < frames; i++) {
         kb_Scan(); // optional
-        gfx_Wait(); // this waits for the next screen refresh (~60Hz)
+        gfx_Wait(); // this waits for the next screen refresh
     }
 }
 
@@ -132,6 +136,12 @@ void print_playing_card(Card c, int x, int y) {
     gfx_PrintChar(c.suit);
 }
 
+void print_playing_value(int value, int x, int y) {
+    gfx_SetTextXY(x, y);
+    gfx_PrintChar('+');
+    gfx_PrintInt(value, 1);
+}
+
 void print_hand_stats(HandValue hv, int x, int y) {
 		gfx_SetTextXY(x, y+16); 
 		gfx_PrintInt(hv.chips, 1); 
@@ -140,8 +150,6 @@ void print_hand_stats(HandValue hv, int x, int y) {
 }
 
 void print_hand_type(HandValue hv, int x, int y) {
-	
-	
 	if (hv.type >= 0) {
 		gfx_SetTextXY(x, y);
 		switch(hv.type) {
@@ -158,7 +166,6 @@ void print_hand_type(HandValue hv, int x, int y) {
 			default:                  gfx_PrintString(""); print_hand_stats(hv, x, y); break;
 		}
 	}
-    
 }
 
 void display_game_stats(int score, int target_score, int hands_left, int discards_left, HandValue hv) {
@@ -185,7 +192,6 @@ void display_hand(Hand *p_hand) {
 			
 		print_card(p_hand->hand[i], offset_x + (32 * i), offset_y + 200);
 	}
-	
 }
 
 void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {	
@@ -208,7 +214,12 @@ void draw_cards_to_hand(Hand *p_hand, int amt, Deck *p_deck, int *next_card) {
 	return;
 }
 
-EvaluatedHand get_hand_type(Card *cards, int count) {
+EvaluatedHand get_hand_type(Card *p_cards, int count) {
+    Card cards[count];
+    memcpy(cards, p_cards, count * sizeof(Card));
+
+    //TODO: have result.scoring_cards not be sorted, be same order as the played cards for scoring
+
     EvaluatedHand result;
     result.scoring_count = 0;
 
@@ -378,9 +389,15 @@ EvaluatedHand get_hand_type(Card *cards, int count) {
     return result;
 }
 
-void display_playing_hand(Card *cards, int count) {
-	for (int i = 0; i < count; i++) { 
-		print_playing_card(cards[i], 120 + (i*32), 100);
+void display_playing_hand(Card *cards, int count, Card *scoring_cards, int score_count, int pos) {
+    int offset_x = 120;
+    int offset_y = 100;
+	for (int i = 0; i < count; i++) {
+        print_playing_card(cards[i], offset_x + (i*32), offset_y);
+        if (pos >= 0)
+            if (card_equal(&cards[i], &scoring_cards[pos])) { //cards[i] && scoring[j] equal each other
+                print_playing_value(scoring_cards[pos].value, offset_x + (i*32), offset_y - 24);
+            }
 	}
 }
 
@@ -390,6 +407,7 @@ int handle_draw_scoring(Card *all_cards, int all_cards_count, Card *cards, int c
     int base = hand_type->chips;
     int running_total = base;
 
+    
     // Show each card being added to base chip total
     for (int i = 0; i < count; i++) {
         running_total += cards[i].value;
@@ -399,7 +417,7 @@ int handle_draw_scoring(Card *all_cards, int all_cards_count, Card *cards, int c
 
         HandValue display = *hand_type;
         display.chips = running_total;
-		display_playing_hand(all_cards, all_cards_count); // also pass scoring cards to see where to display the scoring animation
+		display_playing_hand(all_cards, all_cards_count, cards, count, i);
         display_game_stats(score, target_score, hands_left, discards_left, display);
         gfx_SwapDraw();
 
