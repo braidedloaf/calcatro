@@ -2513,7 +2513,7 @@ _display_playing_hand:
 	push	hl
 	pop	bc
 	add	iy, bc
-	ld	(ix - 9), iy
+	ld	(ix - 12), iy
 	ld	bc, 1
 	push	de
 	pop	hl
@@ -2523,8 +2523,7 @@ _display_playing_hand:
 	jp	p, BB16_2
 	ld	de, 0
 BB16_2:
-	ld	hl, (ix + 6)
-	ld	(ix - 3), hl
+	ld	iy, (ix + 6)
 	ld	bc, 120
 BB16_3:
 	push	de
@@ -2532,21 +2531,22 @@ BB16_3:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB16_7
-	ld	(ix - 12), de
+	jp	z, BB16_8
+	ld	(ix - 9), de
 	push	hl
 	push	hl
 	push	hl
 	push	hl
 	push	hl
-	ld	(ix - 6), bc
+	lea	hl, iy
+	ld	(ix - 3), bc
 	ld	iy, 0
 	add	iy, sp
 	lea	de, iy
-	ld	hl, (ix - 3)
+	ld	(ix - 6), hl
 	ld	bc, 7
 	ldir
-	ld	hl, (ix - 6)
+	ld	hl, (ix - 3)
 	ld	(iy + 9), hl
 	ld	hl, 100
 	ld	(iy + 12), hl
@@ -2556,9 +2556,15 @@ BB16_3:
 	pop	hl
 	pop	hl
 	pop	hl
-	ld	hl, (ix - 9)
+	ld	hl, (ix + 15)
+	ld	de, 0
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB16_7
+	ld	hl, (ix - 12)
 	push	hl
-	ld	hl, (ix - 3)
+	ld	hl, (ix - 6)
 	push	hl
 	call	_card_equal
 	pop	de
@@ -2566,31 +2572,30 @@ BB16_3:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB16_6
-	ld	iy, (ix - 9)
+	jr	z, BB16_7
+	ld	iy, (ix - 12)
 	ld	hl, (iy + 2)
 	ld	de, 76
 	push	de
-	ld	de, (ix - 6)
+	ld	de, (ix - 3)
 	push	de
 	push	hl
 	call	_print_playing_value
 	pop	hl
 	pop	hl
 	pop	hl
-BB16_6:
-	ld	iy, (ix - 3)
+BB16_7:
+	ld	iy, (ix - 6)
 	lea	iy, iy + 7
-	ld	(ix - 3), iy
 	ld	de, 32
-	ld	hl, (ix - 6)
+	ld	hl, (ix - 3)
 	add	hl, de
-	ld	de, (ix - 12)
+	ld	de, (ix - 9)
 	dec	de
 	push	hl
 	pop	bc
-	jr	BB16_3
-BB16_7:
+	jp	BB16_3
+BB16_8:
 	ld	sp, ix
 	pop	ix
 	ret
@@ -2723,7 +2728,7 @@ BB17_7:
 	section	.text,"ax",@progbits
 	public	_main
 _main:
-	ld	hl, -581
+	ld	hl, -584
 	call	__frameset
 	ld	bc, -523
 	lea	iy, ix
@@ -2743,13 +2748,13 @@ _main:
 	pop	ix
 	ld	de, 4
 	push	ix
-	ld	bc, -551
+	ld	bc, -548
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
 	dec	de
 	push	ix
-	ld	bc, -548
+	ld	bc, -551
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
@@ -2792,12 +2797,13 @@ _main:
 	call	_srand
 	pop	hl
 	call	_gfx_Begin
+BB18_1:
 	or	a, a
 	sbc	hl, hl
-BB18_1:
+BB18_2:
 	ld	a, l
 	or	a, a
-	jp	nz, BB18_12
+	jp	nz, BB18_13
 	call	_kb_Scan
 	call	_draw_main_menu
 	call	_gfx_SwapDraw
@@ -2811,7 +2817,7 @@ BB18_1:
 	pop	de
 	ld	a, l
 	bit	5, a
-	jr	nz, BB18_5
+	jr	nz, BB18_6
 	ld	hl, -720876
 	push	de
 	ld	e, (hl)
@@ -2822,7 +2828,7 @@ BB18_1:
 	pop	de
 	ld	a, l
 	bit	7, a
-	jr	nz, BB18_7
+	jr	nz, BB18_8
 	ld	hl, -720868
 	push	de
 	ld	e, (hl)
@@ -2834,9 +2840,9 @@ BB18_1:
 	ld	a, l
 	bit	6, a
 	ld	hl, 0
-	jp	nz, BB18_73
-	jr	BB18_11
-BB18_5:
+	jp	nz, BB18_85
+	jr	BB18_12
+BB18_6:
 	ld	hl, -720878
 	push	de
 	ld	e, (hl)
@@ -2847,10 +2853,10 @@ BB18_5:
 	pop	de
 	ld	a, l
 	bit	5, a
-	jr	z, BB18_9
+	jr	z, BB18_10
 	call	_kb_Scan
-	jr	BB18_5
-BB18_7:
+	jr	BB18_6
+BB18_8:
 	ld	hl, -720876
 	push	de
 	ld	e, (hl)
@@ -2861,15 +2867,15 @@ BB18_7:
 	pop	de
 	ld	a, l
 	bit	7, a
-	jr	z, BB18_10
+	jr	z, BB18_11
 	call	_kb_Scan
-	jr	BB18_7
-BB18_9:
-	ld	hl, 1
-	jr	BB18_11
+	jr	BB18_8
 BB18_10:
-	ld	hl, 2
+	ld	hl, 1
+	jr	BB18_12
 BB18_11:
+	ld	hl, 2
+BB18_12:
 	ld	bc, -532
 	lea	iy, ix
 	add	iy, bc
@@ -2879,12 +2885,12 @@ BB18_11:
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
-	jp	BB18_1
-BB18_12:
+	jp	BB18_2
+BB18_13:
 	ld	a, l
 	cp	a, 2
-	jr	nz, BB18_15
-BB18_13:
+	jr	nz, BB18_19
+BB18_14:
 	call	_kb_Scan
 	call	_draw_rules_menu
 	call	_gfx_SwapDraw
@@ -2898,10 +2904,36 @@ BB18_13:
 	pop	de
 	ld	a, l
 	bit	6, a
-	jp	nz, BB18_73
+	jp	nz, BB18_85
+	ld	hl, -720876
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	bit	7, a
+	jr	nz, BB18_18
 	call	_gfx_Wait
-	jr	BB18_13
-BB18_15:
+	jr	BB18_14
+BB18_17:
+	call	_kb_Scan
+BB18_18:
+	ld	hl, -720876
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	bit	7, a
+	jp	z, BB18_1
+	jr	BB18_17
+BB18_19:
 	ld	bc, -532
 	lea	iy, ix
 	add	iy, bc
@@ -2951,11 +2983,11 @@ BB18_15:
 	ld	(iy + 85), hl
 	ld	de, 67
 	ld	iy, 11
-BB18_16:
+BB18_20:
 	lea	hl, iy
 	or	a, a
 	sbc	hl, de
-	jr	z, BB18_18
+	jr	z, BB18_22
 	lea	bc, iy
 	lea	de, iy
 	ld	(ix - 3), de
@@ -2973,8 +3005,8 @@ BB18_16:
 	ld	de, 67
 	ld	bc, 7
 	add	iy, bc
-	jr	BB18_16
-BB18_18:
+	jr	BB18_20
+BB18_22:
 	or	a, a
 	sbc	hl, hl
 	ld	bc, -529
@@ -2988,7 +3020,16 @@ BB18_18:
 	ld	hl, (hl)
 	ld	a, l
 	cp	a, 1
-	jp	nz, BB18_73
+	jp	nz, BB18_85
+	ld	bc, -541
+	lea	hl, ix
+	add	hl, bc
+	ld	iy, (hl)
+	lea	hl, iy + 9
+	ld	bc, -575
+	lea	iy, ix
+	add	iy, bc
+	ld	(iy), hl
 	ld	bc, -526
 	lea	hl, ix
 	add	hl, bc
@@ -3001,7 +3042,7 @@ BB18_18:
 	or	a, a
 	sbc	hl, hl
 	push	ix
-	ld	bc, -566
+	ld	bc, -563
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
@@ -3021,9 +3062,9 @@ BB18_18:
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
-BB18_20:
+BB18_24:
 	bit	0, e
-	jp	z, BB18_73
+	jp	z, BB18_85
 	ld	bc, -532
 	lea	iy, ix
 	add	iy, bc
@@ -3053,7 +3094,7 @@ BB18_20:
 	sbc	hl, bc
 	call	pe, __setflag
 	ld	de, (ix - 3)
-	jp	p, BB18_23
+	jp	p, BB18_27
 	push	bc
 	pop	hl
 	or	a, a
@@ -3079,7 +3120,7 @@ BB18_20:
 	pop	hl
 	pop	hl
 	pop	hl
-BB18_23:
+BB18_27:
 	ld	hl, -720878
 	ld	e, (hl)
 	inc	hl
@@ -3105,20 +3146,20 @@ BB18_23:
 	pop	ix
 	ld	(iy + 14), 1
 	ld	de, (ix - 3)
-	ld	bc, -563
+	ld	bc, -566
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
 	ld	a, e
 	bit	5, a
-	jp	z, BB18_31
+	jp	z, BB18_35
 	ld	bc, -554
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	a, l
 	bit	5, a
-	jp	nz, BB18_31
+	jp	nz, BB18_35
 	ld	de, -532
 	lea	hl, ix
 	add	hl, de
@@ -3144,24 +3185,24 @@ BB18_23:
 	ld	iy, (iy)
 	ld	de, (iy + 91)
 	bit	0, a
-	jr	nz, BB18_28
+	jr	nz, BB18_32
 	push	de
 	pop	hl
 	ld	bc, 5
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	p, BB18_28
+	jp	p, BB18_32
 	ld	bc, -538
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
 	ld	(iy + 15), 1
 	ld	hl, 1
-	jr	BB18_30
-BB18_28:
+	jr	BB18_34
+BB18_32:
 	bit	0, a
-	jr	z, BB18_31
+	jr	z, BB18_35
 	ld	bc, -538
 	lea	hl, ix
 	add	hl, bc
@@ -3174,15 +3215,15 @@ BB18_28:
 	sbc	hl, bc
 	call	pe, __setflag
 	ld	hl, -1
-	jp	m, BB18_31
-BB18_30:
+	jp	m, BB18_35
+BB18_34:
 	add	hl, de
 	ld	bc, -529
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
 	ld	(iy + 91), hl
-BB18_31:
+BB18_35:
 	ld	de, -529
 	lea	hl, ix
 	add	hl, de
@@ -3200,13 +3241,13 @@ BB18_31:
 	add	hl, de
 	pop	af
 	ld	(hl), bc
-	jp	p, BB18_33
+	jp	p, BB18_37
 	ld	bc, 0
-BB18_33:
+BB18_37:
 	or	a, a
 	sbc	hl, hl
 	ld	(ix - 3), bc
-	ld	bc, -563
+	ld	bc, -566
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
@@ -3218,7 +3259,7 @@ BB18_33:
 	ld	(ix), hl
 	pop	ix
 	ld	bc, (ix - 3)
-	ld	de, -563
+	ld	de, -578
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
@@ -3228,19 +3269,19 @@ BB18_33:
 	ld	iy, (ix)
 	pop	ix
 	ld	de, 0
-BB18_34:
+BB18_38:
 	push	bc
 	pop	hl
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jp	z, BB18_38
+	jp	z, BB18_42
 	bit	0, (iy)
-	jp	z, BB18_37
+	jp	z, BB18_41
 	lea	hl, iy - 6
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -581
+	ld	bc, -584
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
@@ -3248,14 +3289,14 @@ BB18_34:
 	pop	hl
 	inc	hl
 	push	ix
-	ld	bc, -578
+	ld	bc, -581
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
 	ex	de, hl
 	ld	bc, (ix - 3)
 	push	ix
-	ld	de, -575
+	ld	de, -566
 	add	ix, de
 	ld	(ix), bc
 	pop	ix
@@ -3271,30 +3312,30 @@ BB18_34:
 	pop	ix
 	add	hl, de
 	ex	de, hl
-	ld	bc, -581
+	ld	bc, -584
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	bc, (ix - 3)
 	ld	bc, 7
 	ldir
-	ld	de, -575
+	ld	de, -566
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -578
+	ld	bc, -581
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
 	ld	bc, (ix - 3)
-BB18_37:
+BB18_41:
 	lea	iy, iy + 7
 	dec	bc
-	jp	BB18_34
-BB18_38:
-	ld	bc, -575
+	jp	BB18_38
+BB18_42:
+	ld	bc, -566
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), de
@@ -3323,14 +3364,14 @@ BB18_38:
 	pop	de
 	ld	a, iyl
 	bit	7, a
-	jp	z, BB18_47
+	jp	z, BB18_51
 	ld	bc, -560
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	a, l
 	bit	7, a
-	jp	nz, BB18_47
+	jp	nz, BB18_51
 	ld	bc, -560
 	lea	hl, ix
 	add	hl, bc
@@ -3340,7 +3381,7 @@ BB18_38:
 	add	iy, bc
 	ld	iy, (iy)
 	ld	de, (iy + 91)
-	ld	bc, -548
+	ld	bc, -551
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, (iy)
@@ -3348,19 +3389,18 @@ BB18_38:
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	m, BB18_57
+	jp	m, BB18_61
 	ex	de, hl
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	m, BB18_57
-	ld	de, -529
+	jp	m, BB18_61
+	ld	bc, -529
 	lea	hl, ix
-	add	hl, de
+	add	hl, bc
 	ld	iy, (hl)
 	ld	de, (iy + 88)
-	ld	(ix - 3), bc
-	ld	bc, -563
+	ld	bc, -578
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, (iy)
@@ -3369,34 +3409,35 @@ BB18_38:
 	add	ix, bc
 	ld	iy, (ix)
 	pop	ix
-	ld	bc, (ix - 3)
-BB18_43:
+BB18_47:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jp	z, BB18_59
+	jp	z, BB18_63
 	bit	0, (iy)
-	jr	z, BB18_46
+	jr	z, BB18_50
 	ld	bc, -1
 	ld	(iy - 4), bc
-	ld	bc, 1
-	ld	(iy), b
-	ld	(iy - 1), b
+	ld	(iy), 0
+	ld	(iy - 1), 0
 	dec	de
-BB18_46:
+BB18_50:
 	lea	iy, iy + 7
 	dec	hl
-	jr	BB18_43
-BB18_47:
-	ld	bc, 1
-BB18_48:
+	jr	BB18_47
+BB18_51:
+	ld	bc, -538
+	lea	hl, ix
+	add	hl, bc
+	ld	de, (hl)
+BB18_52:
 	ld	hl, -720876
-	ld	e, (hl)
+	ld	c, (hl)
 	inc	hl
-	ld	d, (hl)
-	ld	a, e
+	ld	b, (hl)
+	ld	a, c
 	bit	7, a
-	jp	z, BB18_62
+	jp	z, BB18_68
 	ld	(ix - 3), bc
 	ld	bc, -557
 	lea	hl, ix
@@ -3405,89 +3446,107 @@ BB18_48:
 	ld	a, l
 	bit	7, a
 	ld	bc, (ix - 3)
-	jp	nz, BB18_62
-	ld	(ix - 3), bc
-	ld	bc, -557
+	jp	nz, BB18_68
+	ld	de, -560
 	lea	hl, ix
-	add	hl, bc
-	ld	(hl), de
-	push	ix
-	ld	bc, -560
-	add	ix, bc
-	ld	(ix), iy
-	pop	ix
-	ld	bc, -529
+	add	hl, de
+	ld	(hl), iy
+	ld	de, -529
 	lea	iy, ix
-	add	iy, bc
+	add	iy, de
 	ld	iy, (iy)
-	ld	de, (iy + 91)
-	ld	bc, -551
-	lea	iy, ix
-	add	iy, bc
-	ld	hl, (iy)
-	ld	bc, (ix - 3)
+	ld	iy, (iy + 91)
+	push	ix
+	ld	de, -548
+	add	ix, de
+	ld	hl, (ix)
+	pop	ix
+	ld	de, 1
 	or	a, a
-	sbc	hl, bc
+	sbc	hl, de
 	call	pe, __setflag
-	jp	m, BB18_58
-	ex	de, hl
+	jp	m, BB18_62
+	lea	hl, iy
 	or	a, a
-	sbc	hl, bc
+	sbc	hl, de
 	call	pe, __setflag
-	ld	de, -538
+	ld	(ix - 3), bc
+	ld	bc, -538
 	lea	hl, ix
 	push	af
-	add	hl, de
+	add	hl, bc
 	pop	af
-	ld	hl, (hl)
-	jp	m, BB18_58
+	ld	de, (hl)
+	ld	bc, (ix - 3)
+	jp	m, BB18_64
 	ld	de, -569
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 	or	a, a
 	sbc	hl, hl
-	push	hl
-	pop	bc
-	ld	de, -563
+	push	ix
+	ld	de, -581
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	ld	(ix - 3), bc
+	ld	bc, -578
 	lea	hl, ix
-	add	hl, de
-	ld	hl, (hl)
-BB18_53:
-	push	hl
-	pop	de
+	add	hl, bc
+	ld	de, (hl)
+	ld	bc, (ix - 3)
+BB18_57:
+	push	de
+	pop	hl
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB18_60
+	jp	z, BB18_65
 	bit	0, (iy)
-	jr	z, BB18_56
+	jr	z, BB18_60
 	scf
 	sbc	hl, hl
 	ld	(iy - 4), hl
 	ld	(iy), 0
 	ld	(iy - 1), 0
-	inc	bc
-BB18_56:
+	ld	(ix - 3), bc
+	ld	bc, -581
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	inc	hl
+	push	ix
+	add	ix, bc
+	ld	(ix), hl
+	pop	ix
+	ld	bc, (ix - 3)
+BB18_60:
 	lea	iy, iy + 7
-	ex	de, hl
-	dec	hl
-	jr	BB18_53
-BB18_57:
-	ld	de, -560
+	dec	de
+	jr	BB18_57
+BB18_61:
+	ld	bc, -538
 	lea	hl, ix
-	add	hl, de
-	ld	iy, (hl)
-	jp	BB18_48
-BB18_58:
-	ld	de, -560
+	add	hl, bc
+	ld	de, (hl)
+	ld	bc, -560
+	lea	iy, ix
+	add	iy, bc
+	ld	iy, (iy)
+	jp	BB18_52
+BB18_62:
+	ld	(ix - 3), bc
+	ld	bc, -538
 	lea	hl, ix
-	add	hl, de
-	ld	iy, (hl)
-	ld	(ix - 3), bc
-	jp	BB18_61
-BB18_59:
-	ld	(ix - 3), bc
+	add	hl, bc
+	ld	de, (hl)
+	ld	bc, -560
+	lea	iy, ix
+	add	iy, bc
+	ld	iy, (iy)
+	jp	BB18_67
+BB18_63:
 	ld	bc, -529
 	lea	hl, ix
 	add	hl, bc
@@ -3495,6 +3554,35 @@ BB18_59:
 	ld	(iy + 88), de
 	or	a, a
 	sbc	hl, hl
+	ld	(iy + 91), hl
+	ld	bc, -551
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	dec	hl
+	lea	iy, ix
+	add	iy, bc
+	ld	(iy), hl
+	ld	bc, -538
+	lea	hl, ix
+	add	hl, bc
+	ld	de, (hl)
+	push	ix
+	ld	bc, -560
+	add	ix, bc
+	ld	iy, (ix)
+	pop	ix
+	jp	BB18_52
+BB18_64:
+	ld	(ix - 3), bc
+	jp	BB18_66
+BB18_65:
+	or	a, a
+	sbc	hl, hl
+	ld	de, -529
+	lea	iy, ix
+	add	iy, de
+	ld	iy, (iy)
 	ld	(iy + 91), hl
 	ld	de, -548
 	lea	hl, ix
@@ -3504,48 +3592,105 @@ BB18_59:
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), hl
-	ld	de, -560
-	lea	hl, ix
-	add	hl, de
-	ld	iy, (hl)
-	ld	bc, (ix - 3)
-	jp	BB18_48
-BB18_60:
-	or	a, a
+	scf
 	sbc	hl, hl
-	ld	de, -529
-	lea	iy, ix
-	add	iy, de
-	ld	iy, (iy)
-	ld	(iy + 91), hl
-	ld	de, -563
+	push	hl
+	ld	de, -557
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
-	push	ix
-	ld	de, -551
-	add	ix, de
-	ld	bc, (ix)
-	pop	ix
-	dec	bc
-	ld	hl, (iy + 44)
-	ld	(ix - 3), bc
+	call	_gfx_FillScreen
+	pop	hl
+	ld	bc, -526
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	call	_display_hand
+	pop	hl
+	scf
+	sbc	hl, hl
+	push	hl
+	ld	bc, -575
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	ld	bc, -566
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	ld	bc, -545
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	call	_display_playing_hand
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	push	hl
+	push	hl
+	push	hl
+	ex	de, hl
+	ld	hl, 0
+	add	hl, sp
+	ex	de, hl
+	ld	bc, -541
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	ld	bc, 9
+	ldir
+	ld	bc, -551
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
 	ld	bc, -548
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	bc, -563
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	call	_display_game_stats
+	ld	hl, 21
+	add	hl, sp
+	ld	sp, hl
+	call	_gfx_SwapDraw
+	ld	hl, 500
+	push	hl
+	call	_wait_frames
+	pop	hl
+	ld	bc, -529
+	lea	hl, ix
+	add	hl, bc
+	ld	iy, (hl)
+	ld	hl, (iy + 44)
+	ld	bc, -551
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
 	push	de
-	ld	bc, (ix - 3)
 	push	ix
-	ld	de, -551
-	add	ix, de
-	ld	(ix), bc
+	ld	bc, -548
+	add	ix, bc
+	ld	de, (ix)
 	pop	ix
-	push	bc
+	push	de
 	ld	de, 0
 	push	de
 	push	ix
-	ld	bc, -566
+	ld	bc, -563
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
@@ -3559,12 +3704,16 @@ BB18_60:
 	push	ix
 	ld	bc, -541
 	add	ix, bc
-	ld	iy, (ix)
+	ld	de, (ix)
 	pop	ix
-	push	iy
+	push	de
 	push	hl
-	pea	iy + 9
 	ld	bc, -575
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	ld	bc, -566
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3575,12 +3724,15 @@ BB18_60:
 	ld	hl, (hl)
 	push	hl
 	call	_handle_draw_scoring
-	ld	bc, 1
+	ld	de, -557
+	lea	iy, ix
+	add	iy, de
+	ld	bc, (iy)
 	ld	iy, 30
 	add	iy, sp
 	ld	sp, iy
 	ld	(ix - 3), bc
-	ld	bc, -566
+	ld	bc, -563
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
@@ -3594,26 +3746,31 @@ BB18_60:
 	add	hl, bc
 	ld	iy, (hl)
 	ld	hl, (iy + 88)
+	ld	bc, -581
+	lea	iy, ix
+	add	iy, bc
+	ld	de, (iy)
+	or	a, a
+	sbc	hl, de
 	push	ix
-	ld	bc, -563
+	ld	bc, -538
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
-	or	a, a
-	sbc	hl, de
+	push	ix
+	ld	bc, -529
+	add	ix, bc
+	ld	iy, (ix)
+	pop	ix
 	ld	(iy + 88), hl
+BB18_66:
 	ld	bc, -560
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-BB18_61:
-	push	ix
-	ld	bc, -557
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
+BB18_67:
 	ld	bc, (ix - 3)
-BB18_62:
+BB18_68:
 	ld	hl, -720866
 	push	de
 	ld	e, (hl)
@@ -3626,14 +3783,14 @@ BB18_62:
 	bit	1, a
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -563
+	ld	bc, -566
 	push	af
 	add	ix, bc
 	pop	af
 	ld	(ix), hl
 	pop	ix
 	ld	bc, (ix - 3)
-	jr	z, BB18_67
+	jp	z, BB18_76
 	ld	(ix - 3), bc
 	push	ix
 	ld	bc, -542
@@ -3641,29 +3798,24 @@ BB18_62:
 	bit	1, (ix)
 	pop	ix
 	ld	bc, (ix - 3)
-	jr	nz, BB18_67
-	ld	(ix - 3), bc
-	ld	bc, -557
+	jp	nz, BB18_76
+	ld	(ix - 3), de
+	ld	de, -557
 	lea	hl, ix
-	add	hl, bc
-	ld	(hl), de
+	add	hl, de
+	ld	(hl), bc
 	push	ix
-	ld	bc, -532
-	add	ix, bc
-	ld	de, (ix)
+	ld	de, -532
+	add	ix, de
+	ld	bc, (ix)
 	pop	ix
-	push	de
+	push	bc
 	pop	hl
-	ld	bc, (ix - 3)
+	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	call	pe, __setflag
-	jp	m, BB18_66
-	dec	de
-	ld	bc, -532
-	lea	hl, ix
-	add	hl, bc
-	ld	(hl), de
+	ld	de, (ix - 3)
+	jr	nz, BB18_72
 	ex	de, hl
 	ld	e, iyl
 	ld	d, iyh
@@ -3677,34 +3829,81 @@ BB18_62:
 	ld	iyl, e
 	ld	iyh, d
 	ex	de, hl
-BB18_66:
-	ld	bc, -557
-	lea	hl, ix
-	add	hl, bc
-	ld	de, (hl)
+	push	de
+	pop	hl
+	dec	hl
 	push	ix
-	ld	bc, -563
+	ld	bc, -532
 	add	ix, bc
+	ld	(ix), hl
+	pop	ix
+	jr	BB18_74
+BB18_72:
+	push	bc
+	pop	hl
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	ld	(ix - 3), bc
+	ld	bc, -538
+	lea	hl, ix
+	push	af
+	add	hl, bc
+	pop	af
+	ld	de, (hl)
+	call	pe, __setflag
+	ld	bc, (ix - 3)
+	jp	m, BB18_74
+	dec	bc
+	ld	(ix - 3), de
+	ld	de, -532
+	lea	hl, ix
+	add	hl, de
+	ld	(hl), bc
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld	de, -572
+	lea	iy, ix
+	add	iy, de
+	ld	iy, (iy)
+	ld	(iy + 14), 0
+	ex	de, hl
+	ld	iyl, e
+	ld	iyh, d
+	ex	de, hl
+	jr	BB18_75
+BB18_74:
+	ld	(ix - 3), de
+BB18_75:
+	ld	de, -557
+	lea	hl, ix
+	add	hl, de
+	ld	bc, (hl)
+	push	ix
+	ld	de, -566
+	add	ix, de
 	ld	hl, (ix)
 	pop	ix
-BB18_67:
+	ld	de, (ix - 3)
+BB18_76:
 	ld	a, l
 	bit	2, a
-	jp	z, BB18_72
+	jp	z, BB18_84
+	ld	(ix - 3), bc
 	ld	bc, -542
 	lea	hl, ix
 	add	hl, bc
 	bit	2, (hl)
-	jp	nz, BB18_72
-	ld	bc, -557
+	ld	bc, (ix - 3)
+	jp	nz, BB18_84
+	ld	(ix - 3), de
+	ld	de, -557
 	lea	hl, ix
-	add	hl, bc
-	ld	(hl), de
-	push	ix
-	ld	bc, -538
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
+	add	hl, de
+	ld	(hl), bc
+	ld	de, (ix - 3)
 	dec	de
 	ld	(ix - 3), de
 	push	ix
@@ -3717,67 +3916,81 @@ BB18_67:
 	ld	de, (ix - 3)
 	or	a, a
 	sbc	hl, de
-	call	pe, __setflag
-	jp	p, BB18_71
-	push	bc
-	pop	de
-	inc	de
+	jr	nz, BB18_80
+	ld	bc, -560
+	lea	hl, ix
+	add	hl, bc
+	ld	(hl), iy
+	or	a, a
+	sbc	hl, hl
+	jr	BB18_82
+BB18_80:
 	push	bc
 	pop	hl
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB18_83
+	ld	de, -560
+	lea	hl, ix
+	add	hl, de
+	ld	(hl), iy
+	push	bc
+	pop	hl
+	inc	hl
+	push	bc
+	pop	de
+BB18_82:
+	ld	bc, -532
+	lea	iy, ix
+	add	iy, bc
+	ld	(iy), hl
+	ex	de, hl
 	ld	bc, 7
 	call	__imulu
 	push	hl
-	pop	bc
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld	(ix - 3), de
-	ld	de, -526
+	pop	de
+	ld	(ix - 3), bc
+	ld	bc, -526
 	lea	iy, ix
-	add	iy, de
-	ld	iy, (iy)
 	add	iy, bc
+	ld	iy, (iy)
+	add	iy, de
 	ld	(iy + 14), 0
-	ex	de, hl
-	ld	iyl, e
-	ld	iyh, d
-	ex	de, hl
-	ld	de, (ix - 3)
-	ld	bc, -532
-	lea	hl, ix
-	add	hl, bc
-	ld	(hl), de
-	push	ix
-	ld	bc, -557
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
-	jr	BB18_72
-BB18_71:
-	ld	bc, -557
-	lea	hl, ix
-	add	hl, bc
-	ld	de, (hl)
-BB18_72:
-	or	a, a
-	sbc	hl, hl
-	push	hl
-	pop	bc
-	ex	de, hl
-	ld	e, iyl
-	ld	d, iyh
-	ex	de, hl
-	ld	(ix - 3), de
 	ld	de, -560
 	lea	iy, ix
 	add	iy, de
+	ld	iy, (iy)
+	ld	bc, (ix - 3)
+	push	ix
+	ld	de, -557
+	add	ix, de
+	ld	bc, (ix)
+	pop	ix
+	jr	BB18_84
+BB18_83:
+	ld	de, -557
+	lea	hl, ix
+	add	hl, de
+	ld	bc, (hl)
+BB18_84:
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	pop	de
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	ld	(ix - 3), bc
+	ld	bc, -560
+	lea	iy, ix
+	add	iy, bc
 	ld	(iy), hl
-	push	bc
-	pop	hl
-	ld	de, (ix - 3)
-	ld	l, e
-	ld	h, d
+	ex	de, hl
+	ld	bc, (ix - 3)
+	ld	l, c
+	ld	h, b
 	push	ix
 	ld	bc, -557
 	add	ix, bc
@@ -3803,12 +4016,12 @@ BB18_72:
 	ld	hl, (hl)
 	ld	bc, 9
 	ldir
-	ld	bc, -548
+	ld	bc, -551
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -551
+	ld	bc, -548
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3816,7 +4029,7 @@ BB18_72:
 	or	a, a
 	sbc	hl, hl
 	push	hl
-	ld	bc, -566
+	ld	bc, -563
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3852,7 +4065,7 @@ BB18_72:
 	lea	hl, ix
 	add	hl, bc
 	ld	de, (hl)
-	ld	bc, -563
+	ld	bc, -566
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, (iy)
@@ -3865,8 +4078,8 @@ BB18_72:
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
-	jp	BB18_20
-BB18_73:
+	jp	BB18_24
+BB18_85:
 	call	_gfx_End
 	or	a, a
 	sbc	hl, hl
@@ -4043,9 +4256,9 @@ _switch.table.print_hand_type:
 	extern	__sand
 	extern	_gfx_PrintString
 	extern	_memcpy
-	extern	__sshru
 	extern	_gfx_PrintInt
 	extern	__idivu
+	extern	__sshru
 	extern	__setflag
 	extern	__bdivu
 	extern	_time

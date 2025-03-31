@@ -428,7 +428,7 @@ void display_playing_hand(Card *cards, int count, Card *scoring_cards, int pos) 
     int offset_y = 100;
 	for (int i = 0; i < count; i++) {
         print_playing_card(cards[i], offset_x + (i*32), offset_y);
-        if (card_equal(&cards[i], &scoring_cards[pos])) { //cards[i] && scoring[j] equal each other
+        if (pos >= 0 && card_equal(&cards[i], &scoring_cards[pos])) { //cards[i] && scoring[j] equal each other
             print_playing_value(scoring_cards[pos].value, offset_x + (i*32), offset_y - 24);
         }
 	}
@@ -479,6 +479,7 @@ int main(void) {
 	int running = 1;
 
     gfx_Begin();
+goto_menu:
     while (state == STATE_MENU) {
         kb_Scan();
         draw_main_menu();
@@ -506,8 +507,11 @@ int main(void) {
         if (kb_Data[6] & kb_Clear) {
             gfx_End();
             return 0;
-        }
-
+        } else if (kb_Data[2] & kb_Alpha) {
+            while (kb_Data[2] & kb_Alpha) kb_Scan(); // wait for release
+            state = STATE_MENU;
+            goto goto_menu;
+        } 
         gfx_Wait();
     }
 
@@ -600,8 +604,16 @@ int main(void) {
 			}
 			hand.amt_selected = 0;
 			hands_left--;
-			int gained = handle_draw_scoring(playing_hand, playing_hand_idx, result.scoring_cards, result.scoring_count, &result.value,
-                &hand, score, target_score, hands_left, discards_left);
+
+            //pre scoring
+            gfx_FillScreen(255);
+            display_hand(&hand);
+            display_playing_hand(playing_hand, playing_hand_idx, result.scoring_cards, -1);
+            display_game_stats(score, target_score, hands_left, discards_left, result.value);
+            gfx_SwapDraw();
+            wait_frames(500);
+            //scoring
+			int gained = handle_draw_scoring(playing_hand, playing_hand_idx, result.scoring_cards, result.scoring_count, &result.value, &hand, score, target_score, hands_left, discards_left);
             score += gained;
 			
 			hand.current_cards_cnt -= tc;
@@ -611,12 +623,17 @@ int main(void) {
 		//use arrow keys to change card to select
 		arrow_key = kb_Data[7];
 		if (arrow_key & kb_Left && !(arrow_prev_key & kb_Left)) {
-			if (card_idx > 0) {
+            if (card_idx == 0) {
+                hand.hand[card_idx].is_selected = false;
+                card_idx = hand.hand_size-1;
+            } else if (card_idx > 0) 
 				hand.hand[card_idx--].is_selected = false;
-			}
 		}
 		if (arrow_key & kb_Right && !(arrow_prev_key & kb_Right)) {
-			if (card_idx < hand.hand_size-1) // 52 -> deck size | 8 -> hand_size
+            if (card_idx == hand.hand_size-1){
+                hand.hand[card_idx].is_selected = false;
+                card_idx = 0;
+            } else if (card_idx < hand.hand_size-1) // 52 -> deck size | 8 -> hand_size
 				hand.hand[card_idx++].is_selected = false;
 		}
 
