@@ -2604,63 +2604,59 @@ BB16_8:
 	section	.text,"ax",@progbits
 	public	_handle_draw_scoring
 _handle_draw_scoring:
-	ld	hl, -27
+	ld	hl, -24
 	call	__frameset
-	ld	bc, (ix + 15)
+	ld	de, (ix + 15)
 	ld	iy, (ix + 18)
+	ld	bc, 0
 	ld	hl, (iy + 3)
-	ld	(ix - 15), hl
-	ld	de, 1
-	push	bc
-	pop	hl
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	ld	(ix - 12), bc
-	push	bc
-	pop	iy
-	dec	de
-	jp	p, BB17_2
+	ld	(ix - 12), hl
 	push	de
 	pop	iy
-BB17_2:
-	ld	hl, 2
-	ld	(ix - 18), hl
-	lea	hl, ix - 9
-	ld	(ix - 21), hl
-	ld	hl, (ix - 12)
-	dec	hl
-	ld	(ix - 12), hl
-	ld	bc, (ix - 15)
-BB17_3:
+	ld	de, 1
 	lea	hl, iy
 	or	a, a
 	sbc	hl, de
-	jp	z, BB17_7
-	ld	(ix - 27), iy
-	ld	(ix - 15), de
-	ld	de, (ix - 18)
+	call	pe, __setflag
+	jp	p, BB17_2
+	push	bc
+	pop	iy
+BB17_2:
+	ld	de, 2
+	lea	hl, ix - 9
+	ld	(ix - 15), hl
+BB17_3:
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	jp	z, BB17_5
+	ld	(ix - 18), bc
+	push	de
+	pop	bc
+	ld	(ix - 24), bc
 	ld	hl, (ix + 12)
-	add	hl, de
-	ld	hl, (hl)
 	add	hl, bc
-	ld	(ix - 24), hl
+	ld	hl, (hl)
+	ld	de, (ix - 12)
+	add	hl, de
+	ld	(ix - 12), hl
 	scf
 	sbc	hl, hl
 	push	hl
+	ld	(ix - 21), iy
 	call	_gfx_FillScreen
 	pop	hl
 	ld	hl, (ix + 21)
 	push	hl
 	call	_display_hand
 	pop	hl
-	ld	de, (ix - 21)
+	ld	de, (ix - 15)
 	ld	hl, (ix + 18)
 	ld	bc, 9
 	ldir
-	ld	hl, (ix - 24)
+	ld	hl, (ix - 12)
 	ld	(ix - 6), hl
-	ld	hl, (ix - 15)
+	ld	hl, (ix - 18)
 	push	hl
 	ld	hl, (ix + 12)
 	push	hl
@@ -2680,7 +2676,7 @@ BB17_3:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	hl, (ix - 21)
+	ld	hl, (ix - 15)
 	ld	bc, 9
 	ldir
 	ld	hl, (ix + 33)
@@ -2696,29 +2692,22 @@ BB17_3:
 	add	hl, sp
 	ld	sp, hl
 	call	_gfx_SwapDraw
-	ld	hl, (ix - 12)
-	ld	de, (ix - 15)
-	or	a, a
-	sbc	hl, de
-	ld	hl, 500
-	jr	z, BB17_6
 	ld	hl, 250
-BB17_6:
 	push	hl
 	call	_wait_frames
+	ld	bc, (ix - 18)
+	ld	iy, (ix - 21)
 	pop	hl
-	ld	de, (ix - 15)
-	inc	de
-	ld	bc, 7
-	ld	hl, (ix - 18)
-	add	hl, bc
-	ld	(ix - 18), hl
-	ld	bc, (ix - 24)
-	ld	iy, (ix - 27)
+	inc	bc
+	ld	de, 7
+	ld	hl, (ix - 24)
+	add	hl, de
+	ex	de, hl
 	jp	BB17_3
-BB17_7:
+BB17_5:
 	ld	iy, (ix + 18)
 	ld	hl, (iy + 6)
+	ld	bc, (ix - 12)
 	call	__imulu
 	ld	sp, ix
 	pop	ix

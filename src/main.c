@@ -453,21 +453,10 @@ int handle_draw_scoring(Card *all_cards, int all_cards_count, Card *cards, int c
         gfx_SwapDraw();
 
 		
-        wait_frames(i == count - 1 ? 500 : 250);
+        wait_frames(250);
     }
+    //TODO: add extra frames after last card is scored
 
-
-	/*
-    // Final display showing multiplied total
-    gfx_FillScreen(255);
-    display_hand(p_hand);
-	
-    HandValue final_display = *hand_type;
-    //final_display.chips = final_score;
-    display_game_stats(score, target_score, hands_left, discards_left, final_display);
-    gfx_SwapDraw();
-    wait_frames(500);
-	*/
 
     return running_total * hand_type->mult;
 }
