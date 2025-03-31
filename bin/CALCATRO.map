@@ -5,120 +5,126 @@ Section          Base   Top    High   Length
 .libs            D1A9E2 D1AA37            55h
 .init.clock      D1AA37 D1AA37             0h
 .init.reruncheck D1AA37 D1AA37             0h
-.init            D1AA37 D1AA5E            27h
-.fini            D1AA5E D1AA92            34h
-.text            D1AA92 D1D216          2784h
-.data            D1D216 D1D280            6Ah
-.rodata          D1D280 D1D3CA           14Ah
+.init            D1AA37 D1AA61            2Ah
+.fini            D1AA61 D1AA95            34h
+.text            D1AA95 D1D34C          28B7h
+.data            D1D34C D1D3B6            6Ah
+.rodata          D1D3B6 D1D542           18Ch
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
 .fini_array      000000 000000             0h
-.bss             D052C6 D052C9 D13FD8      3h
+.bss             D052C6 D052CC D13FD8      6h
 .header          D1A87F D1A882             3h
 
 Label                                   Value
 -------------------------------------   ------
 ___low_bss                            = D052C6
-___len_bss                            = 000003
+___len_bss                            = 000006
 ___heaptop                            = D13FD8
-___heapbot                            = D052C9
+___heapbot                            = D052CC
 ___libs                               = D1A9E2
 ___init_array_count                   = 000000
 ___ctors_count                        = 000000
 ___dtors_count                        = 000000
 ___fini_array_count                   = 000000
 __stack                               = D1A87E
-__bdivu                               = D1AA92
-__bdvrmu                              = D1AA9C
-__frameset                            = D1AAAB
-__frameset0                           = D1AAB9
-__idivs                               = D1AAC4
-__idivu                               = D1AACB
-__idvrms                              = D1AAD3
-__idvrmu                              = D1AB01
-__imulu                               = D1AB19
-__ineg                                = D1AB49
-__inot                                = D1AB52
-__irems                               = D1AB5C
-__ishru                               = D1AB64
-__ladd                                = D1ABA5
-__lmulu                               = D1ABAB
-__lsub                                = D1AC07
+__bdivu                               = D1AA95
+__bdvrmu                              = D1AA9F
+__frameset                            = D1AAAE
+__frameset0                           = D1AABC
+__idivs                               = D1AAC7
+__idivu                               = D1AACE
+__idvrms                              = D1AAD6
+__idvrmu                              = D1AB04
+__imulu                               = D1AB1C
+__ineg                                = D1AB4C
+__inot                                = D1AB55
+__irems                               = D1AB5F
+__ishru                               = D1AB67
+__ladd                                = D1ABA8
+__lmulu                               = D1ABAE
+__lsub                                = D1AC0A
 __ftol                                = 00027C
 __ftoul                               = 00027C
 __ltof                                = 000284
 __setflag                             = 000218
 __ultof                               = 000280
-__sand                                = D1AC11
-__snot                                = D1AB52
-__sshru                               = D1AC1A
-_os_DisableHomeTextBuffer             = D1AC27
-_os_EnableHomeTextBuffer              = D1AC39
-_random                               = D1AC4B
-__setstate                            = D1ACA9
-__state                               = D1D216
+__sand                                = D1AC14
+__snot                                = D1AB55
+__sshru                               = D1AC1D
+_os_DisableHomeTextBuffer             = D1AC2A
+_os_EnableHomeTextBuffer              = D1AC3C
+_random                               = D1AC4E
+__setstate                            = D1ACAC
+__state                               = D1D34C
 _boot_GetDate                         = 0005A8
 _boot_GetTime                         = 0005B0
-_mktime                               = D1ACB9
-_mktime.yday                          = D1D280
-_time                                 = D1ADBD
+_mktime                               = D1ACBC
+_mktime.yday                          = D1D3B6
+_time                                 = D1ADC0
 _memcpy                               = 0000A4
-_rand                                 = D1AE3B
-_srand                                = D1AE48
-.missingappvar                        = D1D2A4
-.libloadname                          = D1D2A9
+_rand                                 = D1AE3E
+_srand                                = D1AE4B
+.missingappvar                        = D1D3DA
+.libloadname                          = D1D3DF
 .libloadnamelen                       = 000007
-.webaddress                           = D1D2B1
+.webaddress                           = D1D3E7
 __start                               = D1AA37
-___exithl                             = D1AA5E
-skip._exit                            = D1AA5E
-skip.__Exit                           = D1AA5E
-skip._abort                           = D1AA5E
-_exit.sp                              = D1AA5F
-_exit.flash_wait_states               = D1AA69
-_card_equal                           = D1AE50
-_wait_frames                          = D1AE92
-_shuffle_deck                         = D1AEB8
-_create_deck                          = D1AF61
-_draw_main_menu                       = D1B0F0
-_draw_rules_menu                      = D1B174
-_print_card                           = D1B17E
-_print_playing_card                   = D1B229
-_print_playing_value                  = D1B251
-_print_hand_stats                     = D1B28D
-_print_hand_type                      = D1B2CF
-_display_game_stats                   = D1B347
-_display_hand                         = D1B404
-_draw_cards_to_hand                   = D1B49F
-_get_hand_type                        = D1B58B
-_display_playing_hand                 = D1C40A
-_handle_draw_scoring                  = D1C4E1
-_main                                 = D1C5DA
+___exithl                             = D1AA61
+skip._exit                            = D1AA61
+skip.__Exit                           = D1AA61
+skip._abort                           = D1AA61
+_exit.sp                              = D1AA62
+_exit.flash_wait_states               = D1AA6C
+_card_equal                           = D1AE53
+_wait_frames                          = D1AE95
+_shuffle_deck                         = D1AEBB
+_create_deck                          = D1AF64
+_draw_main_menu                       = D1B0F3
+_draw_rules_menu                      = D1B177
+_print_card                           = D1B197
+_print_playing_card                   = D1B242
+_print_playing_value                  = D1B26A
+_print_hand_stats                     = D1B2A6
+_print_hand_type                      = D1B2E8
+_display_game_stats                   = D1B360
+_draw_shop_menu                       = D1B41D
+_display_hand                         = D1B4CE
+_draw_cards_to_hand                   = D1B569
+_get_hand_type                        = D1B655
+_display_playing_hand                 = D1C4D4
+_handle_draw_scoring                  = D1C5AB
+_main                                 = D1C6A4
 _frame_timer                          = D052C6
-_hand_table                           = D1D226
-_.str                                 = D1D2C6
-_.str.1                               = D1D2CF
-_.str.2                               = D1D2E4
-_.str.3                               = D1D2FC
-_.str.4                               = D1D312
-_.str.5                               = D1D316
-_.str.6                               = D1D320
-_.str.7                               = D1D325
-_.str.8                               = D1D32E
-_.str.9                               = D1D33E
-_.str.10                              = D1D347
-_.str.11                              = D1D34D
-_.str.12                              = D1D358
-_.str.13                              = D1D367
-_.str.14                              = D1D376
-_.str.15                              = D1D382
-_.str.16                              = D1D383
-_.str.17                              = D1D387
-_.str.18                              = D1D38C
-___const.get_hand_type.straight_ranks = D1D391
-_.str.19                              = D1D39E
-_switch.table.print_hand_type         = D1D3AC
+_base_ante_values                     = D1D3FC
+_current_ante                         = D052C9
+_hand_table                           = D1D35C
+_.str                                 = D1D414
+_.str.1                               = D1D41D
+_.str.2                               = D1D432
+_.str.3                               = D1D44A
+_.str.4                               = D1D460
+_.str.5                               = D1D477
+_.str.6                               = D1D47B
+_.str.7                               = D1D485
+_.str.8                               = D1D48A
+_.str.9                               = D1D493
+_.str.10                              = D1D4A3
+_.str.11                              = D1D4AC
+_.str.12                              = D1D4B2
+_.str.13                              = D1D4BD
+_.str.14                              = D1D4CC
+_.str.15                              = D1D4DB
+_.str.16                              = D1D4E7
+_.str.17                              = D1D4E8
+_.str.18                              = D1D4EC
+_.str.19                              = D1D4F1
+_.str.20                              = D1D4F8
+_.str.21                              = D1D504
+___const.get_hand_type.straight_ranks = D1D509
+_.str.22                              = D1D516
+_switch.table.print_hand_type         = D1D524
 lib.LibLoad                           = D1A9E2
 _#gfx_Begin                           = D1A9F5
 _#gfx_End                             = D1A9F9

@@ -9,10 +9,15 @@
 //screen is 320, 240
 unsigned int frame_timer = 0;
 
+const int base_ante_values[8] = {300, 800, 2000, 5000, 11000, 20000, 35000, 50000};
+int current_ante = 0;
+
 typedef enum {
     STATE_MENU,
     STATE_GAME,
-    STATE_RULES
+    STATE_RULES,
+	STATE_BLIND_SELECT,
+	STATE_SHOP
 } GameState;
 
 typedef struct {
@@ -118,12 +123,14 @@ void draw_main_menu(void) {
     gfx_PrintStringXY("CALCATRO", 80, 40);
     gfx_SetTextScale(1, 2);
     gfx_PrintStringXY("Press [2nd] to Start", 80, 100);
-    gfx_PrintStringXY("Press [Alpha] for rules", 80, 132);
+    gfx_PrintStringXY("Press [Alpha] for Rules", 80, 132);
     gfx_PrintStringXY("Press [Clear] to Quit", 80, 164);
 }
 
 void draw_rules_menu(void) {
     gfx_FillScreen(255);
+    gfx_PrintStringXY("Press [Alpha] for Menu", 80, 132);
+
 } 
 
 void print_card(Card c , int x, int y) {
@@ -200,6 +207,21 @@ void display_game_stats(int score, int target_score, int hands_left, int discard
 	gfx_PrintInt(discards_left, 1);
 	print_hand_type(hv, 10, 78);
 }
+
+void draw_shop_menu(int score, int hands_left, int discards_left, HandValue hv) {
+    gfx_FillScreen(255);
+	gfx_SetTextScale(1, 2);
+	display_game_stats(score, 0, hands_left, discards_left, hv);
+	
+	int offset_x = 120;
+	int offset_y = 100;
+	
+	gfx_PrintStringXY("Select", offset_x, offset_y);
+	gfx_PrintStringXY("Small Blind", offset_x, offset_y + 32);
+	gfx_SetTextXY(offset_x, offset_y + 64);
+	gfx_PrintInt(base_ante_values[current_ante], 0);
+	
+} 
 
 void display_hand(Hand *p_hand) {
 	
@@ -468,6 +490,7 @@ int main(void) {
 	int running = 1;
 
     gfx_Begin();
+	
 goto_menu:
     while (state == STATE_MENU) {
         kb_Scan();
@@ -476,7 +499,7 @@ goto_menu:
 
         if (kb_Data[1] & kb_2nd) {
             while (kb_Data[1] & kb_2nd) kb_Scan(); // wait for release
-            state = STATE_GAME;
+            state = STATE_SHOP;
         } else if (kb_Data[2] & kb_Alpha) {
             while (kb_Data[2] & kb_Alpha) kb_Scan();
             state = STATE_RULES;
@@ -484,10 +507,29 @@ goto_menu:
             gfx_End();
             return 0;
         }
-
+		
+		
         gfx_Wait();
     }
+	
+	int score = 0, target_score = 0, hands_left = 4, discards_left = 3;
+	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
 
+goto_shop:
+	while (state == STATE_SHOP) {
+		kb_Scan();
+        draw_shop_menu(score, hands_left, discards_left, (HandValue){-1,0,0});
+        gfx_SwapDraw();
+		
+		if (kb_Data[1] & kb_2nd) {
+            while (kb_Data[1] & kb_2nd) kb_Scan(); // wait for release
+            state = STATE_GAME;
+        } else if (kb_Data[6] & kb_Clear) {
+            gfx_End();
+            return 0;
+        }
+	}
+	
     while (state == STATE_RULES) {
         kb_Scan();
         draw_rules_menu();
@@ -505,8 +547,7 @@ goto_menu:
     }
 
 
-	int score = 0, target_score = 0, hands_left = 4, discards_left = 3;
-	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
+	
 
 	
 	gfx_SetTextScale(1,2);
