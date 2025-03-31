@@ -3,8 +3,7 @@ This repository contains the source code and compiled binary for a Ti 84+ CE ado
 
 ---
 
-Use TI Connect CE to put the `.8xp` file on the calculator.
-Use Cesium to run the game.
+Use TI Connect CE to put the `CALCATRO.8xp` file found in the `bin` directory on the calculator. Add the `clibs` file also if you do not have them already. Use Cesium to run the game.
 
 ---
 
