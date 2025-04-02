@@ -5,12 +5,17 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <math.h>
+
+
+#define PI 3.14159265
 
 //screen is 320, 240
 unsigned int frame_timer = 0;
 
 const int base_ante_values[8] = {300, 800, 2000, 5000, 11000, 20000, 35000, 50000};
 int current_ante = 0;
+int current_blind = 0; // 0 - small | 1 - big | 2 - boss
 
 typedef enum {
     STATE_MENU,
@@ -67,7 +72,7 @@ typedef struct {
 } EvaluatedHand;
 
 HandValue hand_table[HAND_COUNT] = {
-    { HAND_HIGH_CARD,      5,   1 },
+    { HAND_HIGH_CARD,      5,   100 },
     { HAND_ONE_PAIR,       10,  2 },
     { HAND_TWO_PAIR,       20,  2 },
     { HAND_THREE_KIND,     30,  3 },
@@ -130,7 +135,6 @@ void draw_main_menu(void) {
 void draw_rules_menu(void) {
     gfx_FillScreen(255);
     gfx_PrintStringXY("Press [Alpha] for Menu", 80, 132);
-
 } 
 
 void print_card(Card c , int x, int y) {
@@ -196,11 +200,20 @@ void print_hand_type(HandValue hv, int x, int y) {
 }
 
 void display_game_stats(int score, int target_score, int hands_left, int discards_left, HandValue hv) {
+	gfx_SetTextXY(10, 2);
+    gfx_SetTextScale(1, 1);
+    gfx_PrintString("Score at");
+    gfx_PrintStringXY("least:", 10, 10);
+    gfx_SetTextScale(1, 2);
 	gfx_SetTextXY(10, 20);
 	gfx_PrintInt(target_score, 1);
 	gfx_SetTextXY(10, 36);
+    gfx_SetTextScale(1, 1);
+    gfx_PrintString("Round Score:");
+    gfx_SetTextScale(1, 2);
+    gfx_SetTextXY(10, 44);
 	gfx_PrintInt(score, 1);
-	gfx_SetTextXY(10, 52);
+	gfx_SetTextXY(10, 150);
 	gfx_PrintString("H: ");
 	gfx_PrintInt(hands_left, 1);
 	gfx_PrintString(" D: ");
@@ -208,19 +221,36 @@ void display_game_stats(int score, int target_score, int hands_left, int discard
 	print_hand_type(hv, 10, 78);
 }
 
-void draw_shop_menu(int score, int hands_left, int discards_left, HandValue hv) {
+void draw_blind_menu(int score, int hands_left, int discards_left, HandValue hv) {
     gfx_FillScreen(255);
 	gfx_SetTextScale(1, 2);
 	display_game_stats(score, 0, hands_left, discards_left, hv);
 	
-	int offset_x = 120;
-	int offset_y = 100;
+
+	int offset_x = 100;
+	int offset_y = 120;
 	
-	gfx_PrintStringXY("Select", offset_x, offset_y);
-	gfx_PrintStringXY("Small Blind", offset_x, offset_y + 32);
-	gfx_SetTextXY(offset_x, offset_y + 64);
-	gfx_PrintInt(base_ante_values[current_ante], 0);
-	
+    int box_width = 68;
+    int padding_x = 10;
+
+    for (int i = 0; i < 3; i++) {
+	    gfx_PrintStringXY("Select", offset_x + ((box_width+padding_x)*i), offset_y);
+
+        gfx_SetTextScale(1, 1);
+	    gfx_PrintStringXY(i == 0 ? "Small" : i == 1 ? "Big" : "Boss", offset_x + ((box_width+padding_x)*i), offset_y + 24);
+	    gfx_PrintStringXY("Blind", offset_x + ((box_width+padding_x)*i), offset_y + 32);
+
+        gfx_SetTextScale(1, 2);
+	    gfx_SetTextXY(offset_x + ((box_width+padding_x)*i), offset_y + 48);
+	    gfx_PrintInt((int) (base_ante_values[current_ante] * (i*.5f + 1)), 0);
+
+        if (current_blind == i) {
+            gfx_SetTextXY(offset_x + 4 + ((box_width+padding_x)*i), offset_y-26);
+            gfx_PrintString("[2nd]");
+        }
+
+        gfx_Rectangle(offset_x - padding_x + (box_width * i) + (padding_x * i), offset_y-5, box_width, GFX_LCD_HEIGHT-offset_y+5);
+    }
 } 
 
 void display_hand(Hand *p_hand) {
@@ -498,8 +528,8 @@ goto_menu:
         gfx_SwapDraw();
 
         if (kb_Data[1] & kb_2nd) {
-            while (kb_Data[1] & kb_2nd) kb_Scan(); // wait for release
-            state = STATE_SHOP;
+            while (kb_Data[1] & kb_2nd) kb_Scan();
+            state = STATE_BLIND_SELECT;
         } else if (kb_Data[2] & kb_Alpha) {
             while (kb_Data[2] & kb_Alpha) kb_Scan();
             state = STATE_RULES;
@@ -515,15 +545,18 @@ goto_menu:
 	int score = 0, target_score = 0, hands_left = 4, discards_left = 3;
 	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
 
-goto_shop:
-	while (state == STATE_SHOP) {
+goto_blind_select:
+	while (state == STATE_BLIND_SELECT) {
 		kb_Scan();
-        draw_shop_menu(score, hands_left, discards_left, (HandValue){-1,0,0});
+        draw_blind_menu(score, hands_left, discards_left, (HandValue){-1,0,0});
+        gfx_SetTextXY(200, 10);
+        gfx_PrintInt(current_blind, 1);
         gfx_SwapDraw();
 		
 		if (kb_Data[1] & kb_2nd) {
-            while (kb_Data[1] & kb_2nd) kb_Scan(); // wait for release
+            while (kb_Data[1] & kb_2nd) kb_Scan();
             state = STATE_GAME;
+            target_score = (int) (base_ante_values[current_ante] * (current_blind*.5f + 1));
         } else if (kb_Data[6] & kb_Clear) {
             gfx_End();
             return 0;
@@ -539,15 +572,12 @@ goto_shop:
             gfx_End();
             return 0;
         } else if (kb_Data[2] & kb_Alpha) {
-            while (kb_Data[2] & kb_Alpha) kb_Scan(); // wait for release
+            while (kb_Data[2] & kb_Alpha) kb_Scan();
             state = STATE_MENU;
             goto goto_menu;
         } 
         gfx_Wait();
     }
-
-
-	
 
 	
 	gfx_SetTextScale(1,2);
@@ -629,7 +659,6 @@ goto_shop:
 					hand.hand[i].to_play = false;
 					hand.hand[i].is_selected = false;
 					tc++;
-					//hand.current_cards_cnt--;
 				}
 			}
 			hand.amt_selected = 0;
@@ -644,9 +673,24 @@ goto_shop:
             wait_frames(500);
             //scoring
 			int gained = handle_draw_scoring(playing_hand, playing_hand_idx, result.scoring_cards, result.scoring_count, &result.value, &hand, score, target_score, hands_left, discards_left);
+            //TODO: add wait after animation with total score replacing handtype
             score += gained;
-			
+            //TODO: have hand not display played cards
 			hand.current_cards_cnt -= tc;
+            
+            if (score >= target_score) {
+                 score = 0;
+                 hands_left = 4;
+                 discards_left = 3;
+                 if (current_blind == 2) { // beat boss blind
+                     current_blind = 0;
+                     current_ante++;
+                 } else {
+                     current_blind++;
+                 }
+                 state = STATE_BLIND_SELECT;
+                 goto goto_blind_select; // TODO: change to shop when it gets added
+            }
 		}
 		play_prev_key = play_key;
 
