@@ -4976,7 +4976,7 @@ _current_blind:
 _hand_table:
 	dl	0
 	dl	5
-	dl	100
+	dl	1
 	dl	1
 	dl	10
 	dl	2

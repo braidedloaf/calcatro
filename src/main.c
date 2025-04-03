@@ -72,7 +72,7 @@ typedef struct {
 } EvaluatedHand;
 
 HandValue hand_table[HAND_COUNT] = {
-    { HAND_HIGH_CARD,      5,   100 },
+    { HAND_HIGH_CARD,      5,   1 },
     { HAND_ONE_PAIR,       10,  2 },
     { HAND_TWO_PAIR,       20,  2 },
     { HAND_THREE_KIND,     30,  3 },
