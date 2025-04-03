@@ -180,8 +180,11 @@ void print_hand_stats(HandValue hv, int x, int y) {
 		gfx_PrintInt(hv.mult, 1);
 }
 
-void print_hand_type(HandValue hv, int x, int y) {
-	if (hv.type >= 0) {
+void print_hand_type(HandValue hv, int x, int y, int hand_score) {
+    if (hv.chips == -1) {
+        gfx_SetTextXY(x, y+16);
+        gfx_PrintInt(hand_score, 1);
+    } else if (hv.type >= 0) {
 		gfx_SetTextXY(x, y);
 		switch(hv.type) {
 			case HAND_HIGH_CARD:      gfx_PrintString("High Card"); print_hand_stats(hv, x, y); break;
@@ -199,7 +202,7 @@ void print_hand_type(HandValue hv, int x, int y) {
 	}
 }
 
-void display_game_stats(int score, int target_score, int hands_left, int discards_left, HandValue hv) {
+void display_game_stats(int score, int target_score, int hand_score, int hands_left, int discards_left, HandValue hv) {
 	gfx_SetTextXY(10, 2);
     gfx_SetTextScale(1, 1);
     gfx_PrintString("Score at");
@@ -218,13 +221,13 @@ void display_game_stats(int score, int target_score, int hands_left, int discard
 	gfx_PrintInt(hands_left, 1);
 	gfx_PrintString(" D: ");
 	gfx_PrintInt(discards_left, 1);
-	print_hand_type(hv, 10, 78);
+	print_hand_type(hv, 10, 78, hand_score);
 }
 
 void draw_blind_menu(int score, int hands_left, int discards_left, HandValue hv) {
     gfx_FillScreen(255);
 	gfx_SetTextScale(1, 2);
-	display_game_stats(score, 0, hands_left, discards_left, hv);
+	display_game_stats(score, 0, 0, hands_left, discards_left, hv);
 	
 
 	int offset_x = 100;
@@ -501,7 +504,7 @@ int handle_draw_scoring(Card *all_cards, int all_cards_count, Card *cards, int c
         HandValue display = *hand_type;
         display.chips = running_total;
 		display_playing_hand(all_cards, all_cards_count, cards, i);
-        display_game_stats(score, target_score, hands_left, discards_left, display);
+        display_game_stats(score, target_score, 0, hands_left, discards_left, display);
         gfx_SwapDraw();
 
 		
@@ -549,8 +552,6 @@ goto_blind_select:
 	while (state == STATE_BLIND_SELECT) {
 		kb_Scan();
         draw_blind_menu(score, hands_left, discards_left, (HandValue){-1,0,0});
-        gfx_SetTextXY(200, 10);
-        gfx_PrintInt(current_blind, 1);
         gfx_SwapDraw();
 		
 		if (kb_Data[1] & kb_2nd) {
@@ -582,7 +583,8 @@ goto_blind_select:
 	
 	gfx_SetTextScale(1,2);
 	gfx_SetColor(0);
-
+    
+    //create deck every round
 	Deck deck = create_deck();
 	shuffle_deck(&deck);
 	
@@ -607,7 +609,7 @@ goto_blind_select:
 			draw_cards_to_hand(&hand, hand.hand_size - hand.current_cards_cnt, &deck, &next_card);
 		}
 		
-
+        //handle selection
 		select_key = kb_Data[1];
 		hand.hand[card_idx].is_selected = true;
 		if ((select_key & kb_2nd) && !(select_prev_key & kb_2nd)) {
@@ -634,6 +636,7 @@ goto_blind_select:
 
 		EvaluatedHand result = get_hand_type(playing_hand, playing_hand_idx);
 		
+        //handle discarding
 		discard_key = kb_Data[3];
 		if (discard_key & kb_GraphVar && !(discard_prev_key & kb_GraphVar) && discards_left > 0 && hand.amt_selected > 0) {
 
@@ -650,6 +653,7 @@ goto_blind_select:
 		}
 		discard_prev_key = discard_key;
 
+        //handle playing
 		play_key = kb_Data[2];
 		if (play_key & kb_Alpha && !(play_prev_key & kb_Alpha) && hands_left > 0 && hand.amt_selected > 0) {
 			int tc = 0;
@@ -668,16 +672,37 @@ goto_blind_select:
             gfx_FillScreen(255);
             display_hand(&hand);
             display_playing_hand(playing_hand, playing_hand_idx, result.scoring_cards, -1);
-            display_game_stats(score, target_score, hands_left, discards_left, result.value);
+            display_game_stats(score, target_score, 0, hands_left, discards_left, result.value);
             gfx_SwapDraw();
             wait_frames(500);
             //scoring
 			int gained = handle_draw_scoring(playing_hand, playing_hand_idx, result.scoring_cards, result.scoring_count, &result.value, &hand, score, target_score, hands_left, discards_left);
             //TODO: add wait after animation with total score replacing handtype
+
+            HandValue post_score_value = result.value;
+            post_score_value.chips = gained / result.value.mult;
+            post_score_value.mult = result.value.mult;
+
+            gfx_FillScreen(255);
+            display_hand(&hand);
+            display_playing_hand(playing_hand, playing_hand_idx, result.scoring_cards, -1);
+            display_game_stats(score, target_score, gained, hands_left, discards_left, post_score_value);
+            gfx_SwapDraw();
+            wait_frames(500);
+
+            gfx_FillScreen(255);
+            display_hand(&hand);
+            display_playing_hand(playing_hand, playing_hand_idx, result.scoring_cards, -1);
+            display_game_stats(score, target_score, gained, hands_left, discards_left, (HandValue){-1,-1,0});
+            gfx_SwapDraw();
+            wait_frames(750);
+            
             score += gained;
+
             //TODO: have hand not display played cards
 			hand.current_cards_cnt -= tc;
             
+            //beaten blind
             if (score >= target_score) {
                  score = 0;
                  hands_left = 4;
@@ -704,7 +729,7 @@ goto_blind_select:
 				hand.hand[card_idx--].is_selected = false;
 		}
 		if (arrow_key & kb_Right && !(arrow_prev_key & kb_Right)) {
-            if (card_idx == hand.hand_size-1){
+            if (card_idx == hand.hand_size-1) {
                 hand.hand[card_idx].is_selected = false;
                 card_idx = 0;
             } else if (card_idx < hand.hand_size-1) // 52 -> deck size | 8 -> hand_size
@@ -714,7 +739,7 @@ goto_blind_select:
 		arrow_prev_key = arrow_key;
 
 		display_hand(&hand);
-		display_game_stats(score, target_score, hands_left, discards_left, result.value);
+		display_game_stats(score, target_score, 0, hands_left, discards_left, result.value);
 
 		if (kb_Data[6] & kb_Clear) { 
             running = false;
