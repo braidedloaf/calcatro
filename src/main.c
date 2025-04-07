@@ -263,6 +263,14 @@ void draw_blind_menu(int score, int hands_left, int discards_left, int money, Ha
     }
 } 
 
+void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hv) {
+    gfx_FillScreen(255);
+	gfx_SetTextScale(1, 2);
+	display_game_stats(score, 0, 0, hands_left, discards_left, money, hv);
+
+
+}
+
 void display_hand(Hand *p_hand) {
 	for (int i = 0; i < p_hand->hand_size; i++) {
 
@@ -567,6 +575,16 @@ goto_blind_select:
             return 0;
         }
 	}
+
+goto_shop:
+    while (state == STATE_SHOP) {
+        kb_Scan();
+        draw_shop(score, hands_left, discards_left, money, (HandValue) {-1, 0, 0});
+        gfx_SwapDraw();
+        
+
+
+    }
 	
     while (state == STATE_RULES) {
         kb_Scan();
