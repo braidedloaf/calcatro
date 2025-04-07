@@ -426,74 +426,89 @@ _draw_rules_menu:
 	section	.text,"ax",@progbits
 	public	_print_card
 _print_card:
-	ld	hl, -6
+	ld	hl, -7
 	call	__frameset
-	ld	iy, (ix + 15)
-	ld	de, (ix + 18)
-	ld	l, (ix + 11)
+	ld	iyl, 62
+	ld	e, 60
+	ld	a, (ix + 11)
+	ld	iyh, a
+	xor	a, 1
+	ld	l, a
 	bit	0, l
-	jr	nz, BB7_3
+	ld	c, iyl
+	jr	nz, BB7_2
+	ld	c, e
+BB7_2:
 	ld	a, (ix + 12)
 	or	a, a
-	jr	nz, BB7_3
-	push	de
-	push	iy
-	call	_gfx_SetTextXY
-	pop	hl
-	pop	hl
-	ld	a, (ix + 6)
-	ld	l, a
-	push	hl
-	call	_gfx_PrintChar
-	pop	hl
-	ld	l, (ix + 7)
-	jr	BB7_8
-BB7_3:
-	ld	e, 62
-	ld	c, 60
-	ld	a, l
-	xor	a, 1
-	bit	0, a
-	ld	l, e
-	jr	nz, BB7_5
-	ld	l, c
+	ld	(ix - 7), bc
+	ld	(ix - 4), de
+	jr	z, BB7_4
+	ld	h, 0
+	jr	BB7_5
+BB7_4:
+	ld	h, -1
 BB7_5:
-	ld	(ix - 3), bc
-	ld	(ix - 6), hl
-	ld	bc, -8
-	bit	0, a
-	jr	nz, BB7_7
-	ld	l, e
-	ld	(ix - 3), hl
-BB7_7:
-	lea	hl, iy
-	add	hl, bc
+	ld	bc, (ix + 15)
 	ld	de, (ix + 18)
+	ld	a, l
+	and	a, h
+	ld	(ix - 1), a
+	bit	0, a
+	jr	nz, BB7_9
+	ld	a, iyh
+	bit	0, a
+	jr	z, BB7_8
+	ex	de, hl
+	ld	e, iyl
+	ex	de, hl
+	ld	(ix - 4), hl
+BB7_8:
+	push	bc
+	pop	hl
+	ld	bc, -8
+	add	hl, bc
 	push	de
 	push	hl
 	call	_gfx_SetTextXY
 	pop	hl
 	pop	hl
-	ld	hl, (ix - 3)
+	ld	hl, (ix - 4)
 	push	hl
 	call	_gfx_PrintChar
+	ld	de, (ix + 18)
+	ld	bc, (ix + 15)
 	pop	hl
-	ld	hl, (ix + 18)
-	push	hl
-	ld	hl, (ix + 15)
-	push	hl
+BB7_9:
+	push	de
+	push	bc
 	call	_gfx_SetTextXY
 	pop	hl
 	pop	hl
+	ld	hl, (ix + 8)
+	ld	de, -1
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB7_11
+	ld	hl, 45
+	push	hl
+	call	_gfx_PrintChar
+	pop	hl
+	ld	hl, 45
+	jr	BB7_12
+BB7_11:
 	ld	a, (ix + 6)
 	ld	l, a
 	push	hl
 	call	_gfx_PrintChar
 	pop	hl
 	ld	l, (ix + 7)
+BB7_12:
 	push	hl
 	call	_gfx_PrintChar
 	pop	hl
+	bit	0, (ix - 1)
+	jr	nz, BB7_14
 	ld	de, 16
 	ld	hl, (ix + 15)
 	add	hl, de
@@ -503,10 +518,11 @@ BB7_7:
 	call	_gfx_SetTextXY
 	pop	hl
 	pop	hl
-	ld	hl, (ix - 6)
-BB7_8:
+	ld	hl, (ix - 7)
 	push	hl
 	call	_gfx_PrintChar
+	pop	hl
+BB7_14:
 	ld	sp, ix
 	pop	ix
 	ret
@@ -725,7 +741,7 @@ JTI11_0:
 _display_game_stats:
 	ld	hl, -3
 	call	__frameset
-	lea	hl, ix + 21
+	lea	hl, ix + 24
 	ld	(ix - 3), hl
 	ld	de, 10
 	ld	hl, 2
@@ -841,6 +857,25 @@ _display_game_stats:
 	call	_gfx_PrintInt
 	pop	hl
 	pop	hl
+	ld	hl, 166
+	push	hl
+	ld	hl, 10
+	push	hl
+	call	_gfx_SetTextXY
+	pop	hl
+	pop	hl
+	ld	hl, 36
+	push	hl
+	call	_gfx_PrintChar
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, (ix + 21)
+	push	hl
+	call	_gfx_PrintInt
+	pop	hl
+	pop	hl
 	push	hl
 	push	hl
 	push	hl
@@ -870,7 +905,7 @@ _display_game_stats:
 _draw_blind_menu:
 	ld	hl, -9
 	call	__frameset
-	lea	hl, ix + 15
+	lea	hl, ix + 18
 	ld	(ix - 3), hl
 	scf
 	sbc	hl, hl
@@ -894,6 +929,8 @@ _draw_blind_menu:
 	ld	bc, 9
 	ld	hl, (ix - 3)
 	ldir
+	ld	hl, (ix + 15)
+	push	hl
 	ld	hl, (ix + 12)
 	push	hl
 	ld	hl, (ix + 9)
@@ -907,7 +944,7 @@ _draw_blind_menu:
 	push	hl
 	call	_display_game_stats
 	ld	iy, 104
-	ld	hl, 24
+	ld	hl, 27
 	add	hl, sp
 	ld	sp, hl
 BB13_1:
@@ -1088,7 +1125,7 @@ _display_hand:
 	lea	hl, iy + 9
 	ld	(ix - 3), hl
 BB14_1:
-	ld	de, (iy + 3)
+	ld	de, (iy)
 	push	bc
 	pop	hl
 	or	a, a
@@ -3024,6 +3061,8 @@ BB18_3:
 	ld	hl, (ix - 18)
 	ld	bc, 9
 	ldir
+	ld	hl, (ix + 36)
+	push	hl
 	ld	hl, (ix + 33)
 	push	hl
 	ld	hl, (ix + 30)
@@ -3036,7 +3075,7 @@ BB18_3:
 	ld	hl, (ix + 24)
 	push	hl
 	call	_display_game_stats
-	ld	hl, 24
+	ld	hl, 27
 	add	hl, sp
 	ld	sp, hl
 	call	_gfx_SwapDraw
@@ -3066,15 +3105,15 @@ BB18_5:
 	section	.text,"ax",@progbits
 	public	_main
 _main:
-	ld	hl, -625
+	ld	hl, -637
 	call	__frameset
-	ld	bc, -550
+	ld	bc, -559
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, 0
 	lea	de, ix - 15
 	push	ix
-	ld	bc, -578
+	ld	bc, -587
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
@@ -3084,41 +3123,47 @@ _main:
 	lea	de, ix
 	pop	ix
 	push	ix
+	ld	bc, -574
+	add	ix, bc
+	ld	(ix), de
+	pop	ix
+	lea	de, iy + 112
+	push	ix
 	ld	bc, -565
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
-	lea	de, iy + 103
-	push	ix
-	ld	bc, -556
-	add	ix, bc
-	ld	(ix), de
-	pop	ix
-	lea	de, iy + 65
-	push	ix
-	ld	bc, -585
-	add	ix, bc
-	ld	(ix), de
-	pop	ix
-	lea	de, iy + 18
-	push	ix
-	ld	bc, -559
-	add	ix, bc
-	ld	(ix), de
-	pop	ix
-	lea	de, iy + 9
+	lea	de, iy + 74
 	push	ix
 	ld	bc, -594
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
+	lea	de, iy + 27
 	push	ix
-	ld	bc, -562
+	ld	bc, -571
+	add	ix, bc
+	ld	(ix), de
+	pop	ix
+	lea	de, iy + 18
+	push	ix
+	ld	bc, -606
+	add	ix, bc
+	ld	(ix), de
+	pop	ix
+	lea	de, iy + 9
+	push	ix
+	ld	bc, -609
+	add	ix, bc
+	ld	(ix), de
+	pop	ix
+	push	ix
+	ld	bc, -568
 	add	ix, bc
 	ld	(ix), iy
 	pop	ix
 	lea	de, iy
-	ld	bc, -597
+	ld	bc, -600
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
@@ -3132,33 +3177,33 @@ _main:
 	ld	e, 0
 	or	a, a
 	sbc	hl, hl
-	ld	bc, -556
+	ld	bc, -565
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
 	lea	bc, iy + 3
 	ld	(ix - 3), de
-	ld	de, -581
+	ld	de, -590
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
 	push	ix
-	ld	de, -559
+	ld	de, -571
 	add	ix, de
 	ld	iy, (ix)
 	pop	ix
 	lea	bc, iy + 9
-	ld	de, -591
+	ld	de, -603
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
 	push	ix
-	ld	de, -556
+	ld	de, -565
 	add	ix, de
 	ld	iy, (ix)
 	pop	ix
 	lea	bc, iy + 15
-	ld	de, -588
+	ld	de, -597
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
@@ -3168,7 +3213,7 @@ BB19_1:
 	ld	de, (ix - 3)
 BB19_2:
 	ld	(ix - 3), de
-	ld	de, -553
+	ld	de, -562
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
@@ -3184,24 +3229,24 @@ BB19_2:
 BB19_3:
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -568
+	ld	bc, -577
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
-	ld	bc, -582
+	ld	bc, -591
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), a
 BB19_4:
 	ld	bc, (ix - 3)
 	ld	(ix - 3), de
-	ld	de, -571
+	ld	de, -580
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
 	ld	de, (ix - 3)
 BB19_5:
-	ld	bc, -553
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3210,7 +3255,7 @@ BB19_5:
 	jp	z, BB19_84
 	ld	a, l
 	cp	a, 3
-	ld	bc, -575
+	ld	bc, -584
 	lea	hl, ix
 	push	af
 	add	hl, bc
@@ -3238,24 +3283,22 @@ BB19_5:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	bc, -578
+	ld	bc, -587
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	bc, 9
 	ldir
-	ld	hl, 3
+	ld	hl, 4
 	push	hl
-	inc	hl
+	ld	de, 3
+	push	de
 	push	hl
 	push	iy
 	call	_draw_blind_menu
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
+	ld	hl, 21
+	add	hl, sp
+	ld	sp, hl
 	call	_gfx_SwapDraw
 	ld	hl, -720878
 	push	de
@@ -3279,20 +3322,20 @@ BB19_5:
 	ld	a, l
 	bit	6, a
 	ld	hl, 3
-	ld	de, -553
+	ld	de, -562
 	lea	iy, ix
 	push	af
 	add	iy, de
 	pop	af
 	ld	(iy), hl
-	ld	de, -571
+	ld	de, -580
 	lea	hl, ix
 	push	af
 	add	hl, de
 	pop	af
 	ld	bc, (hl)
 	push	ix
-	ld	bc, -575
+	ld	bc, -584
 	push	af
 	add	ix, bc
 	pop	af
@@ -3339,7 +3382,7 @@ BB19_10:
 	sbc	hl, hl
 	ld	a, l
 	call	__ltof
-	ld	de, -553
+	ld	de, -562
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
@@ -3360,7 +3403,7 @@ BB19_10:
 	ld	hl, -8388608
 	call	__fadd
 	ld	(ix - 3), bc
-	ld	bc, -553
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, (iy)
@@ -3371,12 +3414,12 @@ BB19_10:
 	ld	de, 1
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -553
+	ld	bc, -562
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
 	push	ix
-	ld	bc, -575
+	ld	bc, -584
 	add	ix, bc
 	ld	e, (ix)
 	pop	ix
@@ -3399,27 +3442,27 @@ BB19_12:
 	push	hl
 	call	_gfx_SetColor
 	pop	hl
-	ld	bc, -565
+	ld	bc, -574
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_create_deck
 	pop	hl
-	ld	bc, -565
+	ld	bc, -574
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_shuffle_deck
 	pop	hl
-	ld	bc, -562
+	ld	bc, -568
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	(iy + 106), 0
+	ld	(iy + 115), 0
 	push	ix
-	ld	bc, -581
+	ld	bc, -590
 	add	ix, bc
 	ld	hl, (ix)
 	pop	ix
@@ -3429,7 +3472,7 @@ BB19_12:
 	ld	bc, 61
 	ldir
 	ld	hl, 8
-	ld	(iy + 103), hl
+	ld	(iy + 112), hl
 	ld	iy, 11
 BB19_13:
 	lea	hl, iy
@@ -3440,7 +3483,7 @@ BB19_13:
 	lea	de, iy
 	lea	bc, iy
 	ld	(ix - 3), bc
-	ld	bc, -556
+	ld	bc, -565
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -3457,13 +3500,13 @@ BB19_13:
 BB19_15:
 	or	a, a
 	sbc	hl, hl
-	ld	bc, -562
+	ld	bc, -568
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	(iy + 100), hl
+	ld	(iy + 109), hl
 	ld	de, 8
-	ld	bc, -606
+	ld	bc, -618
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
@@ -3474,24 +3517,24 @@ BB19_15:
 	push	de
 	pop	bc
 	push	ix
-	ld	de, -613
+	ld	de, -625
 	add	ix, de
 	ld	(ix), hl
 	pop	ix
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -574
+	ld	bc, -583
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -607
+	ld	bc, -619
 	add	ix, bc
 	ld	(ix), e
 	pop	ix
 	ld	de, 1
 	push	ix
-	ld	bc, -574
+	ld	bc, -583
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
@@ -3501,11 +3544,11 @@ BB19_15:
 	ld	e, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -600
+	ld	bc, -612
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
-	ld	bc, -568
+	ld	bc, -577
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3513,17 +3556,17 @@ BB19_16:
 	ld	bc, (ix - 3)
 	ld	a, e
 	push	ix
-	ld	de, -610
+	ld	de, -622
 	add	ix, de
 	ld	(ix), l
 	pop	ix
-	ld	de, -574
+	ld	de, -583
 	lea	hl, ix
 	add	hl, de
 	ld	hl, (hl)
 	bit	0, l
 	jp	z, BB19_100
-	ld	de, -553
+	ld	de, -562
 	lea	hl, ix
 	add	hl, de
 	ld	hl, (hl)
@@ -3531,16 +3574,16 @@ BB19_16:
 	or	a, a
 	sbc	hl, de
 	jp	nz, BB19_100
-	ld	de, -603
+	ld	de, -615
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
 	push	ix
-	ld	bc, -616
+	ld	bc, -628
 	add	ix, bc
 	ld	(ix), iy
 	pop	ix
-	ld	bc, -575
+	ld	bc, -584
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), a
@@ -3553,15 +3596,15 @@ BB19_16:
 	inc	hl
 	ld	(_frame_timer), hl
 	call	_kb_Scan
-	ld	bc, -562
+	ld	bc, -568
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	de, (iy + 106)
+	ld	de, (iy + 115)
 	push	de
 	pop	hl
 	ld	(ix - 3), de
-	ld	de, -606
+	ld	de, -618
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
@@ -3574,18 +3617,18 @@ BB19_16:
 	pop	hl
 	or	a, a
 	sbc	hl, de
-	ld	bc, -562
+	ld	bc, -568
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	pea	iy + 100
-	ld	bc, -565
+	pea	iy + 109
+	ld	bc, -574
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
 	push	de
 	push	hl
-	ld	bc, -556
+	ld	bc, -565
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3600,7 +3643,7 @@ BB19_20:
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
-	ld	bc, -600
+	ld	bc, -612
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3609,31 +3652,31 @@ BB19_20:
 	push	hl
 	pop	bc
 	ld	(ix - 3), de
-	ld	de, -556
+	ld	de, -565
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	add	iy, bc
 	push	ix
-	ld	bc, -619
+	ld	bc, -631
 	add	ix, bc
 	ld	(ix), iy
 	pop	ix
 	ld	(iy + 14), 1
 	ld	de, (ix - 3)
-	ld	bc, -574
+	ld	bc, -583
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
 	ld	a, e
 	bit	5, a
 	jp	z, BB19_28
-	ld	bc, -607
+	ld	bc, -619
 	lea	hl, ix
 	add	hl, bc
 	bit	5, (hl)
 	jp	nz, BB19_28
-	ld	de, -600
+	ld	de, -612
 	lea	hl, ix
 	add	hl, de
 	ld	hl, (hl)
@@ -3642,22 +3685,22 @@ BB19_20:
 	push	hl
 	pop	de
 	ld	(ix - 3), bc
-	ld	bc, -556
+	ld	bc, -565
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
 	add	iy, de
 	push	ix
-	ld	bc, -553
+	ld	bc, -562
 	add	ix, bc
 	ld	(ix), iy
 	pop	ix
 	ld	a, (iy + 15)
-	ld	bc, -562
+	ld	bc, -568
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	de, (iy + 109)
+	ld	de, (iy + 118)
 	bit	0, a
 	ld	bc, (ix - 3)
 	jr	nz, BB19_25
@@ -3668,7 +3711,7 @@ BB19_20:
 	sbc	hl, bc
 	call	pe, __setflag
 	jp	p, BB19_25
-	ld	bc, -553
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -3678,7 +3721,7 @@ BB19_20:
 BB19_25:
 	bit	0, a
 	jr	z, BB19_28
-	ld	bc, -553
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -3693,17 +3736,17 @@ BB19_25:
 	jp	m, BB19_28
 BB19_27:
 	add	hl, de
-	ld	bc, -562
+	ld	bc, -568
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	(iy + 109), hl
+	ld	(iy + 118), hl
 BB19_28:
-	ld	bc, -562
+	ld	bc, -568
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	iy, (iy + 103)
+	ld	iy, (iy + 112)
 	lea	hl, iy
 	ld	de, 1
 	or	a, a
@@ -3717,41 +3760,41 @@ BB19_28:
 BB19_30:
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -574
+	ld	bc, -583
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -607
+	ld	bc, -619
 	add	ix, bc
 	ld	(ix), e
 	pop	ix
 	ld	bc, (ix - 3)
 	push	ix
-	ld	de, -622
+	ld	de, -634
 	add	ix, de
 	ld	(ix), bc
 	pop	ix
 	push	ix
-	ld	de, -553
+	ld	de, -562
 	add	ix, de
 	ld	(ix), bc
 	pop	ix
 	push	ix
-	ld	de, -588
+	ld	de, -597
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
 	ex	de, hl
 	ld	(ix - 3), de
-	ld	de, -606
+	ld	de, -618
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), iy
 	push	bc
 	pop	iy
 	push	ix
-	ld	de, -553
+	ld	de, -562
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
@@ -3768,7 +3811,7 @@ BB19_31:
 	lea	hl, iy - 6
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -625
+	ld	bc, -637
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
@@ -3776,14 +3819,14 @@ BB19_31:
 	pop	hl
 	inc	hl
 	push	ix
-	ld	bc, -568
+	ld	bc, -577
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
 	ex	de, hl
 	ld	bc, (ix - 3)
 	push	ix
-	ld	de, -553
+	ld	de, -562
 	add	ix, de
 	ld	(ix), bc
 	pop	ix
@@ -3793,25 +3836,25 @@ BB19_31:
 	pop	de
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -585
+	ld	bc, -594
 	add	ix, bc
 	ld	hl, (ix)
 	pop	ix
 	add	hl, de
 	ex	de, hl
-	ld	bc, -625
+	ld	bc, -637
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	bc, (ix - 3)
 	ldir
-	ld	de, -553
+	ld	de, -562
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -568
+	ld	bc, -577
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
@@ -3821,17 +3864,17 @@ BB19_34:
 	dec	bc
 	jp	BB19_31
 BB19_35:
-	ld	bc, -553
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), de
 	push	de
-	ld	bc, -585
+	ld	bc, -594
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, (iy)
 	push	hl
-	ld	bc, -559
+	ld	bc, -571
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3850,26 +3893,26 @@ BB19_35:
 	pop	de
 	ld	a, l
 	bit	7, a
-	ld	bc, -568
+	ld	bc, -577
 	lea	iy, ix
 	push	af
 	add	iy, bc
 	pop	af
 	ld	(iy), hl
 	jp	z, BB19_44
-	ld	bc, -562
+	ld	bc, -568
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	de, (iy + 109)
-	ld	bc, -610
+	ld	de, (iy + 118)
+	ld	bc, -622
 	lea	iy, ix
 	add	iy, bc
 	ld	a, (iy)
 	cp	a, 0
 	call	pe, __setflag
 	jp	m, BB19_44
-	ld	bc, -603
+	ld	bc, -615
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -3884,23 +3927,23 @@ BB19_35:
 	sbc	hl, bc
 	call	pe, __setflag
 	jp	m, BB19_55
-	ld	bc, -562
+	ld	bc, -568
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	de, (iy + 106)
-	ld	bc, -622
+	ld	de, (iy + 115)
+	ld	bc, -634
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, (iy)
 	push	ix
-	ld	bc, -588
+	ld	bc, -597
 	add	ix, bc
 	ld	iy, (ix)
 	pop	ix
 	ld	(ix - 3), de
 	push	ix
-	ld	de, -600
+	ld	de, -612
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
@@ -3916,7 +3959,7 @@ BB19_40:
 	ld	(iy - 4), bc
 	ld	(ix - 3), de
 	push	ix
-	ld	de, -600
+	ld	de, -612
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
@@ -3929,12 +3972,12 @@ BB19_43:
 	dec	hl
 	jr	BB19_40
 BB19_44:
-	ld	de, -603
+	ld	de, -615
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 	push	ix
-	ld	de, -600
+	ld	de, -612
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
@@ -3948,26 +3991,26 @@ BB19_45:
 	ld	h, d
 	pop	de
 	push	ix
-	ld	de, -610
+	ld	de, -622
 	add	ix, de
 	ld	(ix), hl
 	pop	ix
 	ld	a, l
 	bit	7, a
-	ld	de, -603
+	ld	de, -615
 	lea	hl, ix
 	push	af
 	add	hl, de
 	pop	af
 	ld	(hl), iy
 	jp	z, BB19_58
-	ld	de, -562
+	ld	de, -568
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
-	ld	de, (iy + 109)
+	ld	de, (iy + 118)
 	ld	(ix - 3), bc
-	ld	bc, -575
+	ld	bc, -584
 	lea	iy, ix
 	add	iy, bc
 	ld	a, (iy)
@@ -3975,7 +4018,7 @@ BB19_45:
 	call	pe, __setflag
 	ld	bc, (ix - 3)
 	jp	m, BB19_54
-	ld	bc, -616
+	ld	bc, -628
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3989,14 +4032,14 @@ BB19_45:
 	sbc	hl, bc
 	call	pe, __setflag
 	jp	m, BB19_56
-	ld	bc, -588
+	ld	bc, -597
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
 	or	a, a
 	sbc	hl, hl
 	ex	de, hl
-	ld	bc, -622
+	ld	bc, -634
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4022,24 +4065,24 @@ BB19_53:
 	dec	hl
 	jr	BB19_50
 BB19_54:
-	ld	de, -603
+	ld	de, -615
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 	jr	BB19_58
 BB19_55:
-	ld	de, -600
+	ld	de, -612
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	jp	BB19_45
 BB19_56:
-	ld	de, -603
+	ld	de, -615
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 BB19_57:
-	ld	de, -600
+	ld	de, -612
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
@@ -4051,7 +4094,7 @@ BB19_58:
 	ld	a, e
 	bit	1, a
 	ld	(ix - 3), bc
-	ld	bc, -553
+	ld	bc, -562
 	lea	hl, ix
 	push	af
 	add	hl, bc
@@ -4060,7 +4103,7 @@ BB19_58:
 	ld	bc, (ix - 3)
 	jr	z, BB19_62
 	ld	(ix - 3), bc
-	ld	bc, -582
+	ld	bc, -591
 	lea	hl, ix
 	add	hl, bc
 	ld	l, (hl)
@@ -4073,31 +4116,31 @@ BB19_58:
 	or	a, a
 	sbc	hl, bc
 	jr	nz, BB19_64
-	ld	bc, -619
+	ld	bc, -631
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
 	ld	(iy + 14), 0
-	ld	bc, -553
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
 	ld	(ix - 3), de
 	push	ix
-	ld	de, -606
+	ld	de, -618
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
 	dec	bc
 	push	ix
-	ld	de, -582
+	ld	de, -591
 	add	ix, de
 	ld	l, (ix)
 	pop	ix
 	jp	BB19_70
 BB19_62:
 	ld	(ix - 3), bc
-	ld	bc, -582
+	ld	bc, -591
 	lea	hl, ix
 	add	hl, bc
 	ld	l, (hl)
@@ -4108,7 +4151,7 @@ BB19_64:
 	push	bc
 	pop	hl
 	ld	(ix - 3), de
-	ld	de, -600
+	ld	de, -612
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
@@ -4118,38 +4161,38 @@ BB19_64:
 	call	pe, __setflag
 	ld	de, (ix - 3)
 	jp	m, BB19_69
-	ld	de, -600
+	ld	de, -612
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	dec	bc
-	ld	de, -619
+	ld	de, -631
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	ld	(iy + 14), 0
 	ld	(ix - 3), bc
-	ld	bc, -553
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
 	push	ix
-	ld	bc, -582
+	ld	bc, -591
 	add	ix, bc
 	ld	l, (ix)
 	pop	ix
 	jr	BB19_63
 BB19_66:
 	ld	(ix - 3), bc
-	ld	bc, -562
+	ld	bc, -568
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	(iy + 106), de
+	ld	(iy + 115), de
 	or	a, a
 	sbc	hl, hl
-	ld	(iy + 109), hl
-	ld	de, -603
+	ld	(iy + 118), hl
+	ld	de, -615
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
@@ -4159,12 +4202,12 @@ BB19_66:
 BB19_67:
 	or	a, a
 	sbc	hl, hl
-	ld	bc, -562
+	ld	bc, -568
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	(iy + 109), hl
-	ld	bc, -616
+	ld	(iy + 118), hl
+	ld	bc, -628
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4175,13 +4218,13 @@ BB19_67:
 	scf
 	sbc	hl, hl
 	push	hl
-	ld	bc, -625
+	ld	bc, -637
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), de
 	call	_gfx_FillScreen
 	pop	hl
-	ld	bc, -556
+	ld	bc, -565
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4191,17 +4234,17 @@ BB19_67:
 	scf
 	sbc	hl, hl
 	push	hl
-	ld	bc, -591
+	ld	bc, -603
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -553
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -585
+	ld	bc, -594
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4218,18 +4261,20 @@ BB19_67:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	bc, -559
+	ld	bc, -571
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	bc, 9
 	ldir
-	ld	bc, -603
+	ld	hl, 4
+	push	hl
+	ld	bc, -615
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -616
+	ld	bc, -628
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4237,18 +4282,18 @@ BB19_67:
 	or	a, a
 	sbc	hl, hl
 	push	hl
-	ld	bc, -571
+	ld	bc, -580
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -613
+	ld	bc, -625
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_display_game_stats
-	ld	hl, 24
+	ld	hl, 27
 	add	hl, sp
 	ld	sp, hl
 	call	_gfx_SwapDraw
@@ -4256,18 +4301,38 @@ BB19_67:
 	push	hl
 	call	_wait_frames
 	pop	hl
-	ld	bc, -562
+	ld	bc, -568
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	hl, (iy + 62)
-	ld	bc, -603
+	ld	hl, (iy + 71)
+	ld	de, 4
+	push	de
+	ld	bc, -615
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
 	push	de
 	push	ix
-	ld	bc, -616
+	ld	bc, -628
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	push	de
+	push	ix
+	ld	bc, -580
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	push	de
+	push	ix
+	ld	bc, -625
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	push	de
+	push	ix
+	ld	bc, -565
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
@@ -4278,76 +4343,58 @@ BB19_67:
 	ld	de, (ix)
 	pop	ix
 	push	de
-	push	ix
-	ld	bc, -613
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
-	push	de
-	push	ix
-	ld	bc, -556
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
-	push	de
-	push	ix
-	ld	bc, -559
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
-	push	de
 	push	hl
-	ld	bc, -591
+	ld	bc, -603
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -553
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -585
+	ld	bc, -594
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_handle_draw_scoring
-	ld	de, -622
+	ld	de, -634
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), hl
-	ld	iy, 30
+	ld	iy, 33
 	add	iy, sp
 	ld	sp, iy
-	ld	de, -559
+	ld	de, -571
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	ld	a, (iy)
-	ld	de, -594
+	ld	de, -606
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	ld	(iy), a
-	ld	de, -562
+	ld	de, -568
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
-	ld	a, (iy + 19)
-	ld	(iy + 10), a
-	ld	a, (iy + 20)
-	ld	(iy + 11), a
-	ld	bc, (iy + 24)
+	ld	a, (iy + 28)
+	ld	(iy + 19), a
+	ld	a, (iy + 29)
+	ld	(iy + 20), a
+	ld	bc, (iy + 33)
 	call	__idivs
-	ld	(iy + 12), hl
-	ld	(iy + 15), bc
+	ld	(iy + 21), hl
+	ld	(iy + 24), bc
 	scf
 	sbc	hl, hl
 	push	hl
 	call	_gfx_FillScreen
 	pop	hl
-	ld	bc, -556
+	ld	bc, -565
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4357,17 +4404,17 @@ BB19_67:
 	scf
 	sbc	hl, hl
 	push	hl
-	ld	bc, -591
+	ld	bc, -603
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -553
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -585
+	ld	bc, -594
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4384,39 +4431,41 @@ BB19_67:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	bc, -594
+	ld	bc, -606
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	bc, 9
 	ldir
-	ld	bc, -603
+	ld	hl, 4
+	push	hl
+	ld	bc, -615
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -616
+	ld	bc, -628
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -622
+	ld	bc, -634
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -571
+	ld	bc, -580
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -613
+	ld	bc, -625
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_display_game_stats
-	ld	hl, 24
+	ld	hl, 27
 	add	hl, sp
 	ld	sp, hl
 	call	_gfx_SwapDraw
@@ -4429,7 +4478,7 @@ BB19_67:
 	push	hl
 	call	_gfx_FillScreen
 	pop	hl
-	ld	bc, -556
+	ld	bc, -565
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4439,17 +4488,17 @@ BB19_67:
 	scf
 	sbc	hl, hl
 	push	hl
-	ld	bc, -591
+	ld	bc, -603
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -553
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -585
+	ld	bc, -594
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4461,14 +4510,14 @@ BB19_67:
 	pop	hl
 	scf
 	sbc	hl, hl
-	ld	bc, -562
+	ld	bc, -568
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	(iy), hl
-	ld	(iy + 3), hl
+	ld	(iy + 9), hl
+	ld	(iy + 12), hl
 	inc	hl
-	ld	(iy + 6), hl
+	ld	(iy + 15), hl
 	push	hl
 	push	hl
 	push	hl
@@ -4476,80 +4525,82 @@ BB19_67:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	bc, -597
+	ld	bc, -609
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	bc, 9
 	ldir
-	ld	bc, -603
+	ld	hl, 4
+	push	hl
+	ld	bc, -615
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -616
+	ld	bc, -628
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -622
+	ld	bc, -634
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -571
+	ld	bc, -580
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -613
+	ld	bc, -625
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_display_game_stats
-	ld	hl, 24
+	ld	hl, 27
 	add	hl, sp
 	ld	sp, hl
 	call	_gfx_SwapDraw
 	ld	hl, 750
 	push	hl
 	call	_wait_frames
-	ld	de, -622
+	ld	de, -634
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 	pop	hl
-	ld	de, -613
+	ld	de, -625
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	add	iy, bc
 	lea	de, iy
-	ld	bc, -562
+	ld	bc, -568
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	hl, (iy + 106)
+	ld	hl, (iy + 115)
 	ld	(ix - 3), de
-	ld	de, -625
+	ld	de, -637
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
 	or	a, a
 	sbc	hl, bc
 	push	ix
-	ld	bc, -562
+	ld	bc, -568
 	add	ix, bc
 	ld	iy, (ix)
 	pop	ix
-	ld	(iy + 106), hl
+	ld	(iy + 115), hl
 	ld	de, (ix - 3)
 	ex	de, hl
 	push	hl
 	pop	bc
 	ld	(ix - 3), bc
-	ld	bc, -571
+	ld	bc, -580
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
@@ -4558,22 +4609,22 @@ BB19_67:
 	call	pe, __setflag
 	ld	bc, (ix - 3)
 	jp	p, BB19_80
-	ld	de, -613
+	ld	de, -625
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
-	ld	de, -603
+	ld	de, -615
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	jp	BB19_57
 BB19_69:
-	ld	bc, -582
+	ld	bc, -591
 	lea	hl, ix
 	add	hl, bc
 	ld	l, (hl)
 	ld	(ix - 3), de
-	ld	de, -600
+	ld	de, -612
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
@@ -4586,7 +4637,7 @@ BB19_71:
 	bit	2, l
 	jr	nz, BB19_78
 	ld	(ix - 3), bc
-	ld	bc, -606
+	ld	bc, -618
 	lea	hl, ix
 	add	hl, bc
 	ld	de, (hl)
@@ -4613,7 +4664,7 @@ BB19_75:
 	push	bc
 	pop	de
 BB19_77:
-	ld	bc, -600
+	ld	bc, -612
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), hl
@@ -4623,7 +4674,7 @@ BB19_77:
 	push	hl
 	pop	de
 	ld	(ix - 3), bc
-	ld	bc, -556
+	ld	bc, -565
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
@@ -4632,18 +4683,34 @@ BB19_77:
 	ld	bc, (ix - 3)
 	jr	BB19_79
 BB19_78:
-	ld	de, -600
+	ld	de, -612
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
 BB19_79:
-	ld	bc, -556
+	ld	bc, -565
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_display_hand
 	pop	hl
+	ld	bc, -568
+	lea	hl, ix
+	add	hl, bc
+	ld	iy, (hl)
+	scf
+	sbc	hl, hl
+	ld	(iy), hl
+	lea	hl, iy
+	ld	iy, 0
+	lea	de, iy
+	push	hl
+	pop	iy
+	ld	(iy + 3), de
+	ld	(iy + 6), de
+	push	de
+	pop	iy
 	push	hl
 	push	hl
 	push	hl
@@ -4651,37 +4718,38 @@ BB19_79:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	bc, -559
-	lea	hl, ix
-	add	hl, bc
-	ld	hl, (hl)
+	push	ix
+	ld	bc, -600
+	add	ix, bc
+	ld	hl, (ix)
+	pop	ix
 	ld	bc, 9
 	ldir
-	ld	bc, -603
+	ld	hl, 4
+	push	hl
+	ld	bc, -615
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -616
+	ld	bc, -628
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	or	a, a
-	sbc	hl, hl
-	push	hl
-	ld	bc, -571
+	push	iy
+	ld	bc, -580
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -613
+	ld	bc, -625
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_display_game_stats
-	ld	hl, 24
+	ld	hl, 27
 	add	hl, sp
 	ld	sp, hl
 	ld	hl, -720868
@@ -4701,43 +4769,43 @@ BB19_79:
 	ld	e, l
 	ld	d, h
 	ld	(ix - 3), bc
-	ld	bc, -574
+	ld	bc, -583
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), de
 	ld	bc, (ix - 3)
 	call	_gfx_SwapDraw
-	ld	de, -603
+	ld	de, -615
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
-	ld	de, -616
+	ld	de, -628
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	push	ix
-	ld	de, -553
+	ld	de, -562
 	add	ix, de
 	ld	hl, (ix)
 	pop	ix
 	push	ix
-	ld	de, -582
+	ld	de, -591
 	add	ix, de
 	ld	(ix), l
 	pop	ix
 	ld	hl, 1
 	push	ix
-	ld	de, -553
+	ld	de, -562
 	add	ix, de
 	ld	(ix), hl
 	pop	ix
-	ld	de, -568
+	ld	de, -577
 	lea	hl, ix
 	add	hl, de
 	ld	hl, (hl)
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -610
+	ld	bc, -622
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
@@ -4760,32 +4828,32 @@ BB19_82:
 	inc	de
 	ld	(hl), de
 	ld	hl, 3
-	ld	de, -553
+	ld	de, -562
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), hl
-	ld	de, -571
+	ld	de, -580
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	push	ix
-	ld	de, -582
+	ld	de, -591
 	add	ix, de
 	ld	a, (ix)
 	pop	ix
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -575
+	ld	bc, -584
 	add	ix, bc
 	ld	e, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -568
+	ld	bc, -577
 	add	ix, bc
 	ld	hl, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -574
+	ld	bc, -583
 	add	ix, bc
 	ld	iy, (ix)
 	pop	ix
@@ -4878,7 +4946,7 @@ BB19_89:
 	ld	a, l
 	bit	6, a
 	ld	hl, 0
-	ld	bc, -553
+	ld	bc, -562
 	lea	iy, ix
 	push	af
 	add	iy, bc
@@ -4920,7 +4988,7 @@ BB19_96:
 BB19_97:
 	ld	hl, 2
 BB19_98:
-	ld	bc, -553
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), hl
@@ -4930,7 +4998,7 @@ BB19_99:
 	or	a, a
 	sbc	hl, hl
 	ld	(ix - 3), de
-	ld	de, -553
+	ld	de, -562
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
