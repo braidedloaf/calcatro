@@ -268,6 +268,11 @@ void draw_shop(int score, int hands_left, int discards_left, int money, HandValu
 	gfx_SetTextScale(1, 2);
 	display_game_stats(score, 0, 0, hands_left, discards_left, money, hv);
 
+    int offset_x = 90;
+    int offset_y = 115;
+    int box_width = GFX_LCD_WIDTH-offset_x;
+
+    gfx_Rectangle(offset_x, offset_y, box_width, GFX_LCD_HEIGHT-offset_y);
 
 }
 
@@ -581,6 +586,11 @@ goto_shop:
         kb_Scan();
         draw_shop(score, hands_left, discards_left, money, (HandValue) {-1, 0, 0});
         gfx_SwapDraw();
+
+        if (kb_Data[6] & kb_Clear) {
+            gfx_End();
+            return 0;
+        }
     }
 	
     while (state == STATE_RULES) {
@@ -718,19 +728,7 @@ goto_shop:
 			hand.current_cards_cnt -= tc;
             
             //beaten blind
-            if (score >= target_score) {
-                 score = 0;
-                 hands_left = 4;
-                 discards_left = 3;
-                 if (current_blind == 2) { // beat boss blind
-                     current_blind = 0;
-                     current_ante++;
-                 } else {
-                     current_blind++;
-                 }
-                 state = STATE_BLIND_SELECT;
-                 goto goto_blind_select; // TODO: change to shop when it gets added
-            }
+            
 		}
 		play_prev_key = play_key;
 
@@ -755,6 +753,20 @@ goto_shop:
 
 		display_hand(&hand);
 		display_game_stats(score, target_score, 0, hands_left, discards_left, money, result.value);
+
+        if (score >= target_score) {
+                 score = 0;
+                 hands_left = 4;
+                 discards_left = 3;
+                 if (current_blind == 2) { // beat boss blind
+                     current_blind = 0;
+                     current_ante++;
+                 } else {
+                     current_blind++;
+                 }
+                 state = STATE_SHOP;
+                 goto goto_shop; // TODO: change to shop when it gets added
+            }
 
 		if (kb_Data[6] & kb_Clear) { 
             running = false;

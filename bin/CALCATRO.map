@@ -7,9 +7,9 @@ Section          Base   Top    High   Length
 .init.reruncheck D1AA3B D1AA3B             0h
 .init            D1AA3B D1AA65            2Ah
 .fini            D1AA65 D1AA99            34h
-.text            D1AA99 D1D9D8          2F3Fh
-.data            D1D9D8 D1DA42            6Ah
-.rodata          D1DA42 D1DBFA           1B8h
+.text            D1AA99 D1DA38          2F9Fh
+.data            D1DA38 D1DAA2            6Ah
+.rodata          D1DAA2 D1DC5A           1B8h
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
@@ -59,19 +59,19 @@ _os_DisableHomeTextBuffer             = D1AC2E
 _os_EnableHomeTextBuffer              = D1AC40
 _random                               = D1AC52
 __setstate                            = D1ACB0
-__state                               = D1D9D8
+__state                               = D1DA38
 _boot_GetDate                         = 0005A8
 _boot_GetTime                         = 0005B0
 _mktime                               = D1ACC0
-_mktime.yday                          = D1DA42
+_mktime.yday                          = D1DAA2
 _time                                 = D1ADC4
 _memcpy                               = 0000A4
 _rand                                 = D1AE42
 _srand                                = D1AE4F
-.missingappvar                        = D1DA66
-.libloadname                          = D1DA6B
+.missingappvar                        = D1DAC6
+.libloadname                          = D1DACB
 .libloadnamelen                       = 000007
-.webaddress                           = D1DA73
+.webaddress                           = D1DAD3
 __start                               = D1AA3B
 ___exithl                             = D1AA65
 skip._exit                            = D1AA65
@@ -90,51 +90,52 @@ _print_playing_card                   = D1B261
 _print_playing_value                  = D1B289
 _print_hand_stats                     = D1B2C5
 _print_hand_type                      = D1B307
-JTI11_0                               = D1DA88
+JTI11_0                               = D1DAE8
 _display_game_stats                   = D1B3DD
 _draw_blind_menu                      = D1B541
-_display_hand                         = D1B708
-_draw_cards_to_hand                   = D1B7A3
-_get_hand_type                        = D1B88F
-_display_playing_hand                 = D1C70E
-_handle_draw_scoring                  = D1C7E5
-_main                                 = D1C8E5
+_draw_shop                            = D1B708
+_display_hand                         = D1B77B
+_draw_cards_to_hand                   = D1B816
+_get_hand_type                        = D1B902
+_display_playing_hand                 = D1C781
+_handle_draw_scoring                  = D1C858
+_main                                 = D1C958
 _frame_timer                          = D052C6
-_base_ante_values                     = D1DAA6
+_base_ante_values                     = D1DB06
 _current_ante                         = D052C9
 _current_blind                        = D052CC
-_hand_table                           = D1D9E8
-_.str                                 = D1DABE
-_.str.1                               = D1DAC7
-_.str.2                               = D1DADC
-_.str.3                               = D1DAF4
-_.str.4                               = D1DB0A
-_.str.5                               = D1DB21
-_.str.6                               = D1DB25
-_.str.7                               = D1DB2F
-_.str.8                               = D1DB34
-_.str.9                               = D1DB3D
-_.str.10                              = D1DB4D
-_.str.11                              = D1DB56
-_.str.12                              = D1DB5C
-_.str.13                              = D1DB67
-_.str.14                              = D1DB76
-_.str.15                              = D1DB85
-_.str.16                              = D1DB91
-_.str.17                              = D1DB92
-_.str.18                              = D1DB9B
-_.str.19                              = D1DBA2
-_.str.20                              = D1DBAF
-_.str.21                              = D1DBB3
-_.str.22                              = D1DBB8
-_.str.23                              = D1DBBF
-_.str.24                              = D1DBC5
-_.str.25                              = D1DBC9
-_.str.26                              = D1DBCE
-_.str.27                              = D1DBD4
-_.str.28                              = D1DBDA
-___const.get_hand_type.straight_ranks = D1DBDF
-_.str.29                              = D1DBEC
+_hand_table                           = D1DA48
+_.str                                 = D1DB1E
+_.str.1                               = D1DB27
+_.str.2                               = D1DB3C
+_.str.3                               = D1DB54
+_.str.4                               = D1DB6A
+_.str.5                               = D1DB81
+_.str.6                               = D1DB85
+_.str.7                               = D1DB8F
+_.str.8                               = D1DB94
+_.str.9                               = D1DB9D
+_.str.10                              = D1DBAD
+_.str.11                              = D1DBB6
+_.str.12                              = D1DBBC
+_.str.13                              = D1DBC7
+_.str.14                              = D1DBD6
+_.str.15                              = D1DBE5
+_.str.16                              = D1DBF1
+_.str.17                              = D1DBF2
+_.str.18                              = D1DBFB
+_.str.19                              = D1DC02
+_.str.20                              = D1DC0F
+_.str.21                              = D1DC13
+_.str.22                              = D1DC18
+_.str.23                              = D1DC1F
+_.str.24                              = D1DC25
+_.str.25                              = D1DC29
+_.str.26                              = D1DC2E
+_.str.27                              = D1DC34
+_.str.28                              = D1DC3A
+___const.get_hand_type.straight_ranks = D1DC3F
+_.str.29                              = D1DC4C
 lib.LibLoad                           = D1A9E2
 _#gfx_Begin                           = D1A9F5
 _#gfx_End                             = D1A9F9
