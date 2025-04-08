@@ -3152,15 +3152,15 @@ BB19_5:
 	section	.text,"ax",@progbits
 	public	_main
 _main:
-	ld	hl, -637
+	ld	hl, -625
 	call	__frameset
-	ld	bc, -559
+	ld	bc, -550
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, 0
 	lea	de, ix - 15
 	push	ix
-	ld	bc, -587
+	ld	bc, -578
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
@@ -3170,47 +3170,41 @@ _main:
 	lea	de, ix
 	pop	ix
 	push	ix
-	ld	bc, -574
-	add	ix, bc
-	ld	(ix), de
-	pop	ix
-	lea	de, iy + 112
-	push	ix
 	ld	bc, -565
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
-	lea	de, iy + 74
+	lea	de, iy + 103
 	push	ix
-	ld	bc, -594
+	ld	bc, -556
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
-	lea	de, iy + 27
+	lea	de, iy + 65
 	push	ix
-	ld	bc, -571
+	ld	bc, -585
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
 	lea	de, iy + 18
 	push	ix
-	ld	bc, -606
+	ld	bc, -559
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
 	lea	de, iy + 9
 	push	ix
-	ld	bc, -609
+	ld	bc, -594
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
 	push	ix
-	ld	bc, -568
+	ld	bc, -562
 	add	ix, bc
 	ld	(ix), iy
 	pop	ix
 	lea	de, iy
-	ld	bc, -600
+	ld	bc, -597
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
@@ -3224,33 +3218,33 @@ _main:
 	ld	e, 0
 	or	a, a
 	sbc	hl, hl
-	ld	bc, -565
+	ld	bc, -556
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
 	lea	bc, iy + 3
 	ld	(ix - 3), de
-	ld	de, -590
+	ld	de, -581
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
 	push	ix
-	ld	de, -571
+	ld	de, -559
 	add	ix, de
 	ld	iy, (ix)
 	pop	ix
 	lea	bc, iy + 9
-	ld	de, -603
+	ld	de, -591
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
 	push	ix
-	ld	de, -565
+	ld	de, -556
 	add	ix, de
 	ld	iy, (ix)
 	pop	ix
 	lea	bc, iy + 15
-	ld	de, -597
+	ld	de, -588
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
@@ -3260,7 +3254,7 @@ BB20_1:
 	ld	de, (ix - 3)
 BB20_2:
 	ld	(ix - 3), de
-	ld	de, -562
+	ld	de, -553
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
@@ -3276,24 +3270,24 @@ BB20_2:
 BB20_3:
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -577
+	ld	bc, -568
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
-	ld	bc, -591
+	ld	bc, -582
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), a
 BB20_4:
 	ld	bc, (ix - 3)
 	ld	(ix - 3), de
-	ld	de, -580
+	ld	de, -571
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
 	ld	de, (ix - 3)
 BB20_5:
-	ld	bc, -562
+	ld	bc, -553
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3302,7 +3296,7 @@ BB20_5:
 	jp	z, BB20_84
 	ld	a, l
 	cp	a, 3
-	ld	bc, -584
+	ld	bc, -575
 	lea	hl, ix
 	push	af
 	add	hl, bc
@@ -3330,7 +3324,7 @@ BB20_5:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	bc, -587
+	ld	bc, -578
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3369,20 +3363,20 @@ BB20_5:
 	ld	a, l
 	bit	6, a
 	ld	hl, 3
-	ld	de, -562
+	ld	de, -553
 	lea	iy, ix
 	push	af
 	add	iy, de
 	pop	af
 	ld	(iy), hl
-	ld	de, -580
+	ld	de, -571
 	lea	hl, ix
 	push	af
 	add	hl, de
 	pop	af
 	ld	bc, (hl)
 	push	ix
-	ld	bc, -584
+	ld	bc, -575
 	push	af
 	add	ix, bc
 	pop	af
@@ -3429,7 +3423,7 @@ BB20_10:
 	sbc	hl, hl
 	ld	a, l
 	call	__ltof
-	ld	de, -562
+	ld	de, -553
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
@@ -3450,7 +3444,7 @@ BB20_10:
 	ld	hl, -8388608
 	call	__fadd
 	ld	(ix - 3), bc
-	ld	bc, -562
+	ld	bc, -553
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, (iy)
@@ -3461,12 +3455,12 @@ BB20_10:
 	ld	de, 1
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -562
+	ld	bc, -553
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
 	push	ix
-	ld	bc, -584
+	ld	bc, -575
 	add	ix, bc
 	ld	e, (ix)
 	pop	ix
@@ -3489,27 +3483,27 @@ BB20_12:
 	push	hl
 	call	_gfx_SetColor
 	pop	hl
-	ld	bc, -574
+	ld	bc, -565
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_create_deck
 	pop	hl
-	ld	bc, -574
+	ld	bc, -565
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_shuffle_deck
 	pop	hl
-	ld	bc, -568
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	(iy + 115), 0
+	ld	(iy + 106), 0
 	push	ix
-	ld	bc, -590
+	ld	bc, -581
 	add	ix, bc
 	ld	hl, (ix)
 	pop	ix
@@ -3519,7 +3513,7 @@ BB20_12:
 	ld	bc, 61
 	ldir
 	ld	hl, 8
-	ld	(iy + 112), hl
+	ld	(iy + 103), hl
 	ld	iy, 11
 BB20_13:
 	lea	hl, iy
@@ -3530,7 +3524,7 @@ BB20_13:
 	lea	de, iy
 	lea	bc, iy
 	ld	(ix - 3), bc
-	ld	bc, -565
+	ld	bc, -556
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -3547,13 +3541,13 @@ BB20_13:
 BB20_15:
 	or	a, a
 	sbc	hl, hl
-	ld	bc, -568
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	(iy + 109), hl
+	ld	(iy + 100), hl
 	ld	de, 8
-	ld	bc, -618
+	ld	bc, -606
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
@@ -3564,24 +3558,24 @@ BB20_15:
 	push	de
 	pop	bc
 	push	ix
-	ld	de, -625
+	ld	de, -613
 	add	ix, de
 	ld	(ix), hl
 	pop	ix
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -583
+	ld	bc, -574
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -619
+	ld	bc, -607
 	add	ix, bc
 	ld	(ix), e
 	pop	ix
 	ld	de, 1
 	push	ix
-	ld	bc, -583
+	ld	bc, -574
 	add	ix, bc
 	ld	(ix), de
 	pop	ix
@@ -3591,11 +3585,11 @@ BB20_15:
 	ld	e, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -612
+	ld	bc, -600
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
-	ld	bc, -577
+	ld	bc, -568
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3603,17 +3597,17 @@ BB20_16:
 	ld	bc, (ix - 3)
 	ld	a, e
 	push	ix
-	ld	de, -622
+	ld	de, -610
 	add	ix, de
 	ld	(ix), l
 	pop	ix
-	ld	de, -583
+	ld	de, -574
 	lea	hl, ix
 	add	hl, de
 	ld	hl, (hl)
 	bit	0, l
 	jp	z, BB20_100
-	ld	de, -562
+	ld	de, -553
 	lea	hl, ix
 	add	hl, de
 	ld	hl, (hl)
@@ -3621,16 +3615,16 @@ BB20_16:
 	or	a, a
 	sbc	hl, de
 	jp	nz, BB20_100
-	ld	de, -615
+	ld	de, -603
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
 	push	ix
-	ld	bc, -628
+	ld	bc, -616
 	add	ix, bc
 	ld	(ix), iy
 	pop	ix
-	ld	bc, -584
+	ld	bc, -575
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), a
@@ -3643,15 +3637,15 @@ BB20_16:
 	inc	hl
 	ld	(_frame_timer), hl
 	call	_kb_Scan
-	ld	bc, -568
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	de, (iy + 115)
+	ld	de, (iy + 106)
 	push	de
 	pop	hl
 	ld	(ix - 3), de
-	ld	de, -618
+	ld	de, -606
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
@@ -3664,18 +3658,18 @@ BB20_16:
 	pop	hl
 	or	a, a
 	sbc	hl, de
-	ld	bc, -568
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	pea	iy + 109
-	ld	bc, -574
+	pea	iy + 100
+	ld	bc, -565
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
 	push	de
 	push	hl
-	ld	bc, -565
+	ld	bc, -556
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3690,7 +3684,7 @@ BB20_20:
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
-	ld	bc, -612
+	ld	bc, -600
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3699,31 +3693,31 @@ BB20_20:
 	push	hl
 	pop	bc
 	ld	(ix - 3), de
-	ld	de, -565
+	ld	de, -556
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	add	iy, bc
 	push	ix
-	ld	bc, -631
+	ld	bc, -619
 	add	ix, bc
 	ld	(ix), iy
 	pop	ix
 	ld	(iy + 14), 1
 	ld	de, (ix - 3)
-	ld	bc, -583
+	ld	bc, -574
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), de
 	ld	a, e
 	bit	5, a
 	jp	z, BB20_28
-	ld	bc, -619
+	ld	bc, -607
 	lea	hl, ix
 	add	hl, bc
 	bit	5, (hl)
 	jp	nz, BB20_28
-	ld	de, -612
+	ld	de, -600
 	lea	hl, ix
 	add	hl, de
 	ld	hl, (hl)
@@ -3732,22 +3726,22 @@ BB20_20:
 	push	hl
 	pop	de
 	ld	(ix - 3), bc
-	ld	bc, -565
+	ld	bc, -556
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
 	add	iy, de
 	push	ix
-	ld	bc, -562
+	ld	bc, -553
 	add	ix, bc
 	ld	(ix), iy
 	pop	ix
 	ld	a, (iy + 15)
-	ld	bc, -568
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	de, (iy + 118)
+	ld	de, (iy + 109)
 	bit	0, a
 	ld	bc, (ix - 3)
 	jr	nz, BB20_25
@@ -3758,7 +3752,7 @@ BB20_20:
 	sbc	hl, bc
 	call	pe, __setflag
 	jp	p, BB20_25
-	ld	bc, -562
+	ld	bc, -553
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -3768,7 +3762,7 @@ BB20_20:
 BB20_25:
 	bit	0, a
 	jr	z, BB20_28
-	ld	bc, -562
+	ld	bc, -553
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -3783,17 +3777,17 @@ BB20_25:
 	jp	m, BB20_28
 BB20_27:
 	add	hl, de
-	ld	bc, -568
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	(iy + 118), hl
+	ld	(iy + 109), hl
 BB20_28:
-	ld	bc, -568
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	iy, (iy + 112)
+	ld	iy, (iy + 103)
 	lea	hl, iy
 	ld	de, 1
 	or	a, a
@@ -3807,41 +3801,41 @@ BB20_28:
 BB20_30:
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -583
+	ld	bc, -574
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -619
+	ld	bc, -607
 	add	ix, bc
 	ld	(ix), e
 	pop	ix
 	ld	bc, (ix - 3)
 	push	ix
-	ld	de, -634
+	ld	de, -622
 	add	ix, de
 	ld	(ix), bc
 	pop	ix
 	push	ix
-	ld	de, -562
+	ld	de, -553
 	add	ix, de
 	ld	(ix), bc
 	pop	ix
 	push	ix
-	ld	de, -597
+	ld	de, -588
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
 	ex	de, hl
 	ld	(ix - 3), de
-	ld	de, -618
+	ld	de, -606
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), iy
 	push	bc
 	pop	iy
 	push	ix
-	ld	de, -562
+	ld	de, -553
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
@@ -3858,7 +3852,7 @@ BB20_31:
 	lea	hl, iy - 6
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -637
+	ld	bc, -625
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
@@ -3866,14 +3860,14 @@ BB20_31:
 	pop	hl
 	inc	hl
 	push	ix
-	ld	bc, -577
+	ld	bc, -568
 	add	ix, bc
 	ld	(ix), hl
 	pop	ix
 	ex	de, hl
 	ld	bc, (ix - 3)
 	push	ix
-	ld	de, -562
+	ld	de, -553
 	add	ix, de
 	ld	(ix), bc
 	pop	ix
@@ -3883,25 +3877,25 @@ BB20_31:
 	pop	de
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -594
+	ld	bc, -585
 	add	ix, bc
 	ld	hl, (ix)
 	pop	ix
 	add	hl, de
 	ex	de, hl
-	ld	bc, -637
+	ld	bc, -625
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	ld	bc, (ix - 3)
 	ldir
-	ld	de, -562
+	ld	de, -553
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -577
+	ld	bc, -568
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
@@ -3911,17 +3905,17 @@ BB20_34:
 	dec	bc
 	jp	BB20_31
 BB20_35:
-	ld	bc, -562
+	ld	bc, -553
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), de
 	push	de
-	ld	bc, -594
+	ld	bc, -585
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, (iy)
 	push	hl
-	ld	bc, -571
+	ld	bc, -559
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -3940,26 +3934,26 @@ BB20_35:
 	pop	de
 	ld	a, l
 	bit	7, a
-	ld	bc, -577
+	ld	bc, -568
 	lea	iy, ix
 	push	af
 	add	iy, bc
 	pop	af
 	ld	(iy), hl
 	jp	z, BB20_44
-	ld	bc, -568
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	de, (iy + 118)
-	ld	bc, -622
+	ld	de, (iy + 109)
+	ld	bc, -610
 	lea	iy, ix
 	add	iy, bc
 	ld	a, (iy)
 	cp	a, 0
 	call	pe, __setflag
 	jp	m, BB20_44
-	ld	bc, -615
+	ld	bc, -603
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
@@ -3974,23 +3968,23 @@ BB20_35:
 	sbc	hl, bc
 	call	pe, __setflag
 	jp	m, BB20_55
-	ld	bc, -568
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	de, (iy + 115)
-	ld	bc, -634
+	ld	de, (iy + 106)
+	ld	bc, -622
 	lea	iy, ix
 	add	iy, bc
 	ld	hl, (iy)
 	push	ix
-	ld	bc, -597
+	ld	bc, -588
 	add	ix, bc
 	ld	iy, (ix)
 	pop	ix
 	ld	(ix - 3), de
 	push	ix
-	ld	de, -612
+	ld	de, -600
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
@@ -4006,7 +4000,7 @@ BB20_40:
 	ld	(iy - 4), bc
 	ld	(ix - 3), de
 	push	ix
-	ld	de, -612
+	ld	de, -600
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
@@ -4019,12 +4013,12 @@ BB20_43:
 	dec	hl
 	jr	BB20_40
 BB20_44:
-	ld	de, -615
+	ld	de, -603
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 	push	ix
-	ld	de, -612
+	ld	de, -600
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
@@ -4038,26 +4032,26 @@ BB20_45:
 	ld	h, d
 	pop	de
 	push	ix
-	ld	de, -622
+	ld	de, -610
 	add	ix, de
 	ld	(ix), hl
 	pop	ix
 	ld	a, l
 	bit	7, a
-	ld	de, -615
+	ld	de, -603
 	lea	hl, ix
 	push	af
 	add	hl, de
 	pop	af
 	ld	(hl), iy
 	jp	z, BB20_58
-	ld	de, -568
+	ld	de, -562
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
-	ld	de, (iy + 118)
+	ld	de, (iy + 109)
 	ld	(ix - 3), bc
-	ld	bc, -584
+	ld	bc, -575
 	lea	iy, ix
 	add	iy, bc
 	ld	a, (iy)
@@ -4065,7 +4059,7 @@ BB20_45:
 	call	pe, __setflag
 	ld	bc, (ix - 3)
 	jp	m, BB20_54
-	ld	bc, -628
+	ld	bc, -616
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4079,14 +4073,14 @@ BB20_45:
 	sbc	hl, bc
 	call	pe, __setflag
 	jp	m, BB20_56
-	ld	bc, -597
+	ld	bc, -588
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
 	or	a, a
 	sbc	hl, hl
 	ex	de, hl
-	ld	bc, -634
+	ld	bc, -622
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4112,24 +4106,24 @@ BB20_53:
 	dec	hl
 	jr	BB20_50
 BB20_54:
-	ld	de, -615
+	ld	de, -603
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 	jr	BB20_58
 BB20_55:
-	ld	de, -612
+	ld	de, -600
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	jp	BB20_45
 BB20_56:
-	ld	de, -615
+	ld	de, -603
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 BB20_57:
-	ld	de, -612
+	ld	de, -600
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
@@ -4141,7 +4135,7 @@ BB20_58:
 	ld	a, e
 	bit	1, a
 	ld	(ix - 3), bc
-	ld	bc, -562
+	ld	bc, -553
 	lea	hl, ix
 	push	af
 	add	hl, bc
@@ -4150,7 +4144,7 @@ BB20_58:
 	ld	bc, (ix - 3)
 	jr	z, BB20_62
 	ld	(ix - 3), bc
-	ld	bc, -591
+	ld	bc, -582
 	lea	hl, ix
 	add	hl, bc
 	ld	l, (hl)
@@ -4163,31 +4157,31 @@ BB20_58:
 	or	a, a
 	sbc	hl, bc
 	jr	nz, BB20_64
-	ld	bc, -631
+	ld	bc, -619
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
 	ld	(iy + 14), 0
-	ld	bc, -562
+	ld	bc, -553
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
 	ld	(ix - 3), de
 	push	ix
-	ld	de, -618
+	ld	de, -606
 	add	ix, de
 	ld	bc, (ix)
 	pop	ix
 	dec	bc
 	push	ix
-	ld	de, -591
+	ld	de, -582
 	add	ix, de
 	ld	l, (ix)
 	pop	ix
 	jp	BB20_70
 BB20_62:
 	ld	(ix - 3), bc
-	ld	bc, -591
+	ld	bc, -582
 	lea	hl, ix
 	add	hl, bc
 	ld	l, (hl)
@@ -4198,7 +4192,7 @@ BB20_64:
 	push	bc
 	pop	hl
 	ld	(ix - 3), de
-	ld	de, -612
+	ld	de, -600
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), bc
@@ -4208,38 +4202,38 @@ BB20_64:
 	call	pe, __setflag
 	ld	de, (ix - 3)
 	jp	m, BB20_69
-	ld	de, -612
+	ld	de, -600
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	dec	bc
-	ld	de, -631
+	ld	de, -619
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	ld	(iy + 14), 0
 	ld	(ix - 3), bc
-	ld	bc, -562
+	ld	bc, -553
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
 	push	ix
-	ld	bc, -591
+	ld	bc, -582
 	add	ix, bc
 	ld	l, (ix)
 	pop	ix
 	jr	BB20_63
 BB20_66:
 	ld	(ix - 3), bc
-	ld	bc, -568
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	(iy + 115), de
+	ld	(iy + 106), de
 	or	a, a
 	sbc	hl, hl
-	ld	(iy + 118), hl
-	ld	de, -615
+	ld	(iy + 109), hl
+	ld	de, -603
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
@@ -4249,12 +4243,12 @@ BB20_66:
 BB20_67:
 	or	a, a
 	sbc	hl, hl
-	ld	bc, -568
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	(iy + 118), hl
-	ld	bc, -628
+	ld	(iy + 109), hl
+	ld	bc, -616
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4265,13 +4259,13 @@ BB20_67:
 	scf
 	sbc	hl, hl
 	push	hl
-	ld	bc, -637
+	ld	bc, -625
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), de
 	call	_gfx_FillScreen
 	pop	hl
-	ld	bc, -565
+	ld	bc, -556
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4281,17 +4275,17 @@ BB20_67:
 	scf
 	sbc	hl, hl
 	push	hl
-	ld	bc, -603
+	ld	bc, -591
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -562
+	ld	bc, -553
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -594
+	ld	bc, -585
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4308,7 +4302,7 @@ BB20_67:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	bc, -571
+	ld	bc, -559
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4316,12 +4310,12 @@ BB20_67:
 	ldir
 	ld	hl, 4
 	push	hl
-	ld	bc, -615
+	ld	bc, -603
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -628
+	ld	bc, -616
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4329,12 +4323,12 @@ BB20_67:
 	or	a, a
 	sbc	hl, hl
 	push	hl
-	ld	bc, -580
+	ld	bc, -571
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -625
+	ld	bc, -613
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4348,38 +4342,20 @@ BB20_67:
 	push	hl
 	call	_wait_frames
 	pop	hl
-	ld	bc, -568
+	ld	bc, -562
 	lea	hl, ix
 	add	hl, bc
 	ld	iy, (hl)
-	ld	hl, (iy + 71)
+	ld	hl, (iy + 62)
 	ld	de, 4
 	push	de
-	ld	bc, -615
+	ld	bc, -603
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
 	push	de
 	push	ix
-	ld	bc, -628
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
-	push	de
-	push	ix
-	ld	bc, -580
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
-	push	de
-	push	ix
-	ld	bc, -625
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
-	push	de
-	push	ix
-	ld	bc, -565
+	ld	bc, -616
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
@@ -4390,58 +4366,76 @@ BB20_67:
 	ld	de, (ix)
 	pop	ix
 	push	de
+	push	ix
+	ld	bc, -613
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	push	de
+	push	ix
+	ld	bc, -556
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	push	de
+	push	ix
+	ld	bc, -559
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	push	de
 	push	hl
-	ld	bc, -603
+	ld	bc, -591
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -562
+	ld	bc, -553
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -594
+	ld	bc, -585
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_handle_draw_scoring
-	ld	de, -634
+	ld	de, -622
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), hl
 	ld	iy, 33
 	add	iy, sp
 	ld	sp, iy
-	ld	de, -571
+	ld	de, -559
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	ld	a, (iy)
-	ld	de, -606
+	ld	de, -594
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	ld	(iy), a
-	ld	de, -568
+	ld	de, -562
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
-	ld	a, (iy + 28)
-	ld	(iy + 19), a
-	ld	a, (iy + 29)
-	ld	(iy + 20), a
-	ld	bc, (iy + 33)
+	ld	a, (iy + 19)
+	ld	(iy + 10), a
+	ld	a, (iy + 20)
+	ld	(iy + 11), a
+	ld	bc, (iy + 24)
 	call	__idivs
-	ld	(iy + 21), hl
-	ld	(iy + 24), bc
+	ld	(iy + 12), hl
+	ld	(iy + 15), bc
 	scf
 	sbc	hl, hl
 	push	hl
 	call	_gfx_FillScreen
 	pop	hl
-	ld	bc, -565
+	ld	bc, -556
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4451,17 +4445,17 @@ BB20_67:
 	scf
 	sbc	hl, hl
 	push	hl
-	ld	bc, -603
+	ld	bc, -591
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -562
+	ld	bc, -553
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -594
+	ld	bc, -585
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4478,7 +4472,7 @@ BB20_67:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	bc, -606
+	ld	bc, -594
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4486,27 +4480,27 @@ BB20_67:
 	ldir
 	ld	hl, 4
 	push	hl
-	ld	bc, -615
+	ld	bc, -603
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -628
+	ld	bc, -616
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -634
+	ld	bc, -622
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -580
+	ld	bc, -571
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -625
+	ld	bc, -613
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4525,7 +4519,7 @@ BB20_67:
 	push	hl
 	call	_gfx_FillScreen
 	pop	hl
-	ld	bc, -565
+	ld	bc, -556
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4535,17 +4529,17 @@ BB20_67:
 	scf
 	sbc	hl, hl
 	push	hl
-	ld	bc, -603
+	ld	bc, -591
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -562
+	ld	bc, -553
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -594
+	ld	bc, -585
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4557,14 +4551,14 @@ BB20_67:
 	pop	hl
 	scf
 	sbc	hl, hl
-	ld	bc, -568
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	(iy + 9), hl
-	ld	(iy + 12), hl
+	ld	(iy), hl
+	ld	(iy + 3), hl
 	inc	hl
-	ld	(iy + 15), hl
+	ld	(iy + 6), hl
 	push	hl
 	push	hl
 	push	hl
@@ -4572,7 +4566,7 @@ BB20_67:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	ld	bc, -609
+	ld	bc, -597
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4580,27 +4574,27 @@ BB20_67:
 	ldir
 	ld	hl, 4
 	push	hl
-	ld	bc, -615
+	ld	bc, -603
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -628
+	ld	bc, -616
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -634
+	ld	bc, -622
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -580
+	ld	bc, -571
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -625
+	ld	bc, -613
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4613,41 +4607,41 @@ BB20_67:
 	ld	hl, 750
 	push	hl
 	call	_wait_frames
-	ld	de, -634
+	ld	de, -622
 	lea	hl, ix
 	add	hl, de
 	ld	iy, (hl)
 	pop	hl
-	ld	de, -625
+	ld	de, -613
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	add	iy, bc
 	lea	de, iy
-	ld	bc, -568
+	ld	bc, -562
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
-	ld	hl, (iy + 115)
+	ld	hl, (iy + 106)
 	ld	(ix - 3), de
-	ld	de, -637
+	ld	de, -625
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
 	or	a, a
 	sbc	hl, bc
 	push	ix
-	ld	bc, -568
+	ld	bc, -562
 	add	ix, bc
 	ld	iy, (ix)
 	pop	ix
-	ld	(iy + 115), hl
+	ld	(iy + 106), hl
 	ld	de, (ix - 3)
 	ex	de, hl
 	push	hl
 	pop	bc
 	ld	(ix - 3), bc
-	ld	bc, -580
+	ld	bc, -571
 	lea	iy, ix
 	add	iy, bc
 	ld	de, (iy)
@@ -4656,22 +4650,22 @@ BB20_67:
 	call	pe, __setflag
 	ld	bc, (ix - 3)
 	jp	p, BB20_80
-	ld	de, -625
+	ld	de, -613
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
-	ld	de, -615
+	ld	de, -603
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	jp	BB20_57
 BB20_69:
-	ld	bc, -591
+	ld	bc, -582
 	lea	hl, ix
 	add	hl, bc
 	ld	l, (hl)
 	ld	(ix - 3), de
-	ld	de, -612
+	ld	de, -600
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)
@@ -4684,7 +4678,7 @@ BB20_71:
 	bit	2, l
 	jr	nz, BB20_78
 	ld	(ix - 3), bc
-	ld	bc, -618
+	ld	bc, -606
 	lea	hl, ix
 	add	hl, bc
 	ld	de, (hl)
@@ -4711,7 +4705,7 @@ BB20_75:
 	push	bc
 	pop	de
 BB20_77:
-	ld	bc, -612
+	ld	bc, -600
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), hl
@@ -4721,7 +4715,7 @@ BB20_77:
 	push	hl
 	pop	de
 	ld	(ix - 3), bc
-	ld	bc, -565
+	ld	bc, -556
 	lea	iy, ix
 	add	iy, bc
 	ld	iy, (iy)
@@ -4730,34 +4724,18 @@ BB20_77:
 	ld	bc, (ix - 3)
 	jr	BB20_79
 BB20_78:
-	ld	de, -612
+	ld	de, -600
 	lea	hl, ix
 	add	hl, de
 	ld	(hl), bc
 BB20_79:
-	ld	bc, -565
+	ld	bc, -556
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
 	call	_display_hand
 	pop	hl
-	ld	bc, -568
-	lea	hl, ix
-	add	hl, bc
-	ld	iy, (hl)
-	scf
-	sbc	hl, hl
-	ld	(iy), hl
-	lea	hl, iy
-	ld	iy, 0
-	lea	de, iy
-	push	hl
-	pop	iy
-	ld	(iy + 3), de
-	ld	(iy + 6), de
-	push	de
-	pop	iy
 	push	hl
 	push	hl
 	push	hl
@@ -4765,32 +4743,33 @@ BB20_79:
 	ld	hl, 0
 	add	hl, sp
 	ex	de, hl
-	push	ix
-	ld	bc, -600
-	add	ix, bc
-	ld	hl, (ix)
-	pop	ix
+	ld	bc, -559
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
 	ld	bc, 9
 	ldir
 	ld	hl, 4
 	push	hl
-	ld	bc, -615
+	ld	bc, -603
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -628
+	ld	bc, -616
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	push	iy
-	ld	bc, -580
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	bc, -571
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
 	push	hl
-	ld	bc, -625
+	ld	bc, -613
 	lea	hl, ix
 	add	hl, bc
 	ld	hl, (hl)
@@ -4816,43 +4795,43 @@ BB20_79:
 	ld	e, l
 	ld	d, h
 	ld	(ix - 3), bc
-	ld	bc, -583
+	ld	bc, -574
 	lea	hl, ix
 	add	hl, bc
 	ld	(hl), de
 	ld	bc, (ix - 3)
 	call	_gfx_SwapDraw
-	ld	de, -615
+	ld	de, -603
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
-	ld	de, -628
+	ld	de, -616
 	lea	iy, ix
 	add	iy, de
 	ld	iy, (iy)
 	push	ix
-	ld	de, -562
+	ld	de, -553
 	add	ix, de
 	ld	hl, (ix)
 	pop	ix
 	push	ix
-	ld	de, -591
+	ld	de, -582
 	add	ix, de
 	ld	(ix), l
 	pop	ix
 	ld	hl, 1
 	push	ix
-	ld	de, -562
+	ld	de, -553
 	add	ix, de
 	ld	(ix), hl
 	pop	ix
-	ld	de, -577
+	ld	de, -568
 	lea	hl, ix
 	add	hl, de
 	ld	hl, (hl)
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -622
+	ld	bc, -610
 	add	ix, bc
 	ld	de, (ix)
 	pop	ix
@@ -4875,32 +4854,32 @@ BB20_82:
 	inc	de
 	ld	(hl), de
 	ld	hl, 3
-	ld	de, -562
+	ld	de, -553
 	lea	iy, ix
 	add	iy, de
 	ld	(iy), hl
-	ld	de, -580
+	ld	de, -571
 	lea	hl, ix
 	add	hl, de
 	ld	bc, (hl)
 	push	ix
-	ld	de, -591
+	ld	de, -582
 	add	ix, de
 	ld	a, (ix)
 	pop	ix
 	ld	(ix - 3), bc
 	push	ix
-	ld	bc, -584
+	ld	bc, -575
 	add	ix, bc
 	ld	e, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -577
+	ld	bc, -568
 	add	ix, bc
 	ld	hl, (ix)
 	pop	ix
 	push	ix
-	ld	bc, -583
+	ld	bc, -574
 	add	ix, bc
 	ld	iy, (ix)
 	pop	ix
@@ -4993,7 +4972,7 @@ BB20_89:
 	ld	a, l
 	bit	6, a
 	ld	hl, 0
-	ld	bc, -562
+	ld	bc, -553
 	lea	iy, ix
 	push	af
 	add	iy, bc
@@ -5035,7 +5014,7 @@ BB20_96:
 BB20_97:
 	ld	hl, 2
 BB20_98:
-	ld	bc, -562
+	ld	bc, -553
 	lea	iy, ix
 	add	iy, bc
 	ld	(iy), hl
@@ -5045,7 +5024,7 @@ BB20_99:
 	or	a, a
 	sbc	hl, hl
 	ld	(ix - 3), de
-	ld	de, -562
+	ld	de, -553
 	lea	iy, ix
 	add	iy, de
 	ld	bc, (iy)

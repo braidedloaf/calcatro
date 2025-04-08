@@ -581,9 +581,6 @@ goto_shop:
         kb_Scan();
         draw_shop(score, hands_left, discards_left, money, (HandValue) {-1, 0, 0});
         gfx_SwapDraw();
-        
-
-
     }
 	
     while (state == STATE_RULES) {
@@ -757,7 +754,7 @@ goto_shop:
 		arrow_prev_key = arrow_key;
 
 		display_hand(&hand);
-		display_game_stats(score, target_score, 0, hands_left, discards_left, money, (HandValue) {-1,0,0});
+		display_game_stats(score, target_score, 0, hands_left, discards_left, money, result.value);
 
 		if (kb_Data[6] & kb_Clear) { 
             running = false;
