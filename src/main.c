@@ -120,6 +120,24 @@ Deck create_deck() {
 	return deck;
 }
 
+void generatePolygon(int sides, double radius, int *p_arr) {
+    for (int i = 0; i < sides; i++) {
+        double angle = 2 * PI * i / sides;
+        double x = radius * cos(angle);
+		p_arr[i*2] = x;
+        double y = radius * sin(angle);
+		p_arr[i*2+1] = y;
+    }
+}
+
+void create_planet_array(double pnet[9][18]) {
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 18; j++) { 
+			pnet[i][j] = 0;
+		}
+	}
+}
+
 void draw_main_menu(void) {
     gfx_FillScreen(255);
     gfx_SetTextScale(2, 2);
@@ -270,7 +288,7 @@ void draw_shop(int score, int hands_left, int discards_left, int money, HandValu
 
     int offset_x = 90;
     int offset_y = 115;
-    int box_width = GFX_LCD_WIDTH-offset_x;
+    int box_width = GFX_LCD_WIDTH-offset_x - 50;
 
     gfx_Rectangle(offset_x, offset_y, box_width, GFX_LCD_HEIGHT-offset_y);
 
@@ -564,7 +582,9 @@ goto_menu:
 	
 	int score = 0, target_score = 0, hands_left = 4, discards_left = 3, money = 4;
 	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
-
+	double planet_shapes[9][18];
+	create_planet_array(planet_shapes);
+	
 goto_blind_select:
 	while (state == STATE_BLIND_SELECT) {
 		kb_Scan();
