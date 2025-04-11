@@ -130,14 +130,6 @@ void generatePolygon(int sides, double radius, int *p_arr) {
     }
 }
 
-void create_planet_array(double pnet[9][18]) {
-	for (int i = 0; i < 9; i++) {
-		for (int j = 0; j < 18; j++) { 
-			pnet[i][j] = 0;
-		}
-	}
-}
-
 void draw_main_menu(void) {
     gfx_FillScreen(255);
     gfx_SetTextScale(2, 2);
@@ -145,13 +137,13 @@ void draw_main_menu(void) {
     gfx_PrintStringXY("CALCATRO", 80, 40);
     gfx_SetTextScale(1, 2);
     gfx_PrintStringXY("Press [2nd] to Start", 80, 100);
-    gfx_PrintStringXY("Press [Alpha] for Rules", 80, 132);
+    gfx_PrintStringXY("Press [alpha] for Rules", 80, 132);
     gfx_PrintStringXY("Press [Clear] to Quit", 80, 164);
 }
 
 void draw_rules_menu(void) {
     gfx_FillScreen(255);
-    gfx_PrintStringXY("Press [Alpha] for Menu", 80, 132);
+    gfx_PrintStringXY("Press [alpha] for Menu", 80, 132);
 } 
 
 void print_card(Card c , int x, int y) {
@@ -262,7 +254,7 @@ void draw_blind_menu(int score, int hands_left, int discards_left, int money, Ha
     int padding_x = 10;
 
     for (int i = 0; i < 3; i++) {
-	    gfx_PrintStringXY("Select", offset_x + ((box_width+padding_x)*i), offset_y);
+	    gfx_PrintStringXY(current_blind == i ? "Select" : current_blind < i ? "Next" : "Passed", offset_x + ((box_width+padding_x)*i), offset_y);
 
         gfx_SetTextScale(1, 1);
 	    gfx_PrintStringXY(i == 0 ? "Small" : i == 1 ? "Big" : "Boss", offset_x + ((box_width+padding_x)*i), offset_y + 24);
@@ -281,7 +273,7 @@ void draw_blind_menu(int score, int hands_left, int discards_left, int money, Ha
     }
 } 
 
-void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hv) {
+void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hv, double pnet[9][18]) {
     gfx_FillScreen(255);
 	gfx_SetTextScale(1, 2);
 	display_game_stats(score, 0, 0, hands_left, discards_left, money, hv);
@@ -291,6 +283,17 @@ void draw_shop(int score, int hands_left, int discards_left, int money, HandValu
     int box_width = GFX_LCD_WIDTH-offset_x - 50;
 
     gfx_Rectangle(offset_x, offset_y, box_width, GFX_LCD_HEIGHT-offset_y);
+    gfx_Rectangle(offset_x + 5, offset_y + 5, box_width / 3, (GFX_LCD_HEIGHT-offset_y) / 3);
+    gfx_PrintStringXY("[alpha]", offset_x + 10, offset_y + 10);
+    gfx_PrintStringXY("Next", offset_x + 10, offset_y + 26);
+    
+    gfx_Rectangle(offset_x + 5, offset_y + (GFX_LCD_HEIGHT-offset_y) / 3 + 5, box_width/3, (GFX_LCD_HEIGHT-offset_y) / 2);
+    gfx_PrintStringXY("[del]", offset_x + 10, offset_y + (GFX_LCD_HEIGHT-offset_y) / 3 + 10);
+    gfx_PrintStringXY("Reroll", offset_x + 10, offset_y + (GFX_LCD_HEIGHT-offset_y) / 3 + 26);
+    gfx_SetTextXY(offset_x + 10, offset_y + (GFX_LCD_HEIGHT-offset_y) / 3 + 42);
+    gfx_PrintChar('$');
+    gfx_PrintInt(5, 1);
+
 
 }
 
@@ -582,8 +585,26 @@ goto_menu:
 	
 	int score = 0, target_score = 0, hands_left = 4, discards_left = 3, money = 4;
 	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
-	double planet_shapes[9][18];
-	create_planet_array(planet_shapes);
+	double planet_shapes[9][18] = {
+        //Circle sentinel
+        {8888, 8888, 0,0, 2,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
+        // Triangle
+        {0,2, -2,-2, 2,-2, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
+        // Square
+        {-1,1, 1,1, 1,-1, -1,-1, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
+        // Trapezoid
+        {-2,1, 2,1, 1,-1, -1,-1, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
+        // Pentagon
+        {0,2, 2,0, 1,-2, -1,-2, -2,0, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
+        // Hexagon
+        {-1,2, 1,2, 2,0, 1,-2, -1,-2, -2,0, 9999,9999, 9999,9999, 9999,9999},
+        // Septagon
+        {0,2, 2,1, 2,-1, 0,-2, -2,-1, -2,1, 0,3, 9999,9999, 9999,9999},
+        // Octagon
+        {-1,2, 1,2, 2,1, 2,-1, 1,-2, -1,-2, -2,-1, -2,1, 9999,9999},
+        // Nonagon
+        {0,3, 2,2, 3,0, 2,-2, 0,-3, -2,-2, -3,0, -2,2, 0,1}
+    };
 	
 goto_blind_select:
 	while (state == STATE_BLIND_SELECT) {
@@ -604,7 +625,7 @@ goto_blind_select:
 goto_shop:
     while (state == STATE_SHOP) {
         kb_Scan();
-        draw_shop(score, hands_left, discards_left, money, (HandValue) {-1, 0, 0});
+        draw_shop(score, hands_left, discards_left, money, (HandValue) {-1, 0, 0}, planet_shapes);
         gfx_SwapDraw();
 
         if (kb_Data[6] & kb_Clear) {
