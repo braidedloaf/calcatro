@@ -263,7 +263,26 @@ void draw_blind_menu(int score, int hands_left, int discards_left, int money, Ha
     }
 } 
 
-void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hv, double pnet[9][18], double pscale, int p_idx_1, int p_idx_2) {
+void draw_planet(int points[18], int num_points, int offset_x, int offset_y, int pscale, int idx, double pnet[9][18], int m) {
+	if (pnet[idx][0] == 8888) {
+        gfx_Circle_NoClip(offset_x + 100, offset_y + 40, 2 * pscale);
+    } else {
+        for (int i = 0; i < 18; i += 2) {
+            if (pnet[idx][i] == 9999 || pnet[idx][i + 1] == 9999) break;
+
+            int x = (pnet[idx][i] * pscale) + offset_x + 100 + (m*50);
+            int y = (pnet[idx][i + 1] * pscale) + offset_y + 40;
+
+            points[num_points * 2] = x;
+            points[num_points * 2 + 1] = y;
+            num_points++;
+        }
+
+        gfx_Polygon_NoClip(points, num_points);
+    }
+}
+
+void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hv, double pnet[9][18], int pscale, int p_idx_1, int p_idx_2) {
     gfx_FillScreen(255);
 	gfx_SetTextScale(1, 2);
 	display_game_stats(score, 0, 0, hands_left, discards_left, money, hv);
@@ -288,22 +307,8 @@ void draw_shop(int score, int hands_left, int discards_left, int money, HandValu
     int points[18]; // Max 9 (x, y) pairs
     int num_points = 0;
 
-    if (pnet[p_idx_1][0] == 8888) {
-        gfx_Circle_NoClip(offset_x + 100, offset_y + 40, 2 * pscale);
-    } else {
-        for (int i = 0; i < 18; i += 2) {
-            if (pnet[p_idx_1][i] == 9999 || pnet[p_idx_1][i + 1] == 9999) break;
-
-            int x = (int)(pnet[p_idx_1][i] * pscale) + offset_x + 100;
-            int y = (int)(pnet[p_idx_1][i + 1] * pscale) + offset_y + 40;
-
-            points[num_points * 2] = x;
-            points[num_points * 2 + 1] = y;
-            num_points++;
-        }
-
-        gfx_Polygon_NoClip(points, num_points);
-    }
+    draw_planet(points, num_points, offset_x, offset_y, pscale, p_idx_1, pnet, 0);
+    draw_planet(points, num_points, offset_x, offset_y, pscale, p_idx_2, pnet, 1);
 }
 
 void display_hand(Hand *p_hand) {
@@ -594,26 +599,26 @@ goto_menu:
 	
 	int score = 0, target_score = 0, hands_left = 4, discards_left = 3, money = 4;
 	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
-    double planet_scale = 10;
+    int planet_scale = 20;
 	double planet_shapes[9][18] = {
         //Circle sentinel
         {8888, 8888, 0,0, 2,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
         // Triangle
-        {0,2, -2,-2, 2,-2, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
+        { 1.000000, 0.000000, -0.500000, 0.866025, -0.500000, -0.866025, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
         // Square
         {-1,1, 1,1, 1,-1, -1,-1, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
         // Trapezoid
-        {-2,1, 2,1, 1,-1, -1,-1, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
+        { -2.000000, 0.500000, 2.000000, 0.500000, 0.500000, -0.500000, -0.500000, -0.500000, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
         // Pentagon
-        {0,2, 2,0, 1,-2, -1,-2, -2,0, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
+        {1.000000, 0.000000, 0.309017, 0.951057, -0.809017, 0.587785, -0.809017, -0.587785, 0.309017, -0.951057, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
         // Hexagon
-        {-1,2, 1,2, 2,0, 1,-2, -1,-2, -2,0, 9999,9999, 9999,9999, 9999,9999},
+        {1.000000, 0.000000, 0.500000, 0.866025, -0.500000, 0.866025, -1.000000, 0.000000, -0.500000, -0.866025, 0.500000, -0.866025, 9999,9999, 9999,9999, 9999,9999},
         // Septagon
-        {0,2, 2,1, 2,-1, 0,-2, -2,-1, -2,1, 0,3, 9999,9999, 9999,9999},
+        { 1.000000, 0.000000, 0.623490, 0.781831, -0.222521, 0.974928, -0.900969, 0.433884, -0.900969, -0.433884, -0.222521, -0.974928, 0.623490, -0.781831, 9999,9999 },
         // Octagon
-        {-1,2, 1,2, 2,1, 2,-1, 1,-2, -1,-2, -2,-1, -2,1, 9999,9999},
+        { 1.000000, 0.000000, 0.707107, 0.707107, 0.000000, 1.000000, -0.707107, 0.707107, -1.000000, 0.000000, -0.707107, -0.707107, 0.000000, -1.000000, 0.707107, -0.707107, 9999,9999 },
         // Nonagon
-        {0,3, 2,2, 3,0, 2,-2, 0,-3, -2,-2, -3,0, -2,2, 0,1}
+        { 1.000000, 0.000000, 0.766044, 0.642788, 0.173648, 0.984808, -0.500000, 0.866025, -0.939693, 0.342020, -0.939693, -0.342020, -0.500000, -0.866025, 0.173648, -0.984808, 0.766044, -0.642788 }
     };
 	
     int p_idx_1 = randomIntRange(0, 8);
