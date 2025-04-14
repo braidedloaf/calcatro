@@ -120,16 +120,6 @@ Deck create_deck() {
 	return deck;
 }
 
-void generatePolygon(int sides, double radius, int *p_arr) {
-    for (int i = 0; i < sides; i++) {
-        double angle = 2 * PI * i / sides;
-        double x = radius * cos(angle);
-		p_arr[i*2] = x;
-        double y = radius * sin(angle);
-		p_arr[i*2+1] = y;
-    }
-}
-
 void draw_main_menu(void) {
     gfx_FillScreen(255);
     gfx_SetTextScale(2, 2);
@@ -273,7 +263,7 @@ void draw_blind_menu(int score, int hands_left, int discards_left, int money, Ha
     }
 } 
 
-void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hv, double pnet[9][18]) {
+void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hv, double pnet[9][18], double pscale, int p_idx_1, int p_idx_2) {
     gfx_FillScreen(255);
 	gfx_SetTextScale(1, 2);
 	display_game_stats(score, 0, 0, hands_left, discards_left, money, hv);
@@ -294,7 +284,26 @@ void draw_shop(int score, int hands_left, int discards_left, int money, HandValu
     gfx_PrintChar('$');
     gfx_PrintInt(5, 1);
 
+    
+    int points[18]; // Max 9 (x, y) pairs
+    int num_points = 0;
 
+    if (pnet[p_idx_1][0] == 8888) {
+        gfx_Circle_NoClip(offset_x + 100, offset_y + 40, 2 * pscale);
+    } else {
+        for (int i = 0; i < 18; i += 2) {
+            if (pnet[p_idx_1][i] == 9999 || pnet[p_idx_1][i + 1] == 9999) break;
+
+            int x = (int)(pnet[p_idx_1][i] * pscale) + offset_x + 100;
+            int y = (int)(pnet[p_idx_1][i + 1] * pscale) + offset_y + 40;
+
+            points[num_points * 2] = x;
+            points[num_points * 2 + 1] = y;
+            num_points++;
+        }
+
+        gfx_Polygon_NoClip(points, num_points);
+    }
 }
 
 void display_hand(Hand *p_hand) {
@@ -585,6 +594,7 @@ goto_menu:
 	
 	int score = 0, target_score = 0, hands_left = 4, discards_left = 3, money = 4;
 	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
+    double planet_scale = 10;
 	double planet_shapes[9][18] = {
         //Circle sentinel
         {8888, 8888, 0,0, 2,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
@@ -606,8 +616,12 @@ goto_menu:
         {0,3, 2,2, 3,0, 2,-2, 0,-3, -2,-2, -3,0, -2,2, 0,1}
     };
 	
+    int p_idx_1 = randomIntRange(0, 8);
+    int p_idx_2 = randomIntRange(0, 8);
+    while (p_idx_1 == p_idx_2) p_idx_2 = randomIntRange(0,8);
+
 goto_blind_select:
-	while (state == STATE_BLIND_SELECT) {
+    while (state == STATE_BLIND_SELECT) {
 		kb_Scan();
         draw_blind_menu(score, hands_left, discards_left, money, (HandValue){-1,0,0});
         gfx_SwapDraw();
@@ -625,10 +639,14 @@ goto_blind_select:
 goto_shop:
     while (state == STATE_SHOP) {
         kb_Scan();
-        draw_shop(score, hands_left, discards_left, money, (HandValue) {-1, 0, 0}, planet_shapes);
+        draw_shop(score, hands_left, discards_left, money, (HandValue) {-1, 0, 0}, planet_shapes, planet_scale, p_idx_1, p_idx_2);
         gfx_SwapDraw();
 
-        if (kb_Data[6] & kb_Clear) {
+        if (kb_Data[2] & kb_Alpha) {
+            while (kb_Data[2] & kb_Alpha) kb_Scan();
+            state = STATE_BLIND_SELECT;
+            goto goto_blind_select;
+        } else if (kb_Data[6] & kb_Clear) {
             gfx_End();
             return 0;
         }
