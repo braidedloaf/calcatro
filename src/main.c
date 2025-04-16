@@ -44,6 +44,12 @@ typedef struct {
 	Card hand[8];
 } Hand;
 
+typedef struct {
+	int num_points;
+	int points[18];
+	int is_selected;
+} Planet;
+
 typedef enum {
     HAND_HIGH_CARD = 0,
     HAND_ONE_PAIR,
@@ -71,7 +77,7 @@ typedef struct {
 } EvaluatedHand;
 
 HandValue hand_table[HAND_COUNT] = {
-    { HAND_HIGH_CARD,      5,   1 },
+    { HAND_HIGH_CARD,      5,   100 },
     { HAND_ONE_PAIR,       10,  2 },
     { HAND_TWO_PAIR,       20,  2 },
     { HAND_THREE_KIND,     30,  3 },
@@ -263,22 +269,22 @@ void draw_blind_menu(int score, int hands_left, int discards_left, int money, Ha
     }
 } 
 
-void draw_planet(int points[18], int num_points, int offset_x, int offset_y, int pscale, int idx, double pnet[9][18], int m) {
+void draw_planet(Planet *planet, int offset_x, int offset_y, int pscale, int idx, double pnet[9][18], int m) {
 	if (pnet[idx][0] == 8888) {
-        gfx_Circle_NoClip(offset_x + 100, offset_y + 40, 2 * pscale);
+        gfx_Circle_NoClip(offset_x + 100 + (m*50), offset_y + 40, 1 * pscale);
     } else {
         for (int i = 0; i < 18; i += 2) {
             if (pnet[idx][i] == 9999 || pnet[idx][i + 1] == 9999) break;
 
-            int x = (pnet[idx][i] * pscale) + offset_x + 100 + (m*50);
-            int y = (pnet[idx][i + 1] * pscale) + offset_y + 40;
+            int x = (int) (pnet[idx][i] * pscale) + offset_x + 100 + (m*50);
+            int y = (int) (pnet[idx][i + 1] * pscale) + offset_y + 40;
 
-            points[num_points * 2] = x;
-            points[num_points * 2 + 1] = y;
-            num_points++;
+            planet->points[planet->num_points * 2] = x;
+            planet->points[planet->num_points * 2 + 1] = y;
+            planet->num_points++;
         }
 
-        gfx_Polygon_NoClip(points, num_points);
+        gfx_Polygon_NoClip(planet->points, planet->num_points);
     }
 }
 
@@ -303,12 +309,10 @@ void draw_shop(int score, int hands_left, int discards_left, int money, HandValu
     gfx_PrintChar('$');
     gfx_PrintInt(5, 1);
 
-    
-    int points[18]; // Max 9 (x, y) pairs
-    int num_points = 0;
-
-    draw_planet(points, num_points, offset_x, offset_y, pscale, p_idx_1, pnet, 0);
-    draw_planet(points, num_points, offset_x, offset_y, pscale, p_idx_2, pnet, 1);
+	Planet planets[2];
+	memset(planets, 0, sizeof(planets));
+    draw_planet(&planets[0], offset_x, offset_y, pscale, p_idx_1, pnet, 0);
+    draw_planet(&planets[1], offset_x, offset_y, pscale, p_idx_2, pnet, 1);
 }
 
 void display_hand(Hand *p_hand) {
@@ -598,7 +602,7 @@ goto_menu:
     }
 	
 	int score = 0, target_score = 0, hands_left = 4, discards_left = 3, money = 4;
-	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0;
+	kb_key_t arrow_key, arrow_prev_key = 0, select_key, select_prev_key = 0, discard_key, discard_prev_key = 0, play_key, play_prev_key = 0, p_idx_1, p_idx_2;
     int planet_scale = 20;
 	double planet_shapes[9][18] = {
         //Circle sentinel
@@ -608,7 +612,7 @@ goto_menu:
         // Square
         {-1,1, 1,1, 1,-1, -1,-1, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
         // Trapezoid
-        { -2.000000, 0.500000, 2.000000, 0.500000, 0.500000, -0.500000, -0.500000, -0.500000, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
+        { -1.000000, 0.500000, 1.000000, 0.500000, 0.500000, -1.00000, -0.500000, -1.000000, 9999,9999, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
         // Pentagon
         {1.000000, 0.000000, 0.309017, 0.951057, -0.809017, 0.587785, -0.809017, -0.587785, 0.309017, -0.951057, 9999,9999, 9999,9999, 9999,9999, 9999,9999},
         // Hexagon
@@ -620,11 +624,6 @@ goto_menu:
         // Nonagon
         { 1.000000, 0.000000, 0.766044, 0.642788, 0.173648, 0.984808, -0.500000, 0.866025, -0.939693, 0.342020, -0.939693, -0.342020, -0.500000, -0.866025, 0.173648, -0.984808, 0.766044, -0.642788 }
     };
-	
-    int p_idx_1 = randomIntRange(0, 8);
-    int p_idx_2 = randomIntRange(0, 8);
-    while (p_idx_1 == p_idx_2) p_idx_2 = randomIntRange(0,8);
-
 goto_blind_select:
     while (state == STATE_BLIND_SELECT) {
 		kb_Scan();
@@ -642,6 +641,9 @@ goto_blind_select:
 	}
 
 goto_shop:
+	p_idx_1 = randomIntRange(0, 8);
+    p_idx_2 = randomIntRange(0, 8);
+    while (p_idx_1 == p_idx_2) p_idx_2 = randomIntRange(0,8);
     while (state == STATE_SHOP) {
         kb_Scan();
         draw_shop(score, hands_left, discards_left, money, (HandValue) {-1, 0, 0}, planet_shapes, planet_scale, p_idx_1, p_idx_2);
