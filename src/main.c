@@ -288,10 +288,10 @@ void draw_planet(Planet *planet, int offset_x, int offset_y, int pscale, int idx
     }
 }
 
-void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hv, double pnet[9][18], int pscale, int p_idx_1, int p_idx_2) {
+void draw_shop(int score, int hands_left, int discards_left, int *money, HandValue hv, double pnet[9][18], int pscale, int p_idx_1, int p_idx_2) {
     gfx_FillScreen(255);
 	gfx_SetTextScale(1, 2);
-	display_game_stats(score, 0, 0, hands_left, discards_left, money, hv);
+	display_game_stats(score, 0, 0, hands_left, discards_left, *money, hv);
 
     int offset_x = 90;
     int offset_y = 115;
@@ -313,6 +313,21 @@ void draw_shop(int score, int hands_left, int discards_left, int money, HandValu
 	memset(planets, 0, sizeof(planets));
     draw_planet(&planets[0], offset_x, offset_y, pscale, p_idx_1, pnet, 0);
     draw_planet(&planets[1], offset_x, offset_y, pscale, p_idx_2, pnet, 1);
+}
+
+void draw_pre_shop(int score, int hands_left, int discards_left, int *money, HandValue hv) {
+    gfx_FillScreen(255);
+	gfx_SetTextScale(1, 2);
+	display_game_stats(score, 0, 0, hands_left, discards_left, *money, hv);
+
+    int offset_x = 90;
+    int offset_y = 115;
+    int box_width = GFX_LCD_WIDTH-offset_x - 50;
+
+    gfx_Rectangle(offset_x, offset_y, box_width, GFX_LCD_HEIGHT-offset_y);
+    gfx_Rectangle(offset_x + 5, offset_y + 5, box_width - 10, (GFX_LCD_HEIGHT-offset_y) / 4);
+    gfx_PrintStringXY("[2nd] Cash Out: $", offset_x + 10, offset_y + 10);
+    gfx_PrintInt((current_blind == 0 ? 5 : current_blind == 1 ? 3 : 4) + hands_left + (*money > 25 ? 5 : *money / 5) , 1); // total money gained
 }
 
 void display_hand(Hand *p_hand) {
@@ -644,9 +659,29 @@ goto_shop:
 	p_idx_1 = randomIntRange(0, 8);
     p_idx_2 = randomIntRange(0, 8);
     while (p_idx_1 == p_idx_2) p_idx_2 = randomIntRange(0,8);
+    int pre_shop = 1;
     while (state == STATE_SHOP) {
+        
+        while (pre_shop) {
+            kb_Scan();
+            draw_pre_shop(score, hands_left, discards_left, &money, (HandValue) {-1, 0, 0});
+            gfx_SwapDraw();
+            
+            if (kb_Data[1] & kb_2nd) {
+                while (kb_Data[1] & kb_2nd) kb_Scan();
+                money += (current_blind == 0 ? 5 : current_blind == 1 ? 3 : 4) + hands_left + money / 5; 
+                pre_shop = 0;
+                break;
+            } else if (kb_Data[6] & kb_Clear) {
+                gfx_End();
+                return 0;
+            }
+        }
+
+        hands_left = 4;
+        discards_left = 3;
         kb_Scan();
-        draw_shop(score, hands_left, discards_left, money, (HandValue) {-1, 0, 0}, planet_shapes, planet_scale, p_idx_1, p_idx_2);
+        draw_shop(score, hands_left, discards_left, &money, (HandValue) {-1, 0, 0}, planet_shapes, planet_scale, p_idx_1, p_idx_2);
         gfx_SwapDraw();
 
         if (kb_Data[2] & kb_Alpha) {
@@ -821,18 +856,16 @@ goto_shop:
 		display_game_stats(score, target_score, 0, hands_left, discards_left, money, result.value);
 
         if (score >= target_score) {
-                 score = 0;
-                 hands_left = 4;
-                 discards_left = 3;
-                 if (current_blind == 2) { // beat boss blind
-                     current_blind = 0;
-                     current_ante++;
-                 } else {
-                     current_blind++;
-                 }
-                 state = STATE_SHOP;
-                 goto goto_shop; // TODO: change to shop when it gets added
+            score = 0;
+            if (current_blind == 2) { // beat boss blind
+                current_blind = 0;
+                current_ante++;
+            } else {
+                current_blind++;
             }
+            state = STATE_SHOP;
+            goto goto_shop;
+        }
 
 		if (kb_Data[6] & kb_Clear) { 
             running = false;
