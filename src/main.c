@@ -77,7 +77,7 @@ typedef struct {
 } EvaluatedHand;
 
 HandValue hand_table[HAND_COUNT] = {
-    { HAND_HIGH_CARD,      5,   100 },
+    { HAND_HIGH_CARD,      5,   1 },
     { HAND_ONE_PAIR,       10,  2 },
     { HAND_TWO_PAIR,       20,  2 },
     { HAND_THREE_KIND,     30,  3 },
@@ -87,6 +87,36 @@ HandValue hand_table[HAND_COUNT] = {
     { HAND_FOUR_KIND,      60,  7 },
     { HAND_STRAIGHT_FLUSH, 100, 8 },
     { HAND_ROYAL_FLUSH,    100, 8 }
+};
+
+typedef struct {
+    int bonus_chips;
+    int bonus_mult;
+} HandUpgrade;
+
+const HandUpgrade upgrade_table[HAND_COUNT] = {
+    [HAND_HIGH_CARD]      = {10, 1},
+    [HAND_ONE_PAIR]       = {15, 1},
+    [HAND_TWO_PAIR]       = {20, 1},
+    [HAND_THREE_KIND]     = {20, 2},
+    [HAND_STRAIGHT]       = {30, 3},
+    [HAND_FLUSH]          = {15, 2},
+    [HAND_FULL_HOUSE]     = {25, 2},
+    [HAND_FOUR_KIND]      = {30, 3},
+    [HAND_STRAIGHT_FLUSH] = {40, 4},
+    [HAND_ROYAL_FLUSH]    = {0, 0}
+};
+
+const HandType shape_hand_map[9] = {
+    HAND_HIGH_CARD,
+    HAND_ONE_PAIR,
+    HAND_TWO_PAIR,
+    HAND_THREE_KIND,
+    HAND_STRAIGHT,
+    HAND_FLUSH,
+    HAND_FULL_HOUSE,
+    HAND_FOUR_KIND,
+    HAND_STRAIGHT_FLUSH
 };
 
 int card_equal(const Card *card, const Card *drac) {
@@ -233,7 +263,7 @@ void display_game_stats(int score, int target_score, int hand_score, int hands_l
 	gfx_PrintInt(discards_left, 1);
     gfx_SetTextXY(10, 166);
     gfx_PrintChar('$');
-    gfx_PrintInt(money, 0);
+    gfx_PrintInt(money, 1);
 	print_hand_type(hv, 10, 78, hand_score);
 }
 
@@ -288,7 +318,7 @@ void draw_planet(Planet *planet, int offset_x, int offset_y, int pscale, int idx
     }
 }
 
-void draw_shop(int score, int hands_left, int discards_left, int *money, HandValue hv, double pnet[9][18], int pscale, int p_idx_1, int p_idx_2) {
+void draw_shop(int score, int hands_left, int discards_left, int *money, HandValue hv, double pnet[9][18], int pscale, int p_idx_1, int p_idx_2, bool *bought) {
     gfx_FillScreen(255);
 	gfx_SetTextScale(1, 2);
 	display_game_stats(score, 0, 0, hands_left, discards_left, *money, hv);
@@ -311,8 +341,11 @@ void draw_shop(int score, int hands_left, int discards_left, int *money, HandVal
 
 	Planet planets[2];
 	memset(planets, 0, sizeof(planets));
-    draw_planet(&planets[0], offset_x, offset_y, pscale, p_idx_1, pnet, 0);
-    draw_planet(&planets[1], offset_x, offset_y, pscale, p_idx_2, pnet, 1);
+
+    if (!bought[0])
+        draw_planet(&planets[0], offset_x, offset_y, pscale, p_idx_1, pnet, 0);
+    if (!bought[1])
+        draw_planet(&planets[1], offset_x, offset_y, pscale, p_idx_2, pnet, 1);
 }
 
 void draw_pre_shop(int score, int hands_left, int discards_left, int *money, HandValue hv) {
@@ -660,16 +693,16 @@ goto_shop:
     p_idx_2 = randomIntRange(0, 8);
     while (p_idx_1 == p_idx_2) p_idx_2 = randomIntRange(0,8);
     int pre_shop = 1;
+    bool bought[2] = { false, false };
     while (state == STATE_SHOP) {
-        
         while (pre_shop) {
             kb_Scan();
             draw_pre_shop(score, hands_left, discards_left, &money, (HandValue) {-1, 0, 0});
             gfx_SwapDraw();
-            
+        
             if (kb_Data[1] & kb_2nd) {
                 while (kb_Data[1] & kb_2nd) kb_Scan();
-                money += (current_blind == 0 ? 5 : current_blind == 1 ? 3 : 4) + hands_left + money / 5; 
+                money += (current_blind == 0 ? 5 : current_blind == 1 ? 3 : 4) + hands_left + money / 5;
                 pre_shop = 0;
                 break;
             } else if (kb_Data[6] & kb_Clear) {
@@ -680,9 +713,49 @@ goto_shop:
 
         hands_left = 4;
         discards_left = 3;
+
         kb_Scan();
-        draw_shop(score, hands_left, discards_left, &money, (HandValue) {-1, 0, 0}, planet_shapes, planet_scale, p_idx_1, p_idx_2);
+        draw_shop(score, hands_left, discards_left, &money, (HandValue) {-1, 0, 0}, planet_shapes, planet_scale, p_idx_1, p_idx_2, bought);
         gfx_SwapDraw();
+
+        if ((kb_Data[1] & kb_2nd) && money >= 3 && !bought[0]) {
+            HandType ht = shape_hand_map[p_idx_1];
+            money -= 3;
+            bought[0] = true;
+            hand_table[ht].chips += upgrade_table[ht].bonus_chips;
+            hand_table[ht].mult  += upgrade_table[ht].bonus_mult;
+
+            if (ht == HAND_STRAIGHT_FLUSH) {
+                hand_table[HAND_ROYAL_FLUSH].chips += upgrade_table[ht].bonus_chips;
+                hand_table[HAND_ROYAL_FLUSH].mult  += upgrade_table[ht].bonus_mult;
+            }
+        }
+
+        if ((kb_Data[3] & kb_GraphVar) && money >= 3 && !bought[1]) {
+            HandType ht = shape_hand_map[p_idx_2];
+            money -= 3;
+            bought[1] = true;
+            hand_table[ht].chips += upgrade_table[ht].bonus_chips;
+            hand_table[ht].mult  += upgrade_table[ht].bonus_mult;
+
+            if (ht == HAND_STRAIGHT_FLUSH) {
+                hand_table[HAND_ROYAL_FLUSH].chips += upgrade_table[ht].bonus_chips;
+                hand_table[HAND_ROYAL_FLUSH].mult  += upgrade_table[ht].bonus_mult;
+            }
+        }
+        
+        if ((kb_Data[1] & kb_Del) && money >= 5) {
+            while (kb_Data[1] & kb_Del) kb_Scan();
+            money -= 5;
+
+            do {
+                p_idx_1 = randomIntRange(0, 8);
+                p_idx_2 = randomIntRange(0, 8);
+            } while (p_idx_1 == p_idx_2);
+
+            bought[0] = false;
+            bought[1] = false;
+        }
 
         if (kb_Data[2] & kb_Alpha) {
             while (kb_Data[2] & kb_Alpha) kb_Scan();
@@ -693,6 +766,7 @@ goto_shop:
             return 0;
         }
     }
+
 	
     while (state == STATE_RULES) {
         kb_Scan();
