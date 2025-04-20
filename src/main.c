@@ -576,8 +576,17 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
     }
 
     result.value = hand_table[HAND_HIGH_CARD];
-    result.scoring_cards[0] = p_cards[count - 1]; // last card in original order
-    result.scoring_count = 1;
+
+    Card highest = cards[count - 1];
+
+    for (int i = 0; i < count; i++) {
+        if (card_equal(&p_cards[i], &highest)) {
+            result.scoring_cards[0] = p_cards[i];
+            result.scoring_count = 1;
+            break;
+        }
+    }
+
     return result;
 
     #undef MATCH_RANKS
