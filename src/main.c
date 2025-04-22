@@ -1,3 +1,15 @@
+/*
+ * see:
+ * github.com/braidedloaf/calcatro
+ * for full repo + game files
+ * 
+ * credit to: 
+ * localthunk
+ * for balatro
+ * playbalatro.com
+*/
+
+#include "card_icons_assets.h"
 #include <tice.h>
 #include <graphx.h>
 #include <keypadc.h>
@@ -415,7 +427,6 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
         return result;
     }
 
-    // Sort a copy of the cards by rank (char order)
     for (int i = 0; i < count - 1; i++) {
         for (int j = i + 1; j < count; j++) {
             if (cards[i].rank > cards[j].rank) {
@@ -439,7 +450,6 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
         }
     }
 
-    // Detect flush
     bool is_flush = false;
     char flush_suit = 0;
     for (int i = 0; i < 4; i++) {
@@ -450,7 +460,6 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
         }
     }
 
-    // Detect straight
     bool is_straight = false;
     int straight_high_rank = 0;
     char straight_ranks[] = {'2','3','4','5','6','7','8','9','T','J','Q','K','A'};
@@ -469,7 +478,6 @@ EvaluatedHand get_hand_type(Card *p_cards, int count) {
         }
     }
 
-    // A-2-3-4-5 special straight
     if (!is_straight && count == 5 &&
         rank_count['A'] && rank_count['2'] &&
         rank_count['3'] && rank_count['4'] &&

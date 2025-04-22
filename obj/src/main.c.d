@@ -1,4 +1,5 @@
-obj/src/main.c.bc: src\main.c C:\CEdev\CEdev\include\tice.h \
+obj/src/main.c.bc: src\main.c src\card_icons_assets.h src\card_palette.h \
+  src\card_icons.h C:\CEdev\CEdev\include\tice.h \
   C:\CEdev\CEdev\include\sys\basicusb.h C:\CEdev\CEdev\include\stdbool.h \
   C:\CEdev\CEdev\include\stdint.h C:\CEdev\CEdev\include\cdefs.h \
   C:\CEdev\CEdev\include\sys\lcd.h C:\CEdev\CEdev\include\sys\power.h \

@@ -1,0 +1,26 @@
+palettes:
+  - name: card_palette
+    images: automatic
+    max-entries: 256
+    quality: 10
+
+converts:
+  - name: card_icons
+    palette: card_palette
+    style: rlet
+    tilesets:
+      tile-width: 16
+      tile-height: 8
+      images:
+        - sprites/card_icons.png
+
+outputs:
+  - type: c
+    include-file: card_icons_assets.h
+    palettes:
+      - card_palette
+    converts:
+      - card_icons
+    directory: src
+    const: true
+
