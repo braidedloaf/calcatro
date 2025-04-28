@@ -42,6 +42,8 @@ typedef struct {
 	int value;
 	bool is_selected;
 	bool to_play;
+    int sprite_row;
+    int sprite_col;
 } Card;
 
 typedef struct {
@@ -159,10 +161,12 @@ Deck create_deck() {
 	Deck deck;
 	for (int i = 0; i < 52; i++) {
 		deck.cards[i].rank = (i % 13) < 8 ? '2' + (i % 13) : (i % 13) == 8 ? 'T' : (i % 13) == 9 ? 'J' : (i % 13) == 10 ? 'Q' : (i % 13) == 11 ? 'K' : 'A';
-		deck.cards[i].suit = (i / 13 == 0) ? 'S' : (i / 13 == 1) ? 'H' : (i / 13 == 2) ? 'C' : 'D';
+		deck.cards[i].suit = (i / 13 == 0) ? 'H' : (i / 13 == 1) ? 'C' : (i / 13 == 2) ? 'D' : 'S';
 		deck.cards[i].value = (i % 13) + 2 < 10 ? (i % 13) + 2 : (i % 13) + 2 == 14 ? 11: 10;
 		deck.cards[i].is_selected = false;
 		deck.cards[i].to_play = false;
+        deck.cards[i].sprite_row = i / 13;
+        deck.cards[i].sprite_col = i % 13;
 	}
 	deck.size = 52;
 	return deck;
@@ -203,8 +207,7 @@ void print_card(Card c , int x, int y) {
         gfx_PrintChar('-');
         gfx_PrintChar('-');
     } else {
-        gfx_PrintChar(c.rank);
-        gfx_PrintChar(c.suit);
+        gfx_RLETSprite(card_icons_tiles[c.sprite_row*13 + c.sprite_col], x, y);
     }
 
     if (c.is_selected || c.to_play) {
@@ -214,9 +217,7 @@ void print_card(Card c , int x, int y) {
 }
 
 void print_playing_card(Card c, int x, int y) {
-	gfx_SetTextXY(x, y);
-    gfx_PrintChar(c.rank);
-    gfx_PrintChar(c.suit);
+	gfx_RLETSprite(card_icons_tiles[c.sprite_row*13 + c.sprite_col], x, y);
 }
 
 void print_playing_value(int value, int x, int y) {
@@ -607,7 +608,7 @@ void display_playing_hand(Card *cards, int count, Card *scoring_cards, int pos) 
     int offset_y = 100;
 	for (int i = 0; i < count; i++) {
         print_playing_card(cards[i], offset_x + (i*32), offset_y);
-        if (pos >= 0 && card_equal(&cards[i], &scoring_cards[pos])) { //cards[i] && scoring[j] equal each other
+        if (pos >= 0 && card_equal(&cards[i], &scoring_cards[pos])) {
             print_playing_value(scoring_cards[pos].value, offset_x + (i*32), offset_y - 24);
         }
 	}
@@ -644,6 +645,7 @@ int main(void) {
 	int running = 1;
 
     gfx_Begin();
+    gfx_SetPalette(card_palette, sizeof_card_palette, 0);
 	
 goto_menu:
     while (state == STATE_MENU) {
