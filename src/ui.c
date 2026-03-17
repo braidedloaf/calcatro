@@ -117,6 +117,28 @@ static const char *hand_type_label(HandType type) {
     }
 }
 
+static const char *joker_label(JokerType type) {
+    switch (type) {
+        case JOKER_BASIC_CHIPS: return "CH";
+        case JOKER_BASIC_MULT: return "ML";
+        case JOKER_PAIR_MULT: return "PR";
+        case JOKER_NONE:
+        case JOKER_COUNT:
+        default: return "--";
+    }
+}
+
+static const char *joker_name(JokerType type) {
+    switch (type) {
+        case JOKER_BASIC_CHIPS: return "Chip Joker";
+        case JOKER_BASIC_MULT: return "Mult Joker";
+        case JOKER_PAIR_MULT: return "Pair Joker";
+        case JOKER_NONE:
+        case JOKER_COUNT:
+        default: return "";
+    }
+}
+
 static void draw_planet_sprite(HandType type, int x, int y) {
     gfx_RLETSprite(planet_icons_tiles[hand_type_planet_map[type]], x, y);
 }
@@ -188,26 +210,26 @@ void draw_blind_menu(int score, int hands_left, int discards_left, int money, Ha
     }
 }
 
-void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hand_value, int planet_index_1, int planet_index_2, const bool *bought, int focused_slot) {
+void draw_shop(int score, int hands_left, int discards_left, int money, HandValue hand_value, const ShopItem *items, int focused_slot) {
     gfx_FillScreen(255);
     gfx_SetTextScale(1, 2);
     display_game_stats(score, 0, 0, hands_left, discards_left, money, hand_value);
 
-    int offset_x = 90;
+    int offset_x = 76;
     int offset_y = 115;
-    int box_width = GFX_LCD_WIDTH - offset_x - 50;
-    int utility_width = box_width / 3;
+    int box_width = GFX_LCD_WIDTH - offset_x - 24;
+    int utility_width = 42;
     int item_box_width = 44;
     int item_box_height = 52;
-    int item_gap = 8;
-    int item_x = offset_x + utility_width + 14;
+    int item_gap = 6;
+    int item_x = offset_x + utility_width + 12;
     int item_y = offset_y + 8;
     gfx_Rectangle(offset_x, offset_y, box_width, GFX_LCD_HEIGHT - offset_y);
     gfx_PrintStringXY("Shop", offset_x + 8, offset_y - 12);
 
     gfx_Rectangle(offset_x + 5, offset_y + 5, utility_width, 24);
     gfx_PrintStringXY("Next", offset_x + 16, offset_y + 14);
-    if (focused_slot == 2) {
+    if (focused_slot == 3) {
         draw_focus_box(offset_x + 5, offset_y + 5, utility_width, 24);
     }
 
@@ -216,50 +238,54 @@ void draw_shop(int score, int hands_left, int discards_left, int money, HandValu
     gfx_SetTextXY(offset_x + 22, offset_y + 56);
     gfx_PrintChar('$');
     gfx_PrintInt(5, 1);
-    if (focused_slot == 3) {
+    if (focused_slot == 4) {
         draw_focus_box(offset_x + 5, offset_y + 35, utility_width, 36);
     }
 
-    gfx_Rectangle(item_x, item_y, item_box_width, item_box_height);
-    gfx_Rectangle(item_x + item_box_width + item_gap, item_y, item_box_width, item_box_height);
+    for (int i = 0; i < SHOP_ITEM_COUNT; i++) {
+        int x = item_x + (i * (item_box_width + item_gap));
+        const ShopItem *item = &items[i];
 
-    if (!bought[0]) {
-        draw_planet_sprite(shape_hand_map[planet_index_1], item_x + 2, item_y + 6);
-        if (focused_slot == 0) {
-            draw_focus_box(item_x, item_y, item_box_width, item_box_height);
+        gfx_Rectangle(x, item_y, item_box_width, item_box_height);
+        if (focused_slot == i && !item->bought) {
+            draw_focus_box(x, item_y, item_box_width, item_box_height);
         }
-    } else {
-        gfx_HorizLine(item_x + 8, item_y + (item_box_height / 2), item_box_width - 16);
-    }
-    if (!bought[1]) {
-        draw_planet_sprite(shape_hand_map[planet_index_2], item_x + item_box_width + item_gap + 2, item_y + 6);
-        if (focused_slot == 1) {
-            draw_focus_box(item_x + item_box_width + item_gap, item_y, item_box_width, item_box_height);
+
+        if (item->bought) {
+            gfx_HorizLine(x + 8, item_y + (item_box_height / 2), item_box_width - 16);
+            continue;
         }
-    } else {
-        gfx_HorizLine(item_x + item_box_width + item_gap + 8, item_y + (item_box_height / 2), item_box_width - 16);
+
+        if (item->type == SHOP_ITEM_PLANET) {
+            draw_planet_sprite(item->data.planet_hand, x + 2, item_y + 6);
+        } else if (item->type == SHOP_ITEM_JOKER) {
+            gfx_PrintStringXY("J", x + 17, item_y + 6);
+            gfx_PrintStringXY(joker_label(item->data.joker_type), x + 10, item_y + 22);
+        }
     }
 
     gfx_Rectangle(offset_x + 5, offset_y + 76, box_width - 10, 30);
     switch (focused_slot) {
         case 0:
-            gfx_PrintStringXY(bought[0] ? "Bought" : "Upgrade", offset_x + 12, offset_y + 84);
-            gfx_PrintStringXY(hand_type_label(shape_hand_map[planet_index_1]), offset_x + 70, offset_y + 84);
-            if (!bought[0]) {
-                gfx_PrintStringXY("$3", offset_x + box_width - 26, offset_y + 84);
-            }
-            break;
         case 1:
-            gfx_PrintStringXY(bought[1] ? "Bought" : "Upgrade", offset_x + 12, offset_y + 84);
-            gfx_PrintStringXY(hand_type_label(shape_hand_map[planet_index_2]), offset_x + 70, offset_y + 84);
-            if (!bought[1]) {
-                gfx_PrintStringXY("$3", offset_x + box_width - 26, offset_y + 84);
-            }
-            break;
         case 2:
-            gfx_PrintStringXY("Leave shop", offset_x + 12, offset_y + 84);
+            if (items[focused_slot].type == SHOP_ITEM_PLANET) {
+                gfx_PrintStringXY(items[focused_slot].bought ? "Bought" : "Upgrade", offset_x + 12, offset_y + 84);
+                gfx_PrintStringXY(hand_type_label(items[focused_slot].data.planet_hand), offset_x + 70, offset_y + 84);
+            } else if (items[focused_slot].type == SHOP_ITEM_JOKER) {
+                gfx_PrintStringXY(items[focused_slot].bought ? "Bought" : "Joker", offset_x + 12, offset_y + 84);
+                gfx_PrintStringXY(joker_name(items[focused_slot].data.joker_type), offset_x + 70, offset_y + 84);
+            }
+            if (!items[focused_slot].bought) {
+                gfx_SetTextXY(offset_x + box_width - 30, offset_y + 84);
+                gfx_PrintChar('$');
+                gfx_PrintInt(items[focused_slot].cost, 1);
+            }
             break;
         case 3:
+            gfx_PrintStringXY("Leave shop", offset_x + 12, offset_y + 84);
+            break;
+        case 4:
             gfx_PrintStringXY("Reroll offers", offset_x + 12, offset_y + 84);
             gfx_PrintStringXY("$5", offset_x + box_width - 26, offset_y + 84);
             break;
@@ -283,6 +309,28 @@ void draw_pre_shop(int score, int hands_left, int discards_left, int money, Hand
     gfx_PrintInt((current_blind == 0 ? 5 : current_blind == 1 ? 3 : 4) + hands_left + (money > 25 ? 5 : money / 5), 1);
     if (focused_continue) {
         draw_focus_box(offset_x + 5, offset_y + 5, box_width - 10, (GFX_LCD_HEIGHT - offset_y) / 4);
+    }
+}
+
+void display_joker_row(const RunState *run_state) {
+    int width = 22;
+    int height = 28;
+    int gap = 6;
+    int total_width = (MAX_JOKERS * width) + ((MAX_JOKERS - 1) * gap);
+    int start_x = (GFX_LCD_WIDTH - total_width) / 2;
+    int y = 10;
+
+    gfx_SetTextScale(1, 1);
+    gfx_PrintStringXY("Jokers", (GFX_LCD_WIDTH / 2) - 18, y - 8);
+
+    for (int i = 0; i < MAX_JOKERS; i++) {
+        int x = start_x + (i * (width + gap));
+        const Joker *joker = &run_state->jokers[i];
+
+        gfx_Rectangle(x, y, width, height);
+        if (joker->active) {
+            gfx_PrintStringXY(joker_label(joker->type), x + 4, y + 10);
+        }
     }
 }
 
@@ -318,8 +366,8 @@ void display_hand_ui(const Hand *hand, UiFocusRegion focus_region, int focused_i
         print_card(hand->hand[i], x, y);
 
         if (mode == UI_MODE_REORDER && held_index == i) {
-            gfx_SetTextXY(x - 2, y - 14);
-            gfx_PrintString("[]");
+            gfx_SetTextXY(x, y + 10);
+            gfx_PrintString("^^");
         }
     }
 }

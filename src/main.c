@@ -14,6 +14,7 @@
 #include "game.h"
 #include "gameplay.h"
 #include "hand_eval.h"
+#include "joker.h"
 #include "ui.h"
 #include <tice.h>
 #include <graphx.h>
@@ -37,20 +38,49 @@ static void wait_for_key_release(void) {
     } while (kb_AnyKey());
 }
 
-static bool is_shop_slot_selectable(int slot, const bool *bought) {
-    if (slot == 0 || slot == 1) {
-        return !bought[slot];
+static JokerType random_joker_type(void) {
+    return (JokerType)randomIntRange(JOKER_BASIC_CHIPS, JOKER_PAIR_MULT);
+}
+
+static void roll_shop_items(ShopItem *items) {
+    HandType first_planet = shape_hand_map[randomIntRange(0, 8)];
+    HandType second_planet = shape_hand_map[randomIntRange(0, 8)];
+
+    while (second_planet == first_planet) {
+        second_planet = shape_hand_map[randomIntRange(0, 8)];
+    }
+
+    items[0].type = SHOP_ITEM_PLANET;
+    items[0].cost = 3;
+    items[0].bought = false;
+    items[0].data.planet_hand = first_planet;
+
+    items[1].type = SHOP_ITEM_PLANET;
+    items[1].cost = 3;
+    items[1].bought = false;
+    items[1].data.planet_hand = second_planet;
+
+    items[2].type = SHOP_ITEM_JOKER;
+    items[2].cost = 5;
+    items[2].bought = false;
+    items[2].data.joker_type = random_joker_type();
+}
+
+static bool is_shop_slot_selectable(int slot, const ShopItem *items) {
+    if (slot >= 0 && slot < SHOP_ITEM_COUNT) {
+        return !items[slot].bought;
     }
 
     return true;
 }
 
-static int move_shop_focus(int focused_slot, int direction, const bool *bought) {
+static int move_shop_focus(int focused_slot, int direction, const ShopItem *items) {
     int next_slot = focused_slot;
+    const int slot_count = SHOP_ITEM_COUNT + 2;
 
     do {
-        next_slot = (next_slot + direction + 4) % 4;
-    } while (next_slot != focused_slot && !is_shop_slot_selectable(next_slot, bought));
+        next_slot = (next_slot + direction + slot_count) % slot_count;
+    } while (next_slot != focused_slot && !is_shop_slot_selectable(next_slot, items));
 
     return next_slot;
 }
@@ -117,16 +147,11 @@ static GameState handle_blind_select_state(RunState *run_state, bool *quit) {
 }
 
 static GameState handle_shop_state(RunState *run_state, bool *quit) {
-    int planet_index_1 = randomIntRange(0, 8);
-    int planet_index_2 = randomIntRange(0, 8);
+    ShopItem items[SHOP_ITEM_COUNT];
     bool pre_shop = true;
-    bool bought[2] = { false, false };
     int focused_slot = 0;
     kb_key_t prev_arrow = 0;
-
-    while (planet_index_1 == planet_index_2) {
-        planet_index_2 = randomIntRange(0, 8);
-    }
+    roll_shop_items(items);
 
     while (true) {
         while (pre_shop) {
@@ -152,63 +177,48 @@ static GameState handle_shop_state(RunState *run_state, bool *quit) {
 
         kb_Scan();
         if ((kb_Data[7] & kb_Left) && !(prev_arrow & kb_Left)) {
-            focused_slot = move_shop_focus(focused_slot, -1, bought);
+            focused_slot = move_shop_focus(focused_slot, -1, items);
         }
         if ((kb_Data[7] & kb_Right) && !(prev_arrow & kb_Right)) {
-            focused_slot = move_shop_focus(focused_slot, 1, bought);
+            focused_slot = move_shop_focus(focused_slot, 1, items);
         }
         prev_arrow = kb_Data[7];
 
-        draw_shop(run_state->score, run_state->hands_left, run_state->discards_left, run_state->money, (HandValue){-1, 0, 0}, planet_index_1, planet_index_2, bought, focused_slot);
+        draw_shop(run_state->score, run_state->hands_left, run_state->discards_left, run_state->money, (HandValue){-1, 0, 0}, items, focused_slot);
         draw_shop_footer(false);
         gfx_SwapDraw();
 
-        if ((kb_Data[1] & kb_2nd) && focused_slot == 0 && run_state->money >= 3 && !bought[0]) {
+        if ((kb_Data[1] & kb_2nd) && focused_slot >= 0 && focused_slot < SHOP_ITEM_COUNT &&
+            run_state->money >= items[focused_slot].cost && !items[focused_slot].bought) {
             wait_for_key_release();
-            HandType hand_type = shape_hand_map[planet_index_1];
-            run_state->money -= 3;
-            bought[0] = true;
-            hand_table[hand_type].chips += upgrade_table[hand_type].bonus_chips;
-            hand_table[hand_type].mult += upgrade_table[hand_type].bonus_mult;
+            if (items[focused_slot].type == SHOP_ITEM_PLANET) {
+                HandType hand_type = items[focused_slot].data.planet_hand;
+                run_state->money -= items[focused_slot].cost;
+                items[focused_slot].bought = true;
+                hand_table[hand_type].chips += upgrade_table[hand_type].bonus_chips;
+                hand_table[hand_type].mult += upgrade_table[hand_type].bonus_mult;
 
-            if (hand_type == HAND_STRAIGHT_FLUSH) {
-                hand_table[HAND_ROYAL_FLUSH].chips += upgrade_table[hand_type].bonus_chips;
-                hand_table[HAND_ROYAL_FLUSH].mult += upgrade_table[hand_type].bonus_mult;
+                if (hand_type == HAND_STRAIGHT_FLUSH) {
+                    hand_table[HAND_ROYAL_FLUSH].chips += upgrade_table[hand_type].bonus_chips;
+                    hand_table[HAND_ROYAL_FLUSH].mult += upgrade_table[hand_type].bonus_mult;
+                }
+            } else if (items[focused_slot].type == SHOP_ITEM_JOKER &&
+                       add_joker(run_state, items[focused_slot].data.joker_type, items[focused_slot].cost)) {
+                run_state->money -= items[focused_slot].cost;
+                items[focused_slot].bought = true;
             }
 
-            focused_slot = move_shop_focus(focused_slot, 1, bought);
+            focused_slot = move_shop_focus(focused_slot, 1, items);
         }
 
-        if ((kb_Data[1] & kb_2nd) && focused_slot == 1 && run_state->money >= 3 && !bought[1]) {
-            wait_for_key_release();
-            HandType hand_type = shape_hand_map[planet_index_2];
-            run_state->money -= 3;
-            bought[1] = true;
-            hand_table[hand_type].chips += upgrade_table[hand_type].bonus_chips;
-            hand_table[hand_type].mult += upgrade_table[hand_type].bonus_mult;
-
-            if (hand_type == HAND_STRAIGHT_FLUSH) {
-                hand_table[HAND_ROYAL_FLUSH].chips += upgrade_table[hand_type].bonus_chips;
-                hand_table[HAND_ROYAL_FLUSH].mult += upgrade_table[hand_type].bonus_mult;
-            }
-
-            focused_slot = move_shop_focus(focused_slot, 1, bought);
-        }
-
-        if ((kb_Data[1] & kb_2nd) && focused_slot == 3 && run_state->money >= 5) {
+        if ((kb_Data[1] & kb_2nd) && focused_slot == 4 && run_state->money >= 5) {
             wait_for_key_release();
             run_state->money -= 5;
-
-            do {
-                planet_index_1 = randomIntRange(0, 8);
-                planet_index_2 = randomIntRange(0, 8);
-            } while (planet_index_1 == planet_index_2);
-
-            bought[0] = false;
-            bought[1] = false;
+            roll_shop_items(items);
+            focused_slot = 0;
         }
 
-        if ((kb_Data[1] & kb_2nd) && focused_slot == 2) {
+        if ((kb_Data[1] & kb_2nd) && focused_slot == 3) {
             wait_for_key_release();
             return STATE_BLIND_SELECT;
         }

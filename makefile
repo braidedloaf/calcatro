@@ -1,5 +1,5 @@
 NAME = CALCATRO
-SOURCES = main.c hand_eval.c deck.c ui.c gameplay.c
+SOURCES = main.c hand_eval.c deck.c ui.c gameplay.c joker.c
 ICON = icon.png
 
 COMPRESSED = NO

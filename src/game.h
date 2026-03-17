@@ -67,6 +67,42 @@ typedef struct {
     int bonus_mult;
 } HandUpgrade;
 
+typedef enum {
+    JOKER_NONE = 0,
+    JOKER_BASIC_CHIPS,
+    JOKER_BASIC_MULT,
+    JOKER_PAIR_MULT,
+    JOKER_COUNT
+} JokerType;
+
+typedef struct {
+    JokerType type;
+    int cost;
+    int sell_value;
+    bool active;
+} Joker;
+
+enum {
+    MAX_JOKERS = 5,
+    SHOP_ITEM_COUNT = 3
+};
+
+typedef enum {
+    SHOP_ITEM_NONE = 0,
+    SHOP_ITEM_PLANET,
+    SHOP_ITEM_JOKER
+} ShopItemType;
+
+typedef struct {
+    ShopItemType type;
+    int cost;
+    bool bought;
+    union {
+        HandType planet_hand;
+        JokerType joker_type;
+    } data;
+} ShopItem;
+
 typedef struct {
     int score;
     int target_score;
@@ -75,6 +111,8 @@ typedef struct {
     int money;
     int current_ante;
     int current_blind;
+    Joker jokers[MAX_JOKERS];
+    int joker_count;
 } RunState;
 
 #endif

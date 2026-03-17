@@ -2,6 +2,7 @@
 
 #include "deck.h"
 #include "hand_eval.h"
+#include "joker.h"
 #include "ui.h"
 
 #include <graphx.h>
@@ -183,6 +184,22 @@ static void move_card_selection(GameRound *round, kb_key_t arrow_key) {
     round->arrow_prev_key = arrow_key;
 }
 
+static void move_held_card(GameRound *round, kb_key_t arrow_key) {
+    if ((arrow_key & kb_Left) && !(round->arrow_prev_key & kb_Left) && round->held_card_idx > 0) {
+        swap_hand_cards(&round->hand, round->held_card_idx, round->held_card_idx - 1);
+        round->held_card_idx--;
+        round->card_idx = round->held_card_idx;
+    }
+
+    if ((arrow_key & kb_Right) && !(round->arrow_prev_key & kb_Right) && round->held_card_idx < round->hand.hand_size - 1) {
+        swap_hand_cards(&round->hand, round->held_card_idx, round->held_card_idx + 1);
+        round->held_card_idx++;
+        round->card_idx = round->held_card_idx;
+    }
+
+    round->arrow_prev_key = arrow_key;
+}
+
 static void toggle_reorder_mode(GameRound *round) {
     if (round->mode == UI_MODE_REORDER) {
         round->mode = UI_MODE_NORMAL;
@@ -191,27 +208,24 @@ static void toggle_reorder_mode(GameRound *round) {
     }
 
     round->mode = UI_MODE_REORDER;
-    round->held_card_idx = -1;
+    round->held_card_idx = round->card_idx;
 }
 
-static void handle_reorder_input(GameRound *round, kb_key_t select_key, kb_key_t arrow_key, bool cancel_pressed) {
-    move_card_selection(round, arrow_key);
+static void handle_reorder_input(GameRound *round, kb_key_t mode_key, kb_key_t arrow_key) {
+    if (round->held_card_idx < 0) {
+        move_card_selection(round, arrow_key);
+    } else {
+        move_held_card(round, arrow_key);
+    }
 
-    if ((select_key & kb_2nd) && !(round->select_prev_key & kb_2nd)) {
+    if ((mode_key & kb_Mode) && !(round->mode_prev_key & kb_Mode)) {
         if (round->held_card_idx < 0) {
             round->held_card_idx = round->card_idx;
         } else {
-            swap_hand_cards(&round->hand, round->held_card_idx, round->card_idx);
             round->held_card_idx = -1;
+            round->mode = UI_MODE_NORMAL;
         }
     }
-
-    if (cancel_pressed) {
-        round->held_card_idx = -1;
-        round->mode = UI_MODE_NORMAL;
-    }
-
-    round->select_prev_key = select_key;
 }
 
 void init_run_state(RunState *run_state) {
@@ -222,6 +236,7 @@ void init_run_state(RunState *run_state) {
     run_state->money = INITIAL_MONEY;
     run_state->current_ante = INITIAL_ANTE;
     run_state->current_blind = INITIAL_BLIND;
+    init_jokers(run_state);
 }
 
 GameState handle_game_state(RunState *run_state, bool *quit, unsigned int *frame_timer) {
@@ -237,14 +252,14 @@ GameState handle_game_state(RunState *run_state, bool *quit, unsigned int *frame
         kb_key_t play_key;
         kb_key_t mode_key;
         kb_key_t arrow_key;
-        bool cancel_pressed;
         Card playing_hand[MAX_PLAYING_CARDS];
         int playing_hand_count;
+        ScoreContext score_context;
+        EvaluatedHand result;
 
         gfx_FillScreen(255);
         (*frame_timer)++;
         kb_Scan();
-        cancel_pressed = (kb_Data[1] & kb_Del) != 0;
 
         if (round.hand.current_cards_cnt < round.hand.hand_size) {
             draw_cards_to_hand(&round.hand, round.hand.hand_size - round.hand.current_cards_cnt, &round.deck, &round.next_card);
@@ -255,7 +270,7 @@ GameState handle_game_state(RunState *run_state, bool *quit, unsigned int *frame
         mode_key = kb_Data[1];
 
         if (round.mode == UI_MODE_REORDER) {
-            handle_reorder_input(&round, select_key, arrow_key, cancel_pressed);
+            handle_reorder_input(&round, mode_key, arrow_key);
         } else {
             move_card_selection(&round, arrow_key);
             toggle_current_card(&round, select_key);
@@ -264,10 +279,11 @@ GameState handle_game_state(RunState *run_state, bool *quit, unsigned int *frame
                 toggle_reorder_mode(&round);
             }
         }
-        round.mode_prev_key = mode_key;
-
         build_playing_hand(&round.hand, playing_hand, &playing_hand_count);
-        EvaluatedHand result = get_hand_type(playing_hand, playing_hand_count);
+        result = get_hand_type(playing_hand, playing_hand_count);
+        build_score_context(&result, &score_context);
+        apply_jokers(run_state, playing_hand, playing_hand_count, &score_context);
+        result = finalize_score_context(&score_context);
 
         discard_key = kb_Data[3];
         if ((discard_key & kb_GraphVar) && !(round.discard_prev_key & kb_GraphVar) && run_state->discards_left > 0 && round.hand.amt_selected > 0 && round.mode == UI_MODE_NORMAL) {
@@ -280,7 +296,9 @@ GameState handle_game_state(RunState *run_state, bool *quit, unsigned int *frame
             resolve_played_hand(&round, run_state, playing_hand, playing_hand_count, &result);
         }
         round.play_prev_key = play_key;
+        round.mode_prev_key = mode_key;
 
+        display_joker_row(run_state);
         display_hand_ui(&round.hand, UI_FOCUS_HAND, round.card_idx, round.held_card_idx, round.mode);
         draw_gameplay_footer(UI_FOCUS_HAND, round.mode, round.held_card_idx);
         display_game_stats(run_state->score, run_state->target_score, 0, run_state->hands_left, run_state->discards_left, run_state->money, result.value);

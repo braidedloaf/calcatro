@@ -2,7 +2,7 @@ obj/src/main.c.bc: src\main.c src\card_icons_assets.h src\card_palette.h \
   src\card_icons.h src\deck.h src\game.h \
   C:\CEdev\CEdev\include\stdbool.h src\gameplay.h src\ui.h \
   C:\CEdev\CEdev\include\keypadc.h C:\CEdev\CEdev\include\stdint.h \
-  C:\CEdev\CEdev\include\cdefs.h src\hand_eval.h \
+  C:\CEdev\CEdev\include\cdefs.h src\hand_eval.h src\joker.h \
   C:\CEdev\CEdev\include\tice.h C:\CEdev\CEdev\include\sys\basicusb.h \
   C:\CEdev\CEdev\include\sys\lcd.h C:\CEdev\CEdev\include\sys\power.h \
   C:\CEdev\CEdev\include\sys\rtc.h C:\CEdev\CEdev\include\sys\timers.h \
