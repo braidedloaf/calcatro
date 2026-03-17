@@ -1,7 +1,9 @@
 obj/src/main.c.bc: src\main.c src\card_icons_assets.h src\card_palette.h \
-  src\card_icons.h C:\CEdev\CEdev\include\tice.h \
-  C:\CEdev\CEdev\include\sys\basicusb.h C:\CEdev\CEdev\include\stdbool.h \
-  C:\CEdev\CEdev\include\stdint.h C:\CEdev\CEdev\include\cdefs.h \
+  src\card_icons.h src\deck.h src\game.h \
+  C:\CEdev\CEdev\include\stdbool.h src\gameplay.h src\ui.h \
+  C:\CEdev\CEdev\include\keypadc.h C:\CEdev\CEdev\include\stdint.h \
+  C:\CEdev\CEdev\include\cdefs.h src\hand_eval.h \
+  C:\CEdev\CEdev\include\tice.h C:\CEdev\CEdev\include\sys\basicusb.h \
   C:\CEdev\CEdev\include\sys\lcd.h C:\CEdev\CEdev\include\sys\power.h \
   C:\CEdev\CEdev\include\sys\rtc.h C:\CEdev\CEdev\include\sys\timers.h \
   C:\CEdev\CEdev\include\sys\util.h C:\CEdev\CEdev\include\ti\error.h \
@@ -12,6 +14,5 @@ obj/src/main.c.bc: src\main.c src\card_icons_assets.h src\card_palette.h \
   C:\CEdev\CEdev\include\ti\screen.h C:\CEdev\CEdev\include\ti\ui.h \
   C:\CEdev\CEdev\include\ti\tokens.h C:\CEdev\CEdev\include\ti\vars.h \
   C:\CEdev\CEdev\include\graphx.h C:\CEdev\CEdev\include\stdlib.h \
-  C:\CEdev\CEdev\include\keypadc.h C:\CEdev\CEdev\include\stdio.h \
-  C:\CEdev\CEdev\include\stdarg.h C:\CEdev\CEdev\include\time.h \
-  C:\CEdev\CEdev\include\string.h C:\CEdev\CEdev\include\math.h
+  C:\CEdev\CEdev\include\stdio.h C:\CEdev\CEdev\include\stdarg.h \
+  C:\CEdev\CEdev\include\time.h C:\CEdev\CEdev\include\math.h

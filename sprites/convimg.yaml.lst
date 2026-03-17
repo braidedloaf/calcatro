@@ -3,3 +3,8 @@ src/card_palette.c
 src/card_icons.h
 src/card_icons.c
 src/card_icons_assets.h
+src/card_palette.h
+src/card_palette.c
+src/planet_icons.h
+src/planet_icons.c
+src/planet_icons_assets.h

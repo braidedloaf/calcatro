@@ -1,6 +1,8 @@
 palettes:
   - name: card_palette
-    images: automatic
+    images:
+      - sprites/card_icons.png
+      - sprites/planet_icons.png
     max-entries: 256
     quality: 10
 
@@ -13,6 +15,14 @@ converts:
       tile-height: 8
       images:
         - sprites/card_icons.png
+  - name: planet_icons
+    palette: card_palette
+    style: rlet
+    tilesets:
+      tile-width: 40
+      tile-height: 40
+      images:
+        - sprites/planet_icons.png
 
 outputs:
   - type: c
@@ -21,6 +31,14 @@ outputs:
       - card_palette
     converts:
       - card_icons
+    directory: src
+    const: true
+  - type: c
+    include-file: planet_icons_assets.h
+    palettes:
+      - card_palette
+    converts:
+      - planet_icons
     directory: src
     const: true
 

@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-#define sizeof_card_palette 34
-extern const unsigned char card_palette[34];
+#define sizeof_card_palette 296
+extern const unsigned char card_palette[296];
 
 #ifdef __cplusplus
 }
